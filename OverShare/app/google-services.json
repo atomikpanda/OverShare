@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "720196934551",
+    "firebase_url": "https://overshare-f24cc.firebaseio.com",
+    "project_id": "overshare-f24cc",
+    "storage_bucket": "overshare-f24cc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:720196934551:android:e1ae25b5e6e99935",
+        "android_client_info": {
+          "package_name": "com.baileyseymour.overshare"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "720196934551-4fvf92hi9kngv1qh6jrh9n39t98e08ma.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.baileyseymour.overshare",
+            "certificate_hash": "69086b90efe063dc68c81e766c002a09892327ed"
+          }
+        },
+        {
+          "client_id": "720196934551-mjv91vtkha395jlidfbb9rccrcp7k4ec.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5dRzeYsvJYwEUOfT3_vhBfqcTxm3SjKA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "720196934551-mjv91vtkha395jlidfbb9rccrcp7k4ec.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
