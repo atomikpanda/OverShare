@@ -19,7 +19,9 @@ import android.widget.Toast;
 
 import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.adapters.CardAdapter;
+import com.baileyseymour.overshare.interfaces.CardActionListener;
 import com.baileyseymour.overshare.interfaces.FieldClickListener;
+import com.baileyseymour.overshare.interfaces.RecyclerEmptyStateListener;
 import com.baileyseymour.overshare.models.Card;
 import com.baileyseymour.overshare.models.CardViewHolder;
 import com.baileyseymour.overshare.models.Field;
@@ -37,7 +39,7 @@ import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_CARDS;
 import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_SAVED;
 
 
-public class CardsListFragment extends Fragment implements FieldClickListener {
+public class CardsListFragment extends Fragment implements FieldClickListener, CardActionListener, RecyclerEmptyStateListener {
 
     private static final String ARG_IS_RECEIVED = "ARG_IS_RECEIVED";
 
@@ -78,6 +80,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener {
         String uid = FirebaseAuth.getInstance().getUid();
 
         Query query = null;
+
         if (!getIsReceivedCards() && uid != null) {
             query = mDB.collection(COLLECTION_CARDS)
                     .orderBy("createdTimestamp", Query.Direction.DESCENDING)
@@ -95,14 +98,16 @@ public class CardsListFragment extends Fragment implements FieldClickListener {
 
         FirestoreRecyclerOptions<Card> options = builder.build();
 
-        mCardAdapter = new CardAdapter(getContext(), options, this);
+        mCardAdapter = new CardAdapter(getContext(), options, this, this, this, getIsReceivedCards());
 
+        // Setup recycler view to use our firestore adapter
         if (getView() != null) {
             RecyclerView recyclerView = getView().findViewById(R.id.recyclerView);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             mCardAdapter.notifyDataSetChanged();
             recyclerView.setAdapter(mCardAdapter);
         }
+
 
     }
 
@@ -125,22 +130,43 @@ public class CardsListFragment extends Fragment implements FieldClickListener {
         mCardAdapter.stopListening();
     }
 
-//    @Override
-////    public void onClick(View v) {
-////        if (getView() == null) return;
-////
-////        RecyclerView recyclerView = getView().findViewById(R.id.recyclerView);
-////        if (recyclerView != null) {
-////            CardViewHolder viewHolder = (CardViewHolder) recyclerView.getChildViewHolder(v);
-////            int position = viewHolder.getAdapterPosition();
-////
-////            Card selected = mCardAdapter.getItem(position);
-////            Toast.makeText(getContext(), selected.getTitle(), Toast.LENGTH_SHORT).show();
-////        }
-////    }
-
     @Override
     public void onFieldClicked(Card card, Field field, int fieldPosition) {
         Toast.makeText(getContext(), field.getValue(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onUpdateEmptyState(boolean hasData) {
+        // Handle showing/hiding the recycler view and empty state based
+        // on if any data exists
+        if (getView() != null) {
+            View emptyView = getView().findViewById(android.R.id.empty);
+            View recyclerView = getView().findViewById(R.id.recyclerView);
+
+            if (emptyView != null)
+                emptyView.setVisibility(hasData ? View.GONE : View.VISIBLE);
+            if (recyclerView != null)
+                recyclerView.setVisibility(hasData ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    @Override
+    public void onCardAction(String action, Card card, int position) {
+        String todo = "TODO: Milestone 2: ";
+
+        // Handle card actions
+        switch (action) {
+            case ACTION_SHARE_CARD:
+                todo += "Share: ";
+                break;
+            case ACTION_DELETE_CARD:
+                todo += "Delete: ";
+                break;
+            case ACTION_EDIT_CARD:
+                todo += "Edit: ";
+                break;
+        }
+
+        Toast.makeText(getContext(), todo + card.getTitle(), Toast.LENGTH_SHORT).show();
     }
 }

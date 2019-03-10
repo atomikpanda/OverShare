@@ -9,6 +9,7 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
     <color name="fui_bgEmail">@color/colorAccent</color>
-    <color name="fragmentBg">#F3F3F3</color>
+    <color name="fragmentBg">#EAEAEA</color>
     <color name="emptyStateTextColor">#757575</color>
+    <color name="iconsGray">#757575</color>
 </resources>
