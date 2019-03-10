@@ -1,3 +1,7 @@
+// Bailey Seymour
+// DVP6 - 1903
+// Field.java
+
 package com.baileyseymour.overshare.models;
 
 import com.google.firebase.firestore.IgnoreExtraProperties;

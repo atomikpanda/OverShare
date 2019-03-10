@@ -11,8 +11,17 @@
     <string name="save">Save</string>
     <string name="do_not_blank">You can\'t leave this field blank</string>
     <string name="account">Account</string>
+    <string name="name">Name</string>
+    <string name="first_last">First Last</string>
+    <string name="email">Email</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="field_title">Field Title</string>
+    <string name="field_value">Field Value</string>
+    <string name="delete">Delete</string>
     <string-array name="tab_titles">
         <item>My Cards</item>
         <item>Received Cards</item>
     </string-array>
+
 </resources>

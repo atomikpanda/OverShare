@@ -1,3 +1,7 @@
+// Bailey Seymour
+// DVP6 - 1903
+// SplashActivity.java
+
 package com.baileyseymour.overshare.activities;
 
 import android.content.Intent;
