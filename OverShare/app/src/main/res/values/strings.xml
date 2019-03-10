@@ -1,4 +1,18 @@
 <resources>
     <string name="app_name">OverShare</string>
     <string name="action_settings">Settings</string>
+    <string name="no_cards_to_display">No Cards</string>
+    <string name="card_title">Card Title</string>
+    <string name="add_field">Add Field</string>
+    <string name="fields">Fields:</string>
+    <string name="no_fields">No Fields</string>
+    <string name="edit_card">Edit Card</string>
+    <string name="create_card">Create Card</string>
+    <string name="save">Save</string>
+    <string name="do_not_blank">You can\'t leave this field blank</string>
+    <string name="account">Account</string>
+    <string-array name="tab_titles">
+        <item>My Cards</item>
+        <item>Received Cards</item>
+    </string-array>
 </resources>
