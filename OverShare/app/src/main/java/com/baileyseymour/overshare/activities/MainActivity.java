@@ -1,3 +1,7 @@
+// Bailey Seymour
+// DVP6 - 1903
+// MainActivity.java
+
 package com.baileyseymour.overshare.activities;
 
 import android.content.Intent;

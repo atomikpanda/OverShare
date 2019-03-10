@@ -33,4 +33,10 @@
         <item name="android:paddingTop">8dp</item>
     </style>
 
+    <style name="AccountHeaderText" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textColor">@color/divider</item>
+        <item name="android:layout_marginTop">12dp</item>
+        <item name="android:layout_marginBottom">12dp</item>
+    </style>
+
 </resources>

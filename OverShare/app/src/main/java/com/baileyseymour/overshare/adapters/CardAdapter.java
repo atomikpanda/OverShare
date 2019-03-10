@@ -1,3 +1,7 @@
+// Bailey Seymour
+// DVP6 - 1903
+// CardAdapter.java
+
 package com.baileyseymour.overshare.adapters;
 
 import android.content.Context;

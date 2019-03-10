@@ -1,3 +1,7 @@
+// Bailey Seymour
+// DVP6 - 1903
+// Constants.java
+
 package com.baileyseymour.overshare.interfaces;
 
 

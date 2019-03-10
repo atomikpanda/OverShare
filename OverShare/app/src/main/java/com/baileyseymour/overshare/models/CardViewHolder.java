@@ -1,3 +1,7 @@
+// Bailey Seymour
+// DVP6 - 1903
+// CardViewHolder.java
+
 package com.baileyseymour.overshare.models;
 
 import android.support.annotation.NonNull;
