@@ -10,6 +10,7 @@ import com.baileyseymour.overshare.models.FieldType;
 import java.util.HashMap;
 import java.util.Map;
 
+// Util class that is responsible for managing the list of available fields to choose from
 public class FieldUtils {
 
     private static Map<String, FieldType> AVAILABLE_FIELDS = new HashMap<>();
@@ -19,6 +20,7 @@ public class FieldUtils {
                 new FieldType("Twitter", false, "https://twitter.com/%s"));
     }
 
+    // Provides a standard way to access a field by its written type as in db
     public static FieldType fieldTypeFromId(String fieldId) {
         return AVAILABLE_FIELDS.get(fieldId);
     }

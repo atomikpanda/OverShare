@@ -27,8 +27,10 @@ import butterknife.OnClick;
 
 public class SplashActivity extends AppCompatActivity {
 
+    // Constants
     private static final int RC_SIGN_IN = 466;
 
+    // Views
     @BindView(R.id.buttonSignIn)
     Button mSignInButton;
 
@@ -42,12 +44,11 @@ public class SplashActivity extends AppCompatActivity {
         if (user != null) {
             // User is signed in
             startMainAndFinish();
-        } else {
-            // No user is signed in
         }
 
     }
 
+    // Starts the main activity and closes the splash
     private void startMainAndFinish() {
         Intent mainIntent = new Intent(this, MainActivity.class);
         startActivity(mainIntent);
@@ -56,6 +57,7 @@ public class SplashActivity extends AppCompatActivity {
 
     @OnClick(R.id.buttonSignIn)
     public void signIn(View view) {
+        // Allow users to sign in via email
         List<AuthUI.IdpConfig> providers = new ArrayList<>();
         providers.add(new AuthUI.IdpConfig.EmailBuilder().build());
 
@@ -65,7 +67,7 @@ public class SplashActivity extends AppCompatActivity {
                         .createSignInIntentBuilder()
                         .setAlwaysShowSignInMethodScreen(false)
                         .setAvailableProviders(providers)
-                        .setLogo(R.mipmap.ic_launcher_round)
+                        .setLogo(R.drawable.ic_oversharelogo_02)
                         .build(),
                 RC_SIGN_IN);
     }
@@ -79,7 +81,7 @@ public class SplashActivity extends AppCompatActivity {
 
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
-                //FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                // FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
                 startMainAndFinish();
             } else {

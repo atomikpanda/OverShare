@@ -5,7 +5,10 @@
 package com.baileyseymour.overshare.models;
 
 public class FieldType {
+    // The field type's user display name eg. "Twitter" or "Website"
     private String mDisplayName;
+
+    // Is the type's value supposed to ultimately be a URL or text
     private boolean mExpectsURL;
     private String mValueFormat;
 

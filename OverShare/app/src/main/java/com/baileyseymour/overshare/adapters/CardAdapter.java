@@ -25,12 +25,14 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 
 public class CardAdapter extends FirestoreRecyclerAdapter<Card, CardViewHolder> implements CardActionListener {
 
+    // Instance vars
     private final Context mContext;
     private FieldClickListener mClickListener;
     private CardActionListener mActionListener;
     private RecyclerEmptyStateListener mEmptyStateListener;
     private boolean mIsReceivedCards;
 
+    // Standard constructor
     public CardAdapter(Context context, @NonNull FirestoreRecyclerOptions<Card> options,
                        FieldClickListener fieldClickListener, CardActionListener actionListener,
                        RecyclerEmptyStateListener emptyStateListener, boolean isReceivedCards) {
@@ -44,8 +46,10 @@ public class CardAdapter extends FirestoreRecyclerAdapter<Card, CardViewHolder> 
 
     @Override
     protected void onBindViewHolder(@NonNull CardViewHolder holder, int position, @NonNull Card model) {
+        // Set the card's title
         holder.titleTextView.setText(model.getTitle());
 
+        // Create the nested adapter for fields
         FieldAdapter adapter = new FieldAdapter(model, mClickListener);
         holder.fieldsRecyclerView.setAdapter(adapter);
         holder.fieldsRecyclerView.setHasFixedSize(true);
@@ -56,8 +60,8 @@ public class CardAdapter extends FirestoreRecyclerAdapter<Card, CardViewHolder> 
     @NonNull
     @Override
     public CardViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        // Inflate the card layout
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.card_view_layout, viewGroup, false);
-        //view.setOnClickListener(mOnClickListener);
         return new CardViewHolder(view, this, mIsReceivedCards);
     }
 
@@ -69,6 +73,8 @@ public class CardAdapter extends FirestoreRecyclerAdapter<Card, CardViewHolder> 
     @Override
     public void onDataChanged() {
         super.onDataChanged();
+
+        // When data changes notify the empty state listener
         if (mEmptyStateListener != null) {
             mEmptyStateListener.onUpdateEmptyState(getItemCount() > 0);
         }
@@ -76,6 +82,8 @@ public class CardAdapter extends FirestoreRecyclerAdapter<Card, CardViewHolder> 
 
     @Override
     public void onCardAction(String action, Card card, int position) {
+
+        // Pass the card action up to the actual CardActionListener
         if (mActionListener != null) {
             mActionListener.onCardAction(action, getItem(position), position);
         }

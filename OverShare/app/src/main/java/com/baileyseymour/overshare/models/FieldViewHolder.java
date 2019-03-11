@@ -16,11 +16,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FieldViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+    // Views
+
     @BindView(R.id.fieldTitleTextView)
     public TextView titleTextView;
 
     @BindView(R.id.fieldValueTextView)
     public TextView valueTextView;
+
+    // Listener
 
     private FieldHolderClickListener mClickListener;
 
@@ -31,6 +36,7 @@ public class FieldViewHolder extends RecyclerView.ViewHolder implements View.OnC
         itemView.setOnClickListener(this);
     }
 
+    // When a field is clicked notify our listener / adapter
     @Override
     public void onClick(View v) {
         mClickListener.onItemClick(getAdapterPosition(), v);

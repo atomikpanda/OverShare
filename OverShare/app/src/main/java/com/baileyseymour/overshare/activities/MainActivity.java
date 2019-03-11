@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.adapters.MainFragmentPagerAdapter;
@@ -28,6 +29,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
+
+    // Views
 
     @BindView(R.id.mainViewPager)
     ViewPager mViewPager;
@@ -60,9 +63,8 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
                     startActivity(addCardIntent);
 
                 } else if (position == 1) {
-                    // We are on the receive cards tab, so FAB is receive
-                    Snackbar.make(view, "Receive", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
+                    // TODO: We are on the receive cards tab, so FAB is receive
+                    Toast.makeText(MainActivity.this, "TODO: Milestone 2: Receive", Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -70,10 +72,13 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     }
 
     private void initializeTabs() {
+        // Setup action bar
         ActionBar bar = getSupportActionBar();
         if (bar != null) {
             bar.setElevation(0);
         }
+
+        // Load the view pager into the tab layout
         mViewPager.setAdapter(new MainFragmentPagerAdapter(getSupportFragmentManager(), this));
         mTabLayout.setupWithViewPager(mViewPager);
         mViewPager.addOnPageChangeListener(this);
@@ -88,13 +93,10 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.menu_action_account) {
+            Toast.makeText(MainActivity.this, "TODO: Milestone 3: Account", Toast.LENGTH_SHORT).show();
             return true;
         }
 
@@ -110,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
     @Override
     public void onPageSelected(int i) {
+        // Switch the fab icon based on the page that is selected
         if (i == 0) {
             fab.setImageResource(R.drawable.ic_add_black_24dp);
         } else if (i == 1) {

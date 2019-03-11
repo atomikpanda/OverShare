@@ -32,8 +32,10 @@ public class CardFormActivity extends AppCompatActivity {
                 card = (Card) intent.getSerializableExtra(EXTRA_CARD);
             }
         }
+
         setTitle(titleId);
 
+        // Load the fragment
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentContainer,
                         CardFormFragment.newInstance(card))

@@ -16,12 +16,14 @@ public class Field {
     private String value;
     private String type;
 
+    // Create a field from a db style map
     private Field(Map<String, String> map) {
         title = map.get("title");
         value = map.get("value");
         type = map.get("type");
     }
 
+    // Converts a field to a map
     public Map<String, String> toMap() {
         HashMap<String, String> map = new HashMap<>();
         map.put("title", title);
@@ -31,6 +33,7 @@ public class Field {
         return map;
     }
 
+    // Used to convert the raw db list of maps to an array of field objects
     public static ArrayList<Field> fromListOfMaps(List<Map<String, String>> list) {
         ArrayList<Field> fields = new ArrayList<>();
         if (list != null) {
@@ -40,6 +43,8 @@ public class Field {
         }
         return fields;
     }
+
+    // Getters
 
     public String getTitle() {
         return title;

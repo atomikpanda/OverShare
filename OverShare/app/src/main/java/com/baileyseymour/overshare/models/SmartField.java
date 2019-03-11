@@ -10,6 +10,9 @@ import android.webkit.URLUtil;
 
 import java.util.Locale;
 
+// Represents / wraps a field object to provide useful functionality
+// aka. converts raw field data like title, value, and type info
+// into things like URLs
 public class SmartField {
     private Field mField;
 

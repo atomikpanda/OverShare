@@ -23,12 +23,17 @@ import java.util.ArrayList;
 
 
 public class FieldAdapter extends RecyclerView.Adapter<FieldViewHolder> implements FieldHolderClickListener {
+
+    // Instance vars
     private Card mCard;
     private ArrayList<Field> mFields;
     private FieldClickListener mFieldClickListener;
 
+    // Standard constructors
     public FieldAdapter(Card card, FieldClickListener fieldClickListener) {
         mCard = card;
+
+        // Convert the card's list of maps to actual field objects
         mFields = Field.fromListOfMaps(card.getFields());
         mFieldClickListener = fieldClickListener;
     }
@@ -36,12 +41,14 @@ public class FieldAdapter extends RecyclerView.Adapter<FieldViewHolder> implemen
     @NonNull
     @Override
     public FieldViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        // Inflate view
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.field_view_layout, viewGroup, false);
         return new FieldViewHolder(view, this);
     }
 
     @Override
     public void onBindViewHolder(@NonNull FieldViewHolder viewHolder, int i) {
+        // Load the field's properties into the UI
         Field field = mFields.get(i);
         viewHolder.titleTextView.setText(field.getTitle());
         viewHolder.valueTextView.setText(field.getValue());
@@ -57,6 +64,7 @@ public class FieldAdapter extends RecyclerView.Adapter<FieldViewHolder> implemen
 
     @Override
     public void onItemClick(int position, View v) {
+        // Pass up the field click listener
         if (mFieldClickListener != null) {
             mFieldClickListener.onFieldClicked(mCard, mFields.get(position), position);
         }
