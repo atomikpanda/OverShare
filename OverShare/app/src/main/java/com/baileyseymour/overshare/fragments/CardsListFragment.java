@@ -67,6 +67,8 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
+        // Load database
         mDB = FirebaseFirestore.getInstance();
     }
 
@@ -86,25 +88,31 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
         Query query = null;
 
         if (!getIsReceivedCards() && uid != null) {
+            // Query for only cards created by this user
             query = mDB.collection(COLLECTION_CARDS)
                     .orderBy("createdTimestamp", Query.Direction.DESCENDING)
                     .whereEqualTo("createdByUID", uid);
         } else if (uid != null) {
+            // Query for only cards SAVED by this user
             query = mDB.collection(COLLECTION_SAVED)
                     .orderBy("createdTimestamp", Query.Direction.DESCENDING)
                     .whereEqualTo("savedByUID", uid);
         }
 
+        // Create the fire store options builder
         FirestoreRecyclerOptions.Builder<Card> builder = new FirestoreRecyclerOptions.Builder<>();
 
+        // Set the query
         if (query != null)
             builder.setQuery(query, Card.class);
 
+        // Build options
         FirestoreRecyclerOptions<Card> options = builder.build();
 
+        // Initialize the card adapter
         mCardAdapter = new CardAdapter(getContext(), options, this, this, this, getIsReceivedCards());
 
-        // Setup recycler view to use our firestore adapter
+        // Setup recycler view to use our fire store adapter
         if (getView() != null) {
             RecyclerView recyclerView = getView().findViewById(R.id.recyclerView);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -115,6 +123,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
 
     }
 
+    // Is this fragment supposed to display the cards that were received vs created
     private boolean getIsReceivedCards() {
         if (getArguments() != null) {
             return getArguments().getBoolean(ARG_IS_RECEIVED, false);
@@ -125,14 +134,20 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
     @Override
     public void onStart() {
         super.onStart();
-        mCardAdapter.startListening();
+        // Tell our adapter to listen for db changes
+        if (mCardAdapter != null)
+            mCardAdapter.startListening();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        mCardAdapter.stopListening();
+        // Stop listening
+        if (mCardAdapter != null)
+            mCardAdapter.stopListening();
     }
+
+    // Field click listener
 
     @Override
     public void onFieldClicked(Card card, Field field, int fieldPosition) {
@@ -147,12 +162,15 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
             View emptyView = getView().findViewById(android.R.id.empty);
             View recyclerView = getView().findViewById(R.id.recyclerView);
 
+            // Toggle view visibility
             if (emptyView != null)
                 emptyView.setVisibility(hasData ? View.GONE : View.VISIBLE);
             if (recyclerView != null)
                 recyclerView.setVisibility(hasData ? View.VISIBLE : View.GONE);
         }
     }
+
+    // CardActionListener
 
     @Override
     public void onCardAction(String action, Card card, int position) {

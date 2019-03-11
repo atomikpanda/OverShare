@@ -18,17 +18,20 @@ import butterknife.ButterKnife;
 
 
 public class MainFragmentPagerAdapter extends FragmentPagerAdapter {
-    private static final int COUNT = 2;
 
+    // We have two tabs
+    private static final int COUNT = 2;
     private String[] tabTitles;
 
     public MainFragmentPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
+        // Get the tab titles from the strings
         tabTitles = context.getResources().getStringArray(R.array.tab_titles);
     }
 
     @Override
     public Fragment getItem(int i) {
+        // Load the fragment based on the tab
         if (i == 0) {
             return CardsListFragment.newInstance(false);
         } else if (i == 1) {
@@ -45,6 +48,8 @@ public class MainFragmentPagerAdapter extends FragmentPagerAdapter {
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
+
+        // Validate
         if (position < tabTitles.length && position != -1)
             return tabTitles[position];
 

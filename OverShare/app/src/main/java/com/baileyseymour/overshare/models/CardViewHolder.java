@@ -18,12 +18,15 @@ import butterknife.OnClick;
 
 
 public class CardViewHolder extends RecyclerView.ViewHolder {
+
+    // Views
     @BindView(R.id.cardTitleTextView)
     public TextView titleTextView;
 
     @BindView(R.id.fieldsRecyclerView)
     public RecyclerView fieldsRecyclerView;
 
+    // Action Listener
     private CardActionListener mListener;
 
     public CardViewHolder(@NonNull View itemView, CardActionListener listener, boolean isReceivedCards) {
@@ -38,6 +41,8 @@ public class CardViewHolder extends RecyclerView.ViewHolder {
             itemView.findViewById(R.id.editCardButton).setVisibility(View.VISIBLE);
         }
     }
+
+    // Action Button Click listeners
 
     @OnClick(R.id.shareCardButton)
     public void shareTapped() {

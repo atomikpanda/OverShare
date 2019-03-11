@@ -52,10 +52,14 @@ import static com.baileyseymour.overshare.interfaces.Constants.PAYLOAD_SIZE;
 
 public class CardFormFragment extends Fragment {
 
+    // Constants
     private static final String ARG_CARD = "ARG_CARD";
     private static final String TAG = "CardFormFragment";
 
+    // Database
     private FirebaseFirestore mDB;
+
+    // Views
 
     @BindView(R.id.fieldsListView)
     ListView mFieldsListView;
@@ -71,7 +75,11 @@ public class CardFormFragment extends Fragment {
     public static CardFormFragment newInstance(Card card) {
 
         Bundle args = new Bundle();
-        args.putSerializable(ARG_CARD, card);
+
+        // Store in bundle
+        if (card != null)
+            args.putSerializable(ARG_CARD, card);
+
         CardFormFragment fragment = new CardFormFragment();
         fragment.setArguments(args);
         return fragment;
@@ -80,6 +88,8 @@ public class CardFormFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
+        // Get an instance of the database
         mDB = FirebaseFirestore.getInstance();
     }
 
@@ -92,6 +102,7 @@ public class CardFormFragment extends Fragment {
         return view;
     }
 
+    // Get the card if any
     private Card getCard() {
         if (getArguments() == null) return null;
         return ((Card) getArguments().getSerializable(ARG_CARD));
@@ -99,14 +110,25 @@ public class CardFormFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_save, menu);
+        // Inflate menu
+        int menuId = R.menu.menu_save;
+
+        // If in edit mode show a delete button as well
+        if (getCard() != null)
+            menuId = R.menu.menu_delete_save;
+
+        inflater.inflate(menuId, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle menu actions
         if (item.getItemId() == R.id.menu_action_save) {
             onSaveTapped();
+            return true;
+        } else if (item.getItemId() == R.id.menu_action_delete) {
+            onDeleteTapped();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -122,15 +144,30 @@ public class CardFormFragment extends Fragment {
         setHasOptionsMenu(true);
 
         mFieldsListView.setEmptyView(getView().findViewById(android.R.id.empty));
+
+        if (getCard() != null) {
+            // Editing a card
+            mEditTextCardTitle.setText(getCard().getTitle());
+        }
     }
 
     @OnClick(R.id.buttonAddField)
     public void onAddField() {
-        // Handle add field
+        // TODO: Handle add field
         Toast.makeText(getContext(), "TODO: Milestone 2", Toast.LENGTH_SHORT).show();
     }
 
+
+    private void onDeleteTapped() {
+        // Card card = getCard();
+
+        // if (card == null) return;
+
+        // TODO: handle card deletion
+    }
+
     private void onSaveTapped() {
+
         mEditTextCardTitle.setError(null);
 
         String cardTitle = mEditTextCardTitle.getText().toString();
@@ -143,11 +180,19 @@ public class CardFormFragment extends Fragment {
 
         // Proceed with saving
 
+        if (getCard() != null)
+            handleSaveEdit();
+
+        // Get the current user id
         String createdByUID = FirebaseAuth.getInstance().getUid();
+
+        // Generate a random byte array to be saved for use with Chirp
         byte[] payload = IdGenerator.randomBytes(PAYLOAD_SIZE);
 
+        // Create a card
         final Card card = new Card(cardTitle, new String(Hex.encodeHex(payload)), null, createdByUID);
 
+        // Create a new document for the created card
         mDB.collection(COLLECTION_CARDS).document()
                 .set(card)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -167,11 +212,17 @@ public class CardFormFragment extends Fragment {
             getActivity().finish();
     }
 
+    private void handleSaveEdit() {
+        // TODO: Update the card's title
+        // and the fields property using a map and firebase
+        // NOTE: DO NOT set the Card only update the specific properties
+    }
+
     // This method reverse looks up a card by its chirp id
     // Then creates a new document in saved_cards
     // with the added key of "savedByUID" to associate it with the current user's account under
     // received cards
-    private void onGotChirpHexId(String chirpHexTestId) {
+    private void onReceivedChirpHexId(String chirpHexTestId) {
 
         final String savedByUID = FirebaseAuth.getInstance().getUid();
         if (savedByUID == null) return;

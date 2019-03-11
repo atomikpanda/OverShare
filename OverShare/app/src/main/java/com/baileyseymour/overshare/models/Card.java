@@ -13,8 +13,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 
+// Some properties are only used by internal fire base methods
+// and the java compiler does not recognize this
+@SuppressWarnings("unused")
 @IgnoreExtraProperties
 public class Card implements Serializable {
+
+    // Database model properties
+
     @PropertyName("title")
     private String title;
 
@@ -30,15 +36,19 @@ public class Card implements Serializable {
     @PropertyName("createdByUID")
     private String createdByUID;
 
+    // Used only by internal fire base methods
     public Card() {
     }
 
+    // Standard constructor
     public Card(String title, String hexId, ArrayList<Map<String, String>> fields, String createdByUID) {
         this.title = title;
         this.hexId = hexId;
         this.fields = fields;
         this.createdByUID = createdByUID;
     }
+
+    // Getters
 
     @PropertyName("title")
     public String getTitle() {
