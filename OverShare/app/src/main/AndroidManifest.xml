@@ -28,6 +28,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.FieldFormActivity" />
+        <activity android:name=".activities.ReceiveActivity" />
     </application>
 
 </manifest>

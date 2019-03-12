@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,7 @@ import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_SAVED;
 public class CardsListFragment extends Fragment implements FieldClickListener, CardActionListener, RecyclerEmptyStateListener {
 
     private static final String ARG_IS_RECEIVED = "ARG_IS_RECEIVED";
+    private static final String TAG = "CardsListFrag";
 
     private FirebaseFirestore mDB;
     private FirestoreRecyclerAdapter<Card, CardViewHolder> mCardAdapter;
@@ -142,6 +144,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
 
     @Override
     public void onFieldClicked(Card card, Field field, int fieldPosition) {
+        Log.d(TAG, "onFieldClicked: card: " + card + ", field: " + field + ", pos: " + fieldPosition);
         Toast.makeText(getContext(), field.getValue(), Toast.LENGTH_SHORT).show();
     }
 
@@ -165,6 +168,8 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
 
     @Override
     public void onCardAction(String action, Card card, int position) {
+        Log.d(TAG, "onCardAction: action: " + action + ", card: " + card + ", pos: " + position);
+
         String todo = "TODO: Milestone 2: ";
 
         // Handle card actions

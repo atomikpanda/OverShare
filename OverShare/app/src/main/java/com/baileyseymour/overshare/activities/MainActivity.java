@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.adapters.MainFragmentPagerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
         initializeTabs();
 
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
                 } else if (position == 1) {
                     // TODO: We are on the receive cards tab, so FAB is receive
+                    FirebaseAuth.getInstance().signOut();
                     Toast.makeText(MainActivity.this, "TODO: Milestone 2: Receive", Toast.LENGTH_SHORT).show();
                 }
 

@@ -91,6 +91,7 @@ public class FieldFormFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         // Handle menu actions
         if (item.getItemId() == R.id.menu_action_save) {
             onSaveTapped();
@@ -99,6 +100,7 @@ public class FieldFormFragment extends Fragment {
             onDeleteTapped();
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -115,6 +117,7 @@ public class FieldFormFragment extends Fragment {
 
     private void setupSpinner() {
         if (getContext() == null) return;
+
         // Load FieldTypes into spinner
         Object fieldTypes[] = FieldUtils.getAvailableFields().values().toArray();
         ArrayAdapter<Object> adapter = new ArrayAdapter<>(getContext(),
@@ -125,6 +128,8 @@ public class FieldFormFragment extends Fragment {
     private void loadField() {
         if (getField() == null) return;
 
+        // Load in the values from the Field object
+        // into the UI
         mTitleEditText.setText(getField().getTitle());
         mValueEditText.setText(getField().getValue());
         FieldType fieldType = FieldUtils.fieldTypeFromId(getField().getType());
@@ -136,9 +141,11 @@ public class FieldFormFragment extends Fragment {
 
     private void onDeleteTapped() {
         // TODO: handle field deletion
+        // Finish with a result code that signifies a delete
     }
 
     private void onSaveTapped() {
         // TODO: handle field add/edit saving
+        // Finish with RESULT_OK and an extra of the Field obj
     }
 }
