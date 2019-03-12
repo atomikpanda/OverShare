@@ -4,23 +4,21 @@
 
 package com.baileyseymour.overshare.models;
 
-import android.text.TextUtils;
 import android.util.Patterns;
-import android.webkit.URLUtil;
 
 import java.util.Locale;
 
 // Represents / wraps a field object to provide useful functionality
 // aka. converts raw field data like title, value, and type info
 // into things like URLs
-public class SmartField {
-    private Field mField;
+class SmartField {
+    private final Field mField;
 
     public SmartField(Field field) {
         mField = field;
     }
 
-    public Field getField() {
+    private Field getField() {
         return mField;
     }
 

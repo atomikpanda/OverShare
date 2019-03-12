@@ -23,7 +23,7 @@ public class FieldFormActivity extends AppCompatActivity {
 
         Field field = null;
         Intent intent = getIntent();
-        int titleId = R.string.add_field;
+        int titleId = R.string.add_field_title;
 
         // Get the field extra
         if (intent != null) {

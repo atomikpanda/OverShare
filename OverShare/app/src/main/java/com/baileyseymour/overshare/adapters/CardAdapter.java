@@ -26,10 +26,10 @@ public class CardAdapter extends FirestoreRecyclerAdapter<Card, CardViewHolder> 
 
     // Instance vars
     private final Context mContext;
-    private FieldClickListener mClickListener;
-    private CardActionListener mActionListener;
-    private RecyclerEmptyStateListener mEmptyStateListener;
-    private boolean mIsReceivedCards;
+    private final FieldClickListener mClickListener;
+    private final CardActionListener mActionListener;
+    private final RecyclerEmptyStateListener mEmptyStateListener;
+    private final boolean mIsReceivedCards;
 
     // Standard constructor
     public CardAdapter(Context context, @NonNull FirestoreRecyclerOptions<Card> options,

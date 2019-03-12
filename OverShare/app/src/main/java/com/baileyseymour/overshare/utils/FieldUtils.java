@@ -13,7 +13,7 @@ import java.util.Map;
 // Util class that is responsible for managing the list of available fields to choose from
 public class FieldUtils {
 
-    private static Map<String, FieldType> AVAILABLE_FIELDS = new LinkedHashMap<>();
+    private static final Map<String, FieldType> AVAILABLE_FIELDS = new LinkedHashMap<>();
     static {
         AVAILABLE_FIELDS.put("url", new FieldType("Website (URL)", true));
         AVAILABLE_FIELDS.put("twitter",

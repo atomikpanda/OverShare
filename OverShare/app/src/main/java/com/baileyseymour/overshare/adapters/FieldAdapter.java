@@ -22,9 +22,9 @@ import java.util.ArrayList;
 public class FieldAdapter extends RecyclerView.Adapter<FieldViewHolder> implements FieldViewHolder.ClickListener {
 
     // Instance vars
-    private Card mCard;
-    private ArrayList<Field> mFields;
-    private FieldClickListener mFieldClickListener;
+    private final Card mCard;
+    private final ArrayList<Field> mFields;
+    private final FieldClickListener mFieldClickListener;
 
     // Standard constructors
     FieldAdapter(Card card, FieldClickListener fieldClickListener) {

@@ -19,13 +19,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.baileyseymour.overshare.R;
-import com.baileyseymour.overshare.models.Card;
 import com.baileyseymour.overshare.models.Field;
 import com.baileyseymour.overshare.models.FieldType;
 import com.baileyseymour.overshare.utils.FieldUtils;
-
-import java.util.ArrayList;
-import java.util.Collection;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

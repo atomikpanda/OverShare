@@ -4,8 +4,6 @@
 
 package com.baileyseymour.overshare.models;
 
-import com.google.firebase.firestore.IgnoreExtraProperties;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,12 +11,12 @@ import java.util.List;
 import java.util.Map;
 
 public class Field implements Serializable {
-    private String title;
-    private String value;
-    private String type;
+    private final String title;
+    private final String value;
+    private final String type;
 
     // Create a field from a db style map
-    public Field(Map<String, String> map) {
+    private Field(Map<String, String> map) {
         title = map.get("title");
         value = map.get("value");
         type = map.get("type");

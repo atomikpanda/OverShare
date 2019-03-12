@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.baileyseymour.overshare.R;
@@ -21,7 +20,6 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -29,10 +27,6 @@ public class SplashActivity extends AppCompatActivity {
 
     // Constants
     private static final int RC_SIGN_IN = 466;
-
-    // Views
-    @BindView(R.id.buttonSignIn)
-    Button mSignInButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
