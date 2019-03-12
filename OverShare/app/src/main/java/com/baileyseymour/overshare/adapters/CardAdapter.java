@@ -20,6 +20,7 @@ import com.baileyseymour.overshare.models.Card;
 import com.baileyseymour.overshare.adapters.viewholders.CardViewHolder;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 public class CardAdapter extends FirestoreRecyclerAdapter<Card, CardViewHolder> implements CardActionListener {
@@ -80,11 +81,12 @@ public class CardAdapter extends FirestoreRecyclerAdapter<Card, CardViewHolder> 
     }
 
     @Override
-    public void onCardAction(String action, Card card, int position) {
+    public void onCardAction(String action, Card card, int position, DocumentSnapshot snapshot) {
 
         // Pass the card action up to the actual CardActionListener
         if (mActionListener != null) {
-            mActionListener.onCardAction(action, getItem(position), position);
+            DocumentSnapshot docSnapshot = getSnapshots().getSnapshot(position);
+            mActionListener.onCardAction(action, getItem(position), position, docSnapshot);
         }
     }
 }

@@ -58,8 +58,8 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
                     startActivity(addCardIntent);
 
                 } else if (position == 1) {
-                    // TODO: We are on the receive cards tab, so FAB is receive
-                    FirebaseAuth.getInstance().signOut();
+                    // We are on the receive cards tab, so FAB is receive
+                    // TODO: Start ReceiveActivity via an intent
                     Toast.makeText(MainActivity.this, "TODO: Milestone 2: Receive", Toast.LENGTH_SHORT).show();
                 }
 
@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         int id = item.getItemId();
 
         if (id == R.id.menu_action_account) {
+            // TODO: Launch AccountActivity
             Toast.makeText(MainActivity.this, "TODO: Milestone 3: Account", Toast.LENGTH_SHORT).show();
             return true;
         }

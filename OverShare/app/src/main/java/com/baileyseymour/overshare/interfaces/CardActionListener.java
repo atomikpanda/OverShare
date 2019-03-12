@@ -5,6 +5,7 @@
 package com.baileyseymour.overshare.interfaces;
 
 import com.baileyseymour.overshare.models.Card;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 public interface CardActionListener {
     // Different actions that can occur on a card
@@ -12,5 +13,5 @@ public interface CardActionListener {
     String ACTION_DELETE_CARD = "ACTION_DELETE_CARD";
     String ACTION_EDIT_CARD = "ACTION_EDIT_CARD";
 
-    void onCardAction(String action, Card card, int position);
+    void onCardAction(String action, Card card, int position, DocumentSnapshot snapshot);
 }

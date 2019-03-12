@@ -20,6 +20,8 @@ import java.util.Map;
 public class Card implements Serializable {
 
     // Database model properties
+    // Important: Each custom class must have a public constructor that takes no arguments.
+    // In addition, the class must include a public getter for each property.
 
     @PropertyName("title")
     private String title;

@@ -48,20 +48,20 @@ public class CardViewHolder extends RecyclerView.ViewHolder {
     public void shareTapped() {
 
         if (mListener != null)
-            mListener.onCardAction(CardActionListener.ACTION_SHARE_CARD, null, getAdapterPosition());
+            mListener.onCardAction(CardActionListener.ACTION_SHARE_CARD, null, getAdapterPosition(), null);
     }
 
     @OnClick(R.id.deleteCardButton)
     public void deleteTapped() {
 
         if (mListener != null)
-            mListener.onCardAction(CardActionListener.ACTION_DELETE_CARD, null, getAdapterPosition());
+            mListener.onCardAction(CardActionListener.ACTION_DELETE_CARD, null, getAdapterPosition(), null);
     }
 
     @OnClick(R.id.editCardButton)
     public void editTapped() {
 
         if (mListener != null)
-            mListener.onCardAction(CardActionListener.ACTION_EDIT_CARD,null, getAdapterPosition());
+            mListener.onCardAction(CardActionListener.ACTION_EDIT_CARD,null, getAdapterPosition(), null);
     }
 }
