@@ -5,20 +5,15 @@
 package com.baileyseymour.overshare.fragments;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baileyseymour.overshare.R;
@@ -27,17 +22,13 @@ import com.baileyseymour.overshare.interfaces.CardActionListener;
 import com.baileyseymour.overshare.interfaces.FieldClickListener;
 import com.baileyseymour.overshare.interfaces.RecyclerEmptyStateListener;
 import com.baileyseymour.overshare.models.Card;
-import com.baileyseymour.overshare.models.CardViewHolder;
+import com.baileyseymour.overshare.adapters.viewholders.CardViewHolder;
 import com.baileyseymour.overshare.models.Field;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_CARDS;
 import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_SAVED;

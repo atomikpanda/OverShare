@@ -2,7 +2,7 @@
 // DVP6 - 1903
 // FieldViewHolder.java
 
-package com.baileyseymour.overshare.models;
+package com.baileyseymour.overshare.adapters.viewholders;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;

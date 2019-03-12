@@ -227,6 +227,8 @@ public class CardFormFragment extends Fragment {
     // Then creates a new document in saved_cards
     // with the added key of "savedByUID" to associate it with the current user's account under
     // received cards
+
+    // TODO: use along with Chirp
     private void onReceivedChirpHexId(String chirpHexTestId) {
 
         final String savedByUID = FirebaseAuth.getInstance().getUid();
