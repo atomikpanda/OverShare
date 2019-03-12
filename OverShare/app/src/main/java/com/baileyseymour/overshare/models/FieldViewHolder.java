@@ -10,12 +10,15 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.baileyseymour.overshare.R;
-import com.baileyseymour.overshare.interfaces.FieldHolderClickListener;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FieldViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+    public interface ClickListener {
+        void onItemClick(int position, View v);
+    }
 
     // Views
 
@@ -27,9 +30,9 @@ public class FieldViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
     // Listener
 
-    private FieldHolderClickListener mClickListener;
+    private ClickListener mClickListener;
 
-    public FieldViewHolder(@NonNull View itemView, FieldHolderClickListener clickListener) {
+    public FieldViewHolder(@NonNull View itemView, ClickListener clickListener) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         mClickListener = clickListener;
