@@ -5,6 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/emptyStateIcon"
+        android:layout_width="@dimen/empty_state_icon_size"
+        android:layout_height="@dimen/empty_state_icon_size"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_empty_state_fields" />
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
