@@ -9,16 +9,22 @@ public class FieldType {
     private final String mDisplayName;
 
     // Is the type's value supposed to ultimately be a URL or text
-    private final boolean mExpectsURL;
-    private final String mValueFormat;
+    private final ContentType mContentType;
 
-    public FieldType(String displayName, boolean expectsURL) {
-        this(displayName, expectsURL, "%s");
+    public enum ContentType {
+        TEXT,
+        URL
     }
 
-    public FieldType(String displayName, boolean expectsURL, String valueFormat) {
+    private final String mValueFormat;
+
+    public FieldType(String displayName, ContentType contentType) {
+        this(displayName, contentType, "%s");
+    }
+
+    public FieldType(String displayName, ContentType contentType, String valueFormat) {
         mDisplayName = displayName;
-        mExpectsURL = expectsURL;
+        mContentType = contentType;
         mValueFormat = valueFormat;
     }
 
@@ -26,8 +32,8 @@ public class FieldType {
         return mDisplayName;
     }
 
-    public boolean isExpectsURL() {
-        return mExpectsURL;
+    public ContentType getContentType() {
+        return mContentType;
     }
 
     public String getValueFormat() {
