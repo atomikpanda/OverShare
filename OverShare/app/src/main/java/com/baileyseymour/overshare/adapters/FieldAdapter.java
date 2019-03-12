@@ -4,17 +4,14 @@
 
 package com.baileyseymour.overshare.adapters;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.interfaces.FieldClickListener;
-import com.baileyseymour.overshare.interfaces.FieldHolderClickListener;
 import com.baileyseymour.overshare.models.Card;
 import com.baileyseymour.overshare.models.Field;
 import com.baileyseymour.overshare.models.FieldViewHolder;
@@ -22,7 +19,7 @@ import com.baileyseymour.overshare.models.FieldViewHolder;
 import java.util.ArrayList;
 
 
-public class FieldAdapter extends RecyclerView.Adapter<FieldViewHolder> implements FieldHolderClickListener {
+public class FieldAdapter extends RecyclerView.Adapter<FieldViewHolder> implements FieldViewHolder.ClickListener {
 
     // Instance vars
     private Card mCard;
@@ -30,7 +27,7 @@ public class FieldAdapter extends RecyclerView.Adapter<FieldViewHolder> implemen
     private FieldClickListener mFieldClickListener;
 
     // Standard constructors
-    public FieldAdapter(Card card, FieldClickListener fieldClickListener) {
+    FieldAdapter(Card card, FieldClickListener fieldClickListener) {
         mCard = card;
 
         // Convert the card's list of maps to actual field objects

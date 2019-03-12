@@ -7,6 +7,7 @@ package com.baileyseymour.overshare.interfaces;
 // Constants used app-wide
 public interface Constants {
     String EXTRA_CARD = "com.baileyseymour.overshare.EXTRA_CARD";
+    String EXTRA_FIELD = "com.baileyseymour.overshare.EXTRA_FIELD";
 
     // multiply this by x2 to find the total hex string length
     int PAYLOAD_SIZE = 6;

@@ -19,6 +19,7 @@
     <string name="field_title">Field Title</string>
     <string name="field_value">Field Value</string>
     <string name="delete">Delete</string>
+    <string name="edit_field">Edit Field</string>
     <string-array name="tab_titles">
         <item>My Cards</item>
         <item>Received Cards</item>

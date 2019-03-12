@@ -5,6 +5,7 @@
 package com.baileyseymour.overshare.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,7 +22,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.baileyseymour.overshare.R;
+import com.baileyseymour.overshare.activities.FieldFormActivity;
 import com.baileyseymour.overshare.models.Card;
+import com.baileyseymour.overshare.models.Field;
 import com.baileyseymour.overshare.utils.IdGenerator;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -47,6 +50,7 @@ import butterknife.OnClick;
 
 import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_CARDS;
 import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_SAVED;
+import static com.baileyseymour.overshare.interfaces.Constants.EXTRA_FIELD;
 import static com.baileyseymour.overshare.interfaces.Constants.PAYLOAD_SIZE;
 
 
@@ -153,6 +157,7 @@ public class CardFormFragment extends Fragment {
 
     @OnClick(R.id.buttonAddField)
     public void onAddField() {
+        if (getContext() == null) return;
         // TODO: Handle add field
         Toast.makeText(getContext(), "TODO: Milestone 2", Toast.LENGTH_SHORT).show();
     }
