@@ -13,6 +13,7 @@ import com.baileyseymour.overshare.fragments.CardFormFragment;
 import com.baileyseymour.overshare.models.Card;
 
 import static com.baileyseymour.overshare.interfaces.Constants.EXTRA_CARD;
+import static com.baileyseymour.overshare.interfaces.Constants.EXTRA_CARD_DOC_ID;
 
 public class CardFormActivity extends AppCompatActivity {
 
@@ -24,21 +25,24 @@ public class CardFormActivity extends AppCompatActivity {
         Card card = null;
         Intent intent = getIntent();
         int titleId = R.string.create_card;
+        String docId = null;
 
         // Get the card extra
         if (intent != null) {
             if (intent.hasExtra(EXTRA_CARD)) {
                 titleId = R.string.edit_card;
                 card = (Card) intent.getSerializableExtra(EXTRA_CARD);
+                docId = intent.getStringExtra(EXTRA_CARD_DOC_ID);
             }
         }
 
+        // Set the action bar title
         setTitle(titleId);
 
         // Load the fragment
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentContainer,
-                        CardFormFragment.newInstance(card))
+                        CardFormFragment.newInstance(card, docId))
                 .commit();
     }
 }

@@ -52,6 +52,7 @@ public class CardFormFragment extends Fragment {
 
     // Constants
     private static final String ARG_CARD = "ARG_CARD";
+    private static final String ARG_DOC_ID = "ARG_DOC_ID";
     private static final String TAG = "CardFormFragment";
 
     // Database
@@ -70,13 +71,16 @@ public class CardFormFragment extends Fragment {
     }
 
     // Factory method
-    public static CardFormFragment newInstance(Card card) {
+    public static CardFormFragment newInstance(Card card, String docId) {
 
         Bundle args = new Bundle();
 
         // Store in bundle
         if (card != null)
             args.putSerializable(ARG_CARD, card);
+
+        if (docId != null)
+            args.putString(ARG_DOC_ID, docId);
 
         CardFormFragment fragment = new CardFormFragment();
         fragment.setArguments(args);

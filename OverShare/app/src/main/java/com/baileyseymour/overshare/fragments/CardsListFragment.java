@@ -28,8 +28,14 @@ import com.baileyseymour.overshare.models.Field;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_CARDS;
 import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_SAVED;
@@ -159,6 +165,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
             // Toggle view visibility
             if (emptyView != null)
                 emptyView.setVisibility(hasData ? View.GONE : View.VISIBLE);
+
             if (recyclerView != null)
                 recyclerView.setVisibility(hasData ? View.VISIBLE : View.GONE);
         }
@@ -167,8 +174,9 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
     // CardActionListener
 
     @Override
-    public void onCardAction(String action, Card card, int position) {
-        Log.d(TAG, "onCardAction: action: " + action + ", card: " + card + ", pos: " + position);
+    public void onCardAction(String action, Card card, int position, DocumentSnapshot snapshot) {
+        Log.d(TAG, "onCardAction: action: " + action + ", card: " + card + ", pos: " + position +
+                ", documentId: " + snapshot.getId());
 
         String todo = "TODO: Milestone 2: ";
 
