@@ -15,9 +15,10 @@ public class FieldUtils {
 
     private static final Map<String, FieldType> AVAILABLE_FIELDS = new LinkedHashMap<>();
     static {
-        AVAILABLE_FIELDS.put("url", new FieldType("Website (URL)", true));
+        AVAILABLE_FIELDS.put("url", new FieldType("Website (URL)", FieldType.ContentType.URL));
         AVAILABLE_FIELDS.put("twitter",
-                new FieldType("Twitter", false, "https://twitter.com/%s"));
+                new FieldType("Twitter", FieldType.ContentType.URL,
+                        "https://twitter.com/%s"));
     }
 
     // Provides a standard way to access a field by its written type as in db
