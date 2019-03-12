@@ -13,15 +13,12 @@ import android.support.v4.app.FragmentPagerAdapter;
 import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.fragments.CardsListFragment;
 
-import butterknife.BindArray;
-import butterknife.ButterKnife;
-
 
 public class MainFragmentPagerAdapter extends FragmentPagerAdapter {
 
     // We have two tabs
     private static final int COUNT = 2;
-    private String[] tabTitles;
+    private final String[] tabTitles;
 
     public MainFragmentPagerAdapter(FragmentManager fm, Context context) {
         super(fm);

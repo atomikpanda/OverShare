@@ -7,7 +7,7 @@ package com.baileyseymour.overshare.utils;
 import java.util.Random;
 
 public class IdGenerator {
-    private static Random RANDOM = new Random();
+    private static final Random RANDOM = new Random();
 
     // Generates a random byte array of a specific size
     public static byte[] randomBytes(int length) {

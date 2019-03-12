@@ -30,7 +30,7 @@ public class FieldViewHolder extends RecyclerView.ViewHolder implements View.OnC
 
     // Listener
 
-    private ClickListener mClickListener;
+    private final ClickListener mClickListener;
 
     public FieldViewHolder(@NonNull View itemView, ClickListener clickListener) {
         super(itemView);

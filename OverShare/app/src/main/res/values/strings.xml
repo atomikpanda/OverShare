@@ -3,7 +3,7 @@
     <string name="action_settings">Settings</string>
     <string name="no_cards_to_display">No Cards</string>
     <string name="card_title">Card Title</string>
-    <string name="add_field">Add Field</string>
+    <string name="add_field_title">Add Field</string>
     <string name="fields">Fields:</string>
     <string name="no_fields">No Fields</string>
     <string name="edit_card">Edit Card</string>

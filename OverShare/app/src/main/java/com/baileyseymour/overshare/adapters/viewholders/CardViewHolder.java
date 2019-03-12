@@ -27,7 +27,7 @@ public class CardViewHolder extends RecyclerView.ViewHolder {
     public RecyclerView fieldsRecyclerView;
 
     // Action Listener
-    private CardActionListener mListener;
+    private final CardActionListener mListener;
 
     public CardViewHolder(@NonNull View itemView, CardActionListener listener, boolean isReceivedCards) {
         super(itemView);
