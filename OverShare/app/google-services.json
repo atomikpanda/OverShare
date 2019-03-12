@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "720196934551-gtrol8r0g6a1u7k7qfeb1tgp4upjhhjg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.baileyseymour.overshare",
+            "certificate_hash": "a9d42789f7190035efff36e5ad1825c4cdc9f012"
+          }
+        },
+        {
           "client_id": "720196934551-mjv91vtkha395jlidfbb9rccrcp7k4ec.apps.googleusercontent.com",
           "client_type": 3
         }
