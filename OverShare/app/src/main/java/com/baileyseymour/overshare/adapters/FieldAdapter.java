@@ -14,7 +14,7 @@ import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.interfaces.FieldClickListener;
 import com.baileyseymour.overshare.models.Card;
 import com.baileyseymour.overshare.models.Field;
-import com.baileyseymour.overshare.models.FieldViewHolder;
+import com.baileyseymour.overshare.adapters.viewholders.FieldViewHolder;
 
 import java.util.ArrayList;
 
