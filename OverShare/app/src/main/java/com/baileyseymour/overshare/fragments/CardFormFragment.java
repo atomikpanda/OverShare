@@ -8,6 +8,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -67,7 +68,7 @@ public class CardFormFragment extends Fragment {
     ListView mFieldsListView;
 
     @BindView(R.id.editTextCardTitle)
-    EditText mEditTextCardTitle;
+    TextInputEditText mEditTextCardTitle;
 
     public CardFormFragment() {
         // Default constructor
@@ -176,7 +177,10 @@ public class CardFormFragment extends Fragment {
 
         mEditTextCardTitle.setError(null);
 
-        String cardTitle = mEditTextCardTitle.getText().toString();
+        String cardTitle = "";
+
+        if (mEditTextCardTitle.getText() != null)
+            cardTitle = mEditTextCardTitle.getText().toString();
 
         // Validate fields
         if (cardTitle.trim().isEmpty()) {
