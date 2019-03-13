@@ -8,6 +8,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baileyseymour.overshare.R;
@@ -120,7 +122,9 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             mCardAdapter.notifyDataSetChanged();
             recyclerView.setAdapter(mCardAdapter);
+
         }
+
 
 
     }
@@ -136,6 +140,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
     @Override
     public void onStart() {
         super.onStart();
+
         // Tell our adapter to listen for db changes
         if (mCardAdapter != null)
             mCardAdapter.startListening();
@@ -144,6 +149,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
     @Override
     public void onStop() {
         super.onStop();
+
         // Stop listening
         if (mCardAdapter != null)
             mCardAdapter.stopListening();
@@ -169,6 +175,20 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
             if (emptyView != null)
                 emptyView.setVisibility(hasData ? View.GONE : View.VISIBLE);
 
+            // Switch empty state text to clearly tell the user what to do
+            TextView textView = getView().findViewById(R.id.textViewEmptyDescription);
+
+            if (emptyView != null && textView != null) {
+
+                @StringRes int emptyDescription = R.string.click_the_button_to_add_a_card;
+
+                if (getIsReceivedCards())
+                    emptyDescription = R.string.click_the_receive_button;
+
+                textView.setText(emptyDescription);
+            }
+
+            // Toggle recycler view visibility
             if (recyclerView != null)
                 recyclerView.setVisibility(hasData ? View.VISIBLE : View.GONE);
         }
