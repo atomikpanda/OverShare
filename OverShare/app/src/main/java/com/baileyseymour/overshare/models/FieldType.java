@@ -4,6 +4,9 @@
 
 package com.baileyseymour.overshare.models;
 
+import android.support.annotation.NonNull;
+
+
 public class FieldType {
     // The field type's user display name eg. "Twitter" or "Website"
     private final String mDisplayName;
@@ -40,6 +43,7 @@ public class FieldType {
         return mValueFormat;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return mDisplayName;

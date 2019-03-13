@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.adapters.MainFragmentPagerAdapter;
-import com.google.firebase.auth.FirebaseAuth;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
