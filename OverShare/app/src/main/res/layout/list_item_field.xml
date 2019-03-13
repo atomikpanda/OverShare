@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="16dp">
+    android:padding="@dimen/outer_padding">
 
 
     <LinearLayout
@@ -25,7 +25,7 @@
         <TextView
             android:id="@+id/textViewFieldValue"
             android:layout_width="match_parent"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/inner_padding"
             android:layout_height="wrap_content"
             tools:text="myusername" />
     </LinearLayout>
@@ -34,7 +34,7 @@
         style="@style/iconsCardGray"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:padding="8dp"
+        android:padding="@dimen/inner_padding"
         app:srcCompat="@drawable/ic_edit_black_24dp" />
 
 </LinearLayout>

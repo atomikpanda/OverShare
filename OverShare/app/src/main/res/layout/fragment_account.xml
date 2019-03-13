@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="@dimen/outer_padding">
 
     <TextView
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
+        android:paddingTop="@dimen/inner_padding"
         android:text="@string/email"
         android:textAppearance="@style/AccountHeaderText" />
 
@@ -31,7 +31,7 @@
         android:id="@+id/textViewEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
+        android:paddingTop="@dimen/inner_padding"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@android:color/black"
         tools:text="johndoe@example.com" />
@@ -40,7 +40,7 @@
         android:id="@+id/buttonResetPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="@dimen/outer_padding"
         android:layout_marginBottom="4dp"
         android:text="@string/reset_password" />
 
@@ -49,6 +49,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="0dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="@dimen/outer_padding"
         android:text="@string/sign_out" />
 </LinearLayout>

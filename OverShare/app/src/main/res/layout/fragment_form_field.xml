@@ -3,15 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="16dp"
+    android:layout_margin="@dimen/outer_padding"
     android:orientation="vertical">
 
     <Spinner
         android:id="@+id/spinnerType"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp" />
+        android:paddingTop="@dimen/outer_padding"
+        android:paddingBottom="@dimen/outer_padding" />
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
