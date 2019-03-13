@@ -10,6 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.baileyseymour.overshare.interfaces.Constants.KEY_TITLE;
+import static com.baileyseymour.overshare.interfaces.Constants.KEY_TYPE;
+import static com.baileyseymour.overshare.interfaces.Constants.KEY_VALUE;
+
 public class Field implements Serializable {
     private final String title;
     private final String value;
@@ -17,17 +21,17 @@ public class Field implements Serializable {
 
     // Create a field from a db style map
     private Field(Map<String, String> map) {
-        title = map.get("title");
-        value = map.get("value");
-        type = map.get("type");
+        title = map.get(KEY_TITLE);
+        value = map.get(KEY_VALUE);
+        type = map.get(KEY_TYPE);
     }
 
     // Converts a field to a map
     public Map<String, String> toMap() {
         HashMap<String, String> map = new HashMap<>();
-        map.put("title", title);
-        map.put("value", value);
-        map.put("type", type);
+        map.put(KEY_TITLE, title);
+        map.put(KEY_VALUE, value);
+        map.put(KEY_TYPE, type);
 
         return map;
     }

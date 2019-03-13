@@ -13,6 +13,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 
+import static com.baileyseymour.overshare.interfaces.Constants.KEY_CREATED_BY_UID;
+import static com.baileyseymour.overshare.interfaces.Constants.KEY_CREATED_TIMESTAMP;
+import static com.baileyseymour.overshare.interfaces.Constants.KEY_FIELDS;
+import static com.baileyseymour.overshare.interfaces.Constants.KEY_HEX_ID;
+import static com.baileyseymour.overshare.interfaces.Constants.KEY_TITLE;
+
 // Some properties are only used by internal fire base methods
 // and the java compiler does not recognize this
 @SuppressWarnings("unused")
@@ -23,19 +29,20 @@ public class Card implements Serializable {
     // Important: Each custom class must have a public constructor that takes no arguments.
     // In addition, the class must include a public getter for each property.
 
-    @PropertyName("title")
+    @PropertyName(KEY_TITLE)
     private String title;
 
-    @PropertyName("hexId")
+    @PropertyName(KEY_HEX_ID)
     private String hexId;
 
-    @PropertyName("fields")
+    @PropertyName(KEY_FIELDS)
     private ArrayList<Map<String, String>> fields;
 
-    @PropertyName("createdTimestamp")
-    private @ServerTimestamp Date createdTimestamp;
+    @PropertyName(KEY_CREATED_TIMESTAMP)
+    private @ServerTimestamp
+    Date createdTimestamp;
 
-    @PropertyName("createdByUID")
+    @PropertyName(KEY_CREATED_BY_UID)
     private String createdByUID;
 
     // Used only by internal fire base methods
@@ -52,27 +59,28 @@ public class Card implements Serializable {
 
     // Getters
 
-    @PropertyName("title")
+    @PropertyName(KEY_TITLE)
     public String getTitle() {
         return title;
     }
 
-    @PropertyName("fields")
+    @PropertyName(KEY_FIELDS)
     public ArrayList<Map<String, String>> getFields() {
         return fields;
     }
 
-    @PropertyName("createdTimestamp")
-    public @ServerTimestamp Date getCreatedTimestamp() {
+    @PropertyName(KEY_CREATED_TIMESTAMP)
+    public @ServerTimestamp
+    Date getCreatedTimestamp() {
         return createdTimestamp;
     }
 
-    @PropertyName("createdByUID")
+    @PropertyName(KEY_CREATED_BY_UID)
     public String getCreatedByUID() {
         return createdByUID;
     }
 
-    @PropertyName("hexId")
+    @PropertyName(KEY_HEX_ID)
     public String getHexId() {
         return hexId;
     }
