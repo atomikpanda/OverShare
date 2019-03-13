@@ -45,6 +45,9 @@ import butterknife.OnClick;
 
 import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_CARDS;
 import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_SAVED;
+import static com.baileyseymour.overshare.interfaces.Constants.KEY_CREATED_TIMESTAMP;
+import static com.baileyseymour.overshare.interfaces.Constants.KEY_HEX_ID;
+import static com.baileyseymour.overshare.interfaces.Constants.KEY_SAVED_BY_UID;
 import static com.baileyseymour.overshare.interfaces.Constants.PAYLOAD_SIZE;
 
 
@@ -234,8 +237,8 @@ public class CardFormFragment extends Fragment {
 
         // Query for a card matching the hex id given
         Query query = mDB.collection(COLLECTION_CARDS)
-                .whereEqualTo("hexId", chirpHexTestId)
-                .orderBy("createdTimestamp", Query.Direction.DESCENDING);
+                .whereEqualTo(KEY_HEX_ID, chirpHexTestId)
+                .orderBy(KEY_CREATED_TIMESTAMP, Query.Direction.DESCENDING);
         query.get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -250,10 +253,10 @@ public class CardFormFragment extends Fragment {
                                 Map<String, Object> map = snapshot.getData();
                                 if (map != null) {
                                     // Add the current UID as the saving account
-                                    map.put("savedByUID", savedByUID);
+                                    map.put(KEY_SAVED_BY_UID, savedByUID);
 
                                     // Make the createdTimestamp reflect the new saved date
-                                    map.put("createdTimestamp", FieldValue.serverTimestamp());
+                                    map.put(KEY_CREATED_TIMESTAMP, FieldValue.serverTimestamp());
                                     mDB.collection(COLLECTION_SAVED)
                                             .document()
                                             .set(map);

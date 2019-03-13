@@ -39,6 +39,9 @@ import java.util.Map;
 
 import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_CARDS;
 import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_SAVED;
+import static com.baileyseymour.overshare.interfaces.Constants.KEY_CREATED_BY_UID;
+import static com.baileyseymour.overshare.interfaces.Constants.KEY_CREATED_TIMESTAMP;
+import static com.baileyseymour.overshare.interfaces.Constants.KEY_SAVED_BY_UID;
 
 
 public class CardsListFragment extends Fragment implements FieldClickListener, CardActionListener, RecyclerEmptyStateListener {
@@ -89,13 +92,13 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
         if (!getIsReceivedCards() && uid != null) {
             // Query for only cards created by this user
             query = mDB.collection(COLLECTION_CARDS)
-                    .orderBy("createdTimestamp", Query.Direction.DESCENDING)
-                    .whereEqualTo("createdByUID", uid);
+                    .orderBy(KEY_CREATED_TIMESTAMP, Query.Direction.DESCENDING)
+                    .whereEqualTo(KEY_CREATED_BY_UID, uid);
         } else if (uid != null) {
             // Query for only cards SAVED by this user
             query = mDB.collection(COLLECTION_SAVED)
-                    .orderBy("createdTimestamp", Query.Direction.DESCENDING)
-                    .whereEqualTo("savedByUID", uid);
+                    .orderBy(KEY_CREATED_TIMESTAMP, Query.Direction.DESCENDING)
+                    .whereEqualTo(KEY_SAVED_BY_UID, uid);
         }
 
         // Create the fire store options builder

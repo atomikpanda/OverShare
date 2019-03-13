@@ -110,6 +110,7 @@ public class FieldFormFragment extends Fragment {
 
         setHasOptionsMenu(true);
 
+        // Setup UI
         setupSpinner();
         loadField();
 
@@ -133,6 +134,7 @@ public class FieldFormFragment extends Fragment {
         mTitleEditText.setText(getField().getTitle());
         mValueEditText.setText(getField().getValue());
         FieldType fieldType = FieldUtils.fieldTypeFromId(getField().getType());
+
         if (fieldType != null) {
             int position = FieldUtils.indexOfFieldType(getField().getType());
             mSpinner.setSelection(position);

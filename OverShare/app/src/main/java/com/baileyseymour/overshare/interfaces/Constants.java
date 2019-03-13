@@ -17,4 +17,16 @@ public interface Constants {
 
     String COLLECTION_SAVED = "saved_cards";
     String COLLECTION_CARDS = "cards";
+
+    // Database keys
+    String KEY_TITLE = "title";
+    String KEY_VALUE = "value";
+    String KEY_TYPE = "type";
+
+    String KEY_HEX_ID = "hexId";
+    String KEY_FIELDS = "fields";
+    String KEY_CREATED_TIMESTAMP = "createdTimestamp";
+    String KEY_CREATED_BY_UID = "createdByUID";
+    String KEY_SAVED_BY_UID = "savedByUID";
+
 }
