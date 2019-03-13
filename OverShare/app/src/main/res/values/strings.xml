@@ -20,6 +20,8 @@
     <string name="field_value">Field Value</string>
     <string name="delete">Delete</string>
     <string name="edit_field">Edit Field</string>
+    <string name="click_the_button_to_add_a_card">Click the \'+\' button to add a card.</string>
+    <string name="click_the_receive_button">Click the receive button to start receiving a card.</string>
     <string-array name="tab_titles">
         <item>My Cards</item>
         <item>Received Cards</item>

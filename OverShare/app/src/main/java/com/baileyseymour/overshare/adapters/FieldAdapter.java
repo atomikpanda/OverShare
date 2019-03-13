@@ -39,7 +39,8 @@ public class FieldAdapter extends RecyclerView.Adapter<FieldViewHolder> implemen
     @Override
     public FieldViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         // Inflate view
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.field_view_layout, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate
+                (R.layout.field_view_layout, viewGroup, false);
         return new FieldViewHolder(view, this);
     }
 
