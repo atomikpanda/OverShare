@@ -34,11 +34,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_CARDS;
 import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_SAVED;
 import static com.baileyseymour.overshare.interfaces.Constants.KEY_CREATED_BY_UID;
