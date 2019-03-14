@@ -120,8 +120,6 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
 
         }
 
-
-
     }
 
     // Is this fragment supposed to display the cards that were received vs created
