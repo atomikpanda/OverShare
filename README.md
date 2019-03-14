@@ -30,4 +30,4 @@ None currently.
 
 ### Special requirements and considerations for testing
 
-Some areas of the app may have buttons that only show a Toast message indicating the functionality is scheduled for a future milestone (This is the intended functionality).
+This should be obvious but this app also needs an internet connection to work with Firebase for things like receiving cards and opening links. Some areas of the app may have buttons that only show a Toast message indicating the functionality is scheduled for a future milestone (This is the intended functionality).
