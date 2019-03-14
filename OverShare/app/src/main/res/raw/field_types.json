@@ -1,0 +1,79 @@
+[
+  {
+    "id": "url",
+    "name": "Website (URL)",
+    "format": "%s",
+    "input": "url",
+    "output": "url"
+  },
+  {
+    "id": "twitter",
+    "name": "Twitter",
+    "format": "https://twitter.com/%s",
+    "input": "username",
+    "output": "url"
+  },
+  {
+    "id": "github",
+    "name": "GitHub",
+    "format": "https://github.com/%s",
+    "input": "username",
+    "output": "url"
+  },
+  {
+    "id": "linkedin",
+    "name": "LinkedIn",
+    "format": "%s",
+    "input": "url_user",
+    "output": "url"
+  },
+  {
+    "id": "instagram",
+    "name": "Instagram",
+    "format": "https://instagram.com/%s",
+    "input": "username",
+    "output": "url"
+  },
+  {
+    "id": "reddit",
+    "name": "Reddit",
+    "format": "https://reddit.com/u/%s",
+    "input": "username",
+    "output": "url"
+  },
+  {
+    "id": "facebook",
+    "name": "Facebook",
+    "format": "%s",
+    "input": "url_user",
+    "output": "url"
+  },
+  {
+    "id": "youtube",
+    "name": "YouTube Channel",
+    "format": "https://youtube.com/c/%s",
+    "input": "username",
+    "output": "url"
+  },
+  {
+    "id": "telegram",
+    "name": "Telegram",
+    "format": "https://tm.me/%s",
+    "input": "username",
+    "output": "url"
+  },
+  {
+    "id": "snapchat",
+    "name": "Snapchat",
+    "format": "https://www.snapchat.com/add/%s",
+    "input": "username",
+    "output": "url"
+  },
+  {
+    "id": "whatsapp",
+    "name": "WhatsApp",
+    "format": "https://wa.me/%s",
+    "input": "phone",
+    "output": "url"
+  }
+]
