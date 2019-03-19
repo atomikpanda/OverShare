@@ -4,6 +4,7 @@
 
 package com.baileyseymour.overshare.models;
 
+import android.renderscript.ScriptGroup;
 import android.support.annotation.NonNull;
 import android.util.Patterns;
 import android.webkit.URLUtil;
@@ -12,18 +13,30 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
+import java.util.Objects;
 
 
 public class FieldType {
 
     public static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
+    private static final String KEY_SUGGESTION = "suggestion";
     private static final String KEY_FORMAT = "format";
     private static final String KEY_INPUT = "input";
     private static final String KEY_OUTPUT = "output";
 
+    // Input type string representations
+    private static final String INPUT_TEXT = "text";
+    private static final String INPUT_URL = "url";
+    private static final String INPUT_URL_USER = "url_user";
+    private static final String INPUT_PHONE = "phone";
+    private static final String INPUT_USERNAME = "username";
+    private static final String INPUT_EMAIL = "email";
+
     // The field type's user display name eg. "Twitter" or "Website"
     private String mDisplayName;
+
+    private String mSuggestion;
 
     // The raw input kind
     private InputType mInputType;
@@ -37,13 +50,18 @@ public class FieldType {
         URL,
         URL_USER,
         USERNAME,
-        PHONE;
+        PHONE,
+        EMAIL;
 
         public ValidateError validate(String input) {
+
+            // Make sure the input is not null
             if (input == null) return ValidateError.BLANK;
 
+            // Ensure it is not blank
             if (input.trim().isEmpty()) return ValidateError.BLANK;
 
+            // Validates an input based on the expected input type
             switch (this) {
 
                 case TEXT:
@@ -68,6 +86,11 @@ public class FieldType {
                         return ValidateError.VALID;
                     else
                         return ValidateError.NOT_PHONE;
+                case EMAIL:
+                    if (Patterns.EMAIL_ADDRESS.matcher(input).matches())
+                        return ValidateError.VALID;
+                    else
+                        return ValidateError.NOT_EMAIL;
             }
 
             return ValidateError.BLANK;
@@ -95,9 +118,13 @@ public class FieldType {
     public FieldType(JSONObject jsonObject) {
         if (jsonObject == null) return;
 
+        // Parse field type JSON
         try {
             if (jsonObject.has(KEY_NAME))
                 mDisplayName = jsonObject.getString(KEY_NAME);
+
+            if (jsonObject.has(KEY_SUGGESTION))
+                mSuggestion = jsonObject.getString(KEY_SUGGESTION);
 
             if (jsonObject.has(KEY_FORMAT))
                 mValueFormat = jsonObject.getString(KEY_FORMAT);
@@ -116,16 +143,18 @@ public class FieldType {
 
     private static InputType inputTypeFromString(String str) {
         switch (str.toLowerCase()) {
-            case "text":
+            case INPUT_TEXT:
                 return InputType.TEXT;
-            case "url":
+            case INPUT_URL:
                 return InputType.URL;
-            case "url_user":
+            case INPUT_URL_USER:
                 return InputType.URL_USER;
-            case "phone":
+            case INPUT_PHONE:
                 return InputType.PHONE;
-            case "username":
+            case INPUT_USERNAME:
                 return InputType.USERNAME;
+            case INPUT_EMAIL:
+                return InputType.EMAIL;
             default:
                 return InputType.URL;
         }
@@ -146,15 +175,17 @@ public class FieldType {
         switch (inputType) {
 
             case TEXT:
-                return "text";
+                return INPUT_TEXT;
             case URL:
-                return "url";
+                return INPUT_URL;
             case URL_USER:
-                return "url_user";
+                return INPUT_URL_USER;
             case USERNAME:
-                return "username";
+                return INPUT_USERNAME;
+            case EMAIL:
+                return INPUT_EMAIL;
             case PHONE:
-                return "phone";
+                return INPUT_PHONE;
         }
         return "";
     }
@@ -177,9 +208,32 @@ public class FieldType {
         return mValueFormat;
     }
 
+    public String getSuggestion() {
+        if (mSuggestion == null) {
+            return getDisplayName();
+        }
+        return mSuggestion;
+    }
+
     @NonNull
     @Override
     public String toString() {
         return mDisplayName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FieldType fieldType = (FieldType) o;
+        return Objects.equals(getDisplayName(), fieldType.getDisplayName()) &&
+                getInputType() == fieldType.getInputType() &&
+                getOutputType() == fieldType.getOutputType() &&
+                Objects.equals(getValueFormat(), fieldType.getValueFormat());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDisplayName(), getInputType(), getOutputType(), getValueFormat());
     }
 }

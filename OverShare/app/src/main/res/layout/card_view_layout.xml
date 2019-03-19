@@ -15,11 +15,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="@dimen/outer_padding">
+        android:paddingTop="@dimen/outer_padding"
+        android:paddingBottom="@dimen/outer_padding">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingStart="@dimen/outer_padding"
+            android:paddingEnd="@dimen/outer_padding"
             android:orientation="horizontal">
 
             <TextView
@@ -48,6 +51,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingStart="@dimen/outer_padding"
+            android:paddingEnd="@dimen/outer_padding"
             android:orientation="horizontal">
 
             <ImageButton

@@ -18,13 +18,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
+import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.activities.FieldFormActivity;
+import com.baileyseymour.overshare.adapters.FieldListAdapter;
 import com.baileyseymour.overshare.models.Card;
+import com.baileyseymour.overshare.models.Field;
 import com.baileyseymour.overshare.utils.EditTextUtils;
 import com.baileyseymour.overshare.utils.IdGenerator;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -40,6 +41,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import org.apache.commons.codec.binary.Hex;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,20 +51,31 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static android.app.Activity.RESULT_OK;
+import static com.baileyseymour.overshare.fragments.FieldFormFragment.RESULT_DELETE_FIELD;
 import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_CARDS;
 import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_SAVED;
+import static com.baileyseymour.overshare.interfaces.Constants.EXTRA_FIELD;
+import static com.baileyseymour.overshare.interfaces.Constants.EXTRA_INDEX;
 import static com.baileyseymour.overshare.interfaces.Constants.KEY_CREATED_TIMESTAMP;
+import static com.baileyseymour.overshare.interfaces.Constants.KEY_FIELDS;
 import static com.baileyseymour.overshare.interfaces.Constants.KEY_HEX_ID;
 import static com.baileyseymour.overshare.interfaces.Constants.KEY_SAVED_BY_UID;
+import static com.baileyseymour.overshare.interfaces.Constants.KEY_TITLE;
 import static com.baileyseymour.overshare.interfaces.Constants.PAYLOAD_SIZE;
 
 
-public class CardFormFragment extends Fragment {
+public class CardFormFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     // Constants
     private static final String ARG_CARD = "ARG_CARD";
+    private static final String ARG_EDITED_FIELDS = "ARG_EDITED_FIELDS";
     private static final String ARG_DOC_ID = "ARG_DOC_ID";
     private static final String TAG = "CardFormFragment";
+    private static final int RC_ADD_FIELD = 300;
+    private static final int RC_EDIT_FIELD = 548;
+
+    private ArrayList<Map<String, String>> mTempEditFields = new ArrayList<>();
 
     // Database
     private FirebaseFirestore mDB;
@@ -117,16 +132,27 @@ public class CardFormFragment extends Fragment {
         return ((Card) getArguments().getSerializable(ARG_CARD));
     }
 
+    // Card document id
+    private String getDocumentId() {
+        if (getArguments() == null) return null;
+
+        if (getArguments().containsKey(ARG_DOC_ID))
+            return getArguments().getString(ARG_DOC_ID);
+        else
+            return null;
+    }
+
+    private ArrayList<Map<String, String>> getEditedFields() {
+        if (getCard() != null)
+            return getCard().getFields();
+
+        return mTempEditFields;
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate menu
-        int menuId = R.menu.menu_save;
-
-        // If in edit mode show a delete button as well
-        if (getCard() != null)
-            menuId = R.menu.menu_delete_save;
-
-        inflater.inflate(menuId, menu);
+        inflater.inflate(R.menu.menu_save, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -135,9 +161,6 @@ public class CardFormFragment extends Fragment {
         // Handle menu actions
         if (item.getItemId() == R.id.menu_action_save) {
             onSaveTapped();
-            return true;
-        } else if (item.getItemId() == R.id.menu_action_delete) {
-            onDeleteTapped();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -153,6 +176,8 @@ public class CardFormFragment extends Fragment {
         setHasOptionsMenu(true);
 
         mFieldsListView.setEmptyView(getView().findViewById(android.R.id.empty));
+        mFieldsListView.setOnItemClickListener(this);
+        refreshFields();
 
         if (getCard() != null) {
             // Editing a card
@@ -163,19 +188,49 @@ public class CardFormFragment extends Fragment {
     @OnClick(R.id.buttonAddField)
     public void onAddField() {
         if (getContext() == null) return;
-        // TODO: Handle add field
-        Toast.makeText(getContext(), "TODO: Milestone 2", Toast.LENGTH_SHORT).show();
-//        Intent addFieldIntent = new Intent(getContext(), FieldFormActivity.class);
-//        startActivity(addFieldIntent);
+
+        // Handle add field
+        Intent addFieldIntent = new Intent(getContext(), FieldFormActivity.class);
+        startActivityForResult(addFieldIntent, RC_ADD_FIELD);
     }
 
+    private void refreshFields() {
+        if (getContext() == null || getEditedFields() == null) return;
+        mFieldsListView.setAdapter(
+                new FieldListAdapter(getContext(), Field.fromListOfMaps(getEditedFields())));
+    }
 
-    private void onDeleteTapped() {
-        // Card card = getCard();
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (getContext() == null) return;
 
-        // if (card == null) return;
-
-        // TODO: handle card deletion
+        if ((requestCode == RC_ADD_FIELD || requestCode == RC_EDIT_FIELD) && resultCode == RESULT_OK) {
+            Serializable potentialField = data.getSerializableExtra(EXTRA_FIELD);
+            if (potentialField instanceof Field) {
+                Field field = ((Field) potentialField);
+                if (getArguments() != null && getEditedFields() != null) {
+                    if (requestCode == RC_ADD_FIELD) {
+                        // Add the new field
+                        getEditedFields().add(field.toMap());
+                    } else {
+                        // Edit field save by overriding by index
+                        int pos = data.getIntExtra(EXTRA_INDEX, -1);
+                        if (pos > -1 && pos < getEditedFields().size()) {
+                            getEditedFields().set(pos, field.toMap());
+                        }
+                    }
+                    refreshFields();
+                }
+            }
+        } else if (requestCode == RC_EDIT_FIELD && resultCode == RESULT_DELETE_FIELD) {
+            int pos = data.getIntExtra(EXTRA_INDEX, -1);
+            if (pos > -1 && pos < getEditedFields().size()) {
+                // Delete the field at the specified index
+                getEditedFields().remove(pos);
+                refreshFields();
+            }
+        }
     }
 
     private void onSaveTapped() {
@@ -192,8 +247,10 @@ public class CardFormFragment extends Fragment {
 
         // Proceed with saving
 
-        if (getCard() != null)
+        if (getCard() != null) {
             handleSaveEdit();
+            return;
+        }
 
         // Get the current user id
         String createdByUID = FirebaseAuth.getInstance().getUid();
@@ -202,7 +259,7 @@ public class CardFormFragment extends Fragment {
         byte[] payload = IdGenerator.randomBytes(PAYLOAD_SIZE);
 
         // Create a card
-        final Card card = new Card(cardTitle, new String(Hex.encodeHex(payload)), null, createdByUID);
+        final Card card = new Card(cardTitle, new String(Hex.encodeHex(payload)), getEditedFields(), createdByUID);
 
         // Create a new document for the created card
         mDB.collection(COLLECTION_CARDS).document()
@@ -225,52 +282,37 @@ public class CardFormFragment extends Fragment {
     }
 
     private void handleSaveEdit() {
-        // TODO: Update the card's title
-        // and the fields property using a map and firebase
+        if (getDocumentId() == null) return;
+
         // NOTE: DO NOT set the Card only update the specific properties
+        String cardTitle = EditTextUtils.getString(mEditTextCardTitle);
+        Map<String, Object> updates = new HashMap<>();
+
+        // Update the card's title
+        updates.put(KEY_TITLE, cardTitle);
+
+        // and the fields property using a map and firebase
+        if (getEditedFields() != null)
+            updates.put(KEY_FIELDS, getEditedFields());
+
+        mDB.collection(COLLECTION_CARDS).document(getDocumentId()).update(updates);
+
+        if (getActivity() != null)
+            getActivity().finish();
     }
 
-    // This method reverse looks up a card by its chirp id
-    // Then creates a new document in saved_cards
-    // with the added key of "savedByUID" to associate it with the current user's account under
-    // received cards
 
-    // TODO: use along with Chirp
-    private void onReceivedChirpHexId(String chirpHexTestId) {
 
-        final String savedByUID = FirebaseAuth.getInstance().getUid();
-        if (savedByUID == null) return;
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        // When a field is tapped to be edited
+        Intent editFieldIntent = new Intent(getContext(), FieldFormActivity.class);
+        Field fieldSelected = ((Field) parent.getAdapter().getItem(position));
 
-        // Query for a card matching the hex id given
-        Query query = mDB.collection(COLLECTION_CARDS)
-                .whereEqualTo(KEY_HEX_ID, chirpHexTestId)
-                .orderBy(KEY_CREATED_TIMESTAMP, Query.Direction.DESCENDING);
-        query.get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            // Get documents
-                            List<DocumentSnapshot> documents = task.getResult().getDocuments();
+        if (fieldSelected == null) return;
 
-                            if (documents.size() > 0) {
-                                // Get the first matching card
-                                DocumentSnapshot snapshot = documents.get(0);
-                                Map<String, Object> map = snapshot.getData();
-                                if (map != null) {
-                                    // Add the current UID as the saving account
-                                    map.put(KEY_SAVED_BY_UID, savedByUID);
-
-                                    // Make the createdTimestamp reflect the new saved date
-                                    map.put(KEY_CREATED_TIMESTAMP, FieldValue.serverTimestamp());
-                                    mDB.collection(COLLECTION_SAVED)
-                                            .document()
-                                            .set(map);
-                                }
-
-                            }
-                        }
-                    }
-                });
+        editFieldIntent.putExtra(EXTRA_FIELD, fieldSelected);
+        editFieldIntent.putExtra(EXTRA_INDEX, position);
+        startActivityForResult(editFieldIntent, RC_EDIT_FIELD);
     }
 }

@@ -4,12 +4,22 @@
 
 package com.baileyseymour.overshare.fragments;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.design.widget.BaseTransientBottomBar;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -20,6 +30,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baileyseymour.overshare.R;
+import com.baileyseymour.overshare.activities.CardFormActivity;
+import com.baileyseymour.overshare.activities.ReceiveActivity;
 import com.baileyseymour.overshare.adapters.CardAdapter;
 import com.baileyseymour.overshare.interfaces.CardActionListener;
 import com.baileyseymour.overshare.interfaces.FieldClickListener;
@@ -27,6 +39,11 @@ import com.baileyseymour.overshare.interfaces.RecyclerEmptyStateListener;
 import com.baileyseymour.overshare.models.Card;
 import com.baileyseymour.overshare.adapters.viewholders.CardViewHolder;
 import com.baileyseymour.overshare.models.Field;
+import com.baileyseymour.overshare.models.FieldType;
+import com.baileyseymour.overshare.models.SmartField;
+import com.baileyseymour.overshare.utils.AudioUtils;
+import com.baileyseymour.overshare.utils.ChirpManager;
+import com.baileyseymour.overshare.utils.FieldUtils;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,20 +51,40 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.LinkedHashMap;
+
+import pl.tajchert.nammu.Nammu;
+import pl.tajchert.nammu.PermissionCallback;
+
 import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_CARDS;
 import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_SAVED;
+import static com.baileyseymour.overshare.interfaces.Constants.EXTRA_CARD;
+import static com.baileyseymour.overshare.interfaces.Constants.EXTRA_CARD_DOC_ID;
 import static com.baileyseymour.overshare.interfaces.Constants.KEY_CREATED_BY_UID;
 import static com.baileyseymour.overshare.interfaces.Constants.KEY_CREATED_TIMESTAMP;
 import static com.baileyseymour.overshare.interfaces.Constants.KEY_SAVED_BY_UID;
 
 
-public class CardsListFragment extends Fragment implements FieldClickListener, CardActionListener, RecyclerEmptyStateListener {
+public class CardsListFragment extends Fragment implements FieldClickListener, CardActionListener, RecyclerEmptyStateListener, ChirpManager.Sender {
 
     private static final String ARG_IS_RECEIVED = "ARG_IS_RECEIVED";
     private static final String TAG = "CardsListFrag";
+    private static final int RC_RECEIVE = 247;
 
     private FirebaseFirestore mDB;
     private FirestoreRecyclerAdapter<Card, CardViewHolder> mCardAdapter;
+    private FabContainer mFabContainer;
+
+    // Fab container interface allows us to access the fab remotely
+    public interface FabContainer {
+        FloatingActionButton onProvideFab();
+
+        int getPagePosition();
+    }
 
     public CardsListFragment() {
         // Default constructor
@@ -67,6 +104,10 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
     public void onAttach(Context context) {
         super.onAttach(context);
 
+        if (context instanceof FabContainer) {
+            mFabContainer = ((FabContainer) context);
+        }
+
         // Load database
         mDB = FirebaseFirestore.getInstance();
     }
@@ -81,6 +122,14 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        if (getContext() != null) {
+
+            Nammu.init(getContext().getApplicationContext());
+
+            setupFab();
+            ChirpManager.getInstance(getContext());
+        }
 
         String uid = FirebaseAuth.getInstance().getUid();
 
@@ -111,15 +160,74 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
         // Initialize the card adapter
         mCardAdapter = new CardAdapter(getContext(), options, this, this, this, getIsReceivedCards());
 
+
         // Setup recycler view to use our fire store adapter
         if (getView() != null) {
-            RecyclerView recyclerView = getView().findViewById(R.id.recyclerView);
+            final RecyclerView recyclerView = getView().findViewById(R.id.recyclerView);
+
+            mCardAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+                @Override
+                public void onChanged() {
+                    super.onChanged();
+
+                }
+
+                @Override
+                public void onItemRangeInserted(int positionStart, int itemCount) {
+                    super.onItemRangeInserted(positionStart, itemCount);
+                    // Scroll to the top when an item is added
+                    recyclerView.smoothScrollToPosition(0);
+                }
+            });
+
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             mCardAdapter.notifyDataSetChanged();
             recyclerView.setAdapter(mCardAdapter);
 
         }
 
+    }
+
+    private void setupFab() {
+        if (mFabContainer != null) {
+
+            // Get the fab button from the fab container
+            FloatingActionButton fab = mFabContainer.onProvideFab();
+
+            if (fab != null) {
+                fab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        int position = mFabContainer.getPagePosition();
+                        if (position == 0) {
+                            // We are on the my cards tab, so FAB is add card
+                            Intent addCardIntent = new Intent(getContext(), CardFormActivity.class);
+                            startActivity(addCardIntent);
+
+                        } else if (position == 1) {
+                            // We are on the receive cards tab, so FAB is receive
+                            // Start ReceiveActivity via an intent
+
+                            Nammu.askForPermission(CardsListFragment.this, Manifest.permission.RECORD_AUDIO, new PermissionCallback() {
+                                @Override
+                                public void permissionGranted() {
+                                    // Start the receive activity only after getting permission
+                                    Intent receiveIntent = new Intent(getContext(), ReceiveActivity.class);
+                                    startActivityForResult(receiveIntent, RC_RECEIVE);
+                                }
+
+                                @Override
+                                public void permissionRefused() {
+
+                                }
+                            });
+
+                        }
+
+                    }
+                });
+            }
+        }
     }
 
     // Is this fragment supposed to display the cards that were received vs created
@@ -153,7 +261,21 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
     @Override
     public void onFieldClicked(Card card, Field field, int fieldPosition) {
         Log.d(TAG, "onFieldClicked: card: " + card + ", field: " + field + ", pos: " + fieldPosition);
-        Toast.makeText(getContext(), field.getValue(), Toast.LENGTH_SHORT).show();
+
+        SmartField smartField = new SmartField(field);
+
+        if (smartField.getFieldType() != null) {
+            String action = Intent.ACTION_VIEW;
+
+            // Handle phone URLs
+            if (smartField.generateURL().startsWith("tel:")) {
+                action = Intent.ACTION_DIAL;
+            }
+
+            // Open the browser or phone app
+            Intent intent = new Intent(action, Uri.parse(smartField.generateURL()));
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -190,25 +312,142 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
     // CardActionListener
 
     @Override
-    public void onCardAction(String action, Card card, int position, DocumentSnapshot snapshot) {
+    public void onCardAction(String action, Card card, int position, final DocumentSnapshot snapshot) {
         Log.d(TAG, "onCardAction: action: " + action + ", card: " + card + ", pos: " + position +
                 ", documentId: " + snapshot.getId());
-
-        String todo = "TODO: Milestone 2: ";
 
         // Handle card actions
         switch (action) {
             case ACTION_SHARE_CARD:
-                todo += "Share: ";
+                shareCardChirp(card, snapshot);
                 break;
             case ACTION_DELETE_CARD:
-                todo += "Delete: ";
+
+                if (getContext() == null) return;
+                new AlertDialog.Builder(getContext())
+                        .setTitle(R.string.confirm_delete_title)
+                        .setMessage(R.string.cant_undo)
+                        .setNegativeButton(R.string.fui_cancel, null)
+                        .setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                // Delete the document
+                                mDB.collection(getIsReceivedCards() ? COLLECTION_SAVED : COLLECTION_CARDS)
+                                        .document(snapshot.getId()).delete();
+                            }
+                        })
+                        .show();
+
+
                 break;
             case ACTION_EDIT_CARD:
-                todo += "Edit: ";
+
+                Intent editIntent = new Intent(getContext(), CardFormActivity.class);
+                editIntent.putExtra(EXTRA_CARD, card);
+                editIntent.putExtra(EXTRA_CARD_DOC_ID, snapshot.getId());
+                startActivity(editIntent);
+
                 break;
         }
 
-        Toast.makeText(getContext(), todo + card.getTitle(), Toast.LENGTH_SHORT).show();
+
+    }
+
+    private void shareCardChirp(final Card card, final DocumentSnapshot snapshot) {
+
+        if (getContext() == null) return;
+
+        Nammu.askForPermission(this, Manifest.permission.RECORD_AUDIO, new PermissionCallback() {
+            @Override
+            public void permissionGranted() {
+
+                // Set max volume
+                AudioUtils.getInstance(getContext()).setMaxVolume(getContext());
+
+                // Start up Chirp SDK
+                ChirpManager manager = ChirpManager.getInstance(getContext());
+                manager.getChirpConnect().startSender();
+                manager.setSender(CardsListFragment.this);
+
+                String hexId = card.getHexId();
+                if (hexId != null && !hexId.trim().isEmpty()) {
+
+                    try {
+                        // Play sound
+                        byte[] hexBytes = Hex.decodeHex(hexId.toCharArray());
+                        manager.sendBytes(hexBytes);
+                    } catch (DecoderException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+
+            @Override
+            public void permissionRefused() {
+
+            }
+        });
+
+
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        ChirpManager manager = ChirpManager.getInstance(getContext());
+        manager.setSender(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        ChirpManager manager = ChirpManager.getInstance(getContext());
+        manager.getChirpConnect().stop();
+        manager.setSender(null);
+    }
+
+    @Override
+    public void onSending(@NotNull byte[] bytes, int channel) {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                if (getView() == null) return;
+
+                // Show a snack bar when the data is sending
+                Snackbar snackbar = Snackbar.make(getView(), "Sharing... Transmitting sound", Snackbar.LENGTH_LONG);
+                snackbar.setDuration(4200);
+                snackbar.addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                    @Override
+                    public void onDismissed(Snackbar transientBottomBar, int event) {
+                        super.onDismissed(transientBottomBar, event);
+                        AudioUtils.getInstance(getContext()).revertVolume();
+                    }
+                });
+                snackbar.show();
+            }
+        });
+
+    }
+
+    @Override
+    public void onSystemVolumeChanged(int old, int current) {
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        Nammu.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
     }
 }

@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/outer_padding"
+    android:layout_marginStart="@dimen/outer_padding"
+    android:layout_marginEnd="@dimen/outer_padding"
+    android:layout_marginBottom="@dimen/outer_padding"
     android:orientation="vertical">
 
     <Spinner
@@ -15,6 +17,7 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/inner_padding"
         app:hintAnimationEnabled="false">
 
         <android.support.design.widget.TextInputEditText
@@ -26,20 +29,36 @@
             android:inputType="textCapWords" />
     </android.support.design.widget.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/inputLayoutValue"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/inner_padding"
-        app:helperTextEnabled="false"
-        app:hintAnimationEnabled="false">
+        android:orientation="horizontal">
 
-
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/editTextFieldValue"
-            android:layout_width="match_parent"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/inputLayoutValue"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="@string/field_value" />
-    </android.support.design.widget.TextInputLayout>
+            android:layout_marginTop="@dimen/inner_padding"
+            app:helperTextEnabled="false"
+            app:hintAnimationEnabled="false">
+
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/editTextFieldValue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/field_value" />
+        </android.support.design.widget.TextInputLayout>
+
+        <ImageButton
+            android:id="@+id/buttonPaste"
+            android:layout_width="wrap_content"
+            android:paddingStart="@dimen/inner_padding"
+            android:paddingEnd="@dimen/inner_padding"
+            android:layout_height="match_parent"
+            android:background="@color/fui_transparent"
+            app:srcCompat="@drawable/ic_content_paste_black_24dp" />
+    </LinearLayout>
 </LinearLayout>

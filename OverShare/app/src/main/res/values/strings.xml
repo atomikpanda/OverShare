@@ -22,9 +22,42 @@
     <string name="edit_field">Edit Field</string>
     <string name="click_the_button_to_add_a_card">Click the \'+\' button to add a card.</string>
     <string name="click_the_receive_button">Click the receive button to start receiving a card.</string>
+    <string name="confirm_delete_title">Delete this card?</string>
+    <string name="cant_undo">You cannot undo this action.</string>
     <string-array name="tab_titles">
         <item>My Cards</item>
         <item>Received Cards</item>
     </string-array>
+    <string name="aboutLibraries_description_showIcon">true</string>
+    <string name="aboutLibraries_description_showVersion">true</string>
+    <string name="aboutLibraries_description_text">OverShare Developed by Bailey Seymour at Full Sail University</string>
+    <string name="define_Chirp" />
+    <string name="library_Chirp_author">Asio Ltd.</string>
+    <string name="library_Chirp_authorWebsite">https://chirp.io</string>
+    <string name="library_Chirp_libraryName">Chirp Android SDK</string>
+    <string name="library_Chirp_libraryDescription">Chirp enables your apps to send and receive information using sound. A "chirp" encodes an array of bytes as an audio signal, which can be transmitted by any device with a speaker and received by any device with a microphone and Chirp SDK.</string>
+    <string name="define_Nammu" />
+    <string name="library_Nammu_author">Michal Tajchert</string>
+    <string name="library_Nammu_authorWebsite">https://github.com/tajchert/Nammu</string>
+    <string name="library_Nammu_libraryName">Nammu</string>
+    <string name="library_Nammu_libraryDescription">Permission helper for Android M - background check, monitoring and more.</string>
+    <string name="define_vrv" />
+    <string name="library_vrv_author">Takayuki Yorikane</string>
+    <string name="library_vrv_authorWebsite">https://github.com/tyorikan/voice-recording-visualizer</string>
+    <string name="library_vrv_libraryName">voice-recording-visualizer</string>
+    <string name="library_vrv_libraryDescription">Simple Visualizer from mic input for Android.</string>
+    <string name="define_firebase" />
+    <string name="library_firebase_author">Google</string>
+    <string name="library_firebase_authorWebsite">https://github.com/firebase/firebase-android-sdk</string>
+    <string name="library_firebase_libraryName">Firebase Android SDK</string>
+    <string name="library_firebase_libraryDescription">Firebase is an app development platform with tools to help you build, grow and monetize your app.</string>
+    <string name="about">About</string>
+    <string name="credits">Credits</string>
+    <string name="volume_low">Volume is low!</string>
+    <string name="copied_to_clipboard">Copied to clipboard.</string>
+    <string name="maximize_vol">Maximize Volume?</string>
+    <string name="maximize_vol_desc">Music is playing are you sure you want to set the volume to the max?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
 </resources>

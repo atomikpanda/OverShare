@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/emptyStateIcon"
-        android:layout_width="@dimen/empty_state_icon_size"
-        android:layout_height="@dimen/empty_state_icon_size"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
         android:layout_marginStart="@dimen/inner_padding"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="@dimen/inner_padding"
@@ -37,5 +37,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="64dp" />
+        app:layout_constraintGuide_begin="8dp" />
 </android.support.constraint.ConstraintLayout>
