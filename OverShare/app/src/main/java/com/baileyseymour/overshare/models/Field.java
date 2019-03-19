@@ -19,6 +19,12 @@ public class Field implements Serializable {
     private final String value;
     private final String type;
 
+    public Field(String title, String value, String type) {
+        this.title = title;
+        this.value = value;
+        this.type = type;
+    }
+
     // Create a field from a db style map
     private Field(Map<String, String> map) {
         title = map.get(KEY_TITLE);

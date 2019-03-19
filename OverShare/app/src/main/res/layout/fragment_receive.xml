@@ -56,4 +56,18 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.65" />
+
+    <com.baileyseymour.overshare.views.CustomVisualizer
+        android:id="@+id/visualizer"
+        android:layout_width="0dp"
+        android:layout_height="400dp"
+        android:background="#fafafa"
+        android:translationY="200dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:numColumns="20"
+        app:renderColor="@color/iconsGray"
+        app:renderRange="top"
+        app:renderType="bar" />
 </android.support.constraint.ConstraintLayout>

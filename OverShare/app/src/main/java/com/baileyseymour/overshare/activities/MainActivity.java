@@ -4,8 +4,10 @@
 
 package com.baileyseymour.overshare.activities;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -19,11 +21,17 @@ import android.widget.Toast;
 
 import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.adapters.MainFragmentPagerAdapter;
+import com.baileyseymour.overshare.fragments.CardsListFragment;
+import com.baileyseymour.overshare.utils.FieldUtils;
+import com.mikepenz.aboutlibraries.Libs;
+import com.mikepenz.aboutlibraries.LibsBuilder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import pl.tajchert.nammu.Nammu;
+import pl.tajchert.nammu.PermissionCallback;
 
-public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener {
+public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener, CardsListFragment.FabContainer {
 
     // Views
 
@@ -41,29 +49,24 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        FieldUtils.init(getResources());
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         initializeTabs();
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int position = mViewPager.getCurrentItem();
-                if (position == 0) {
-                    // We are on the my cards tab, so FAB is add card
-                    Intent addCardIntent = new Intent(MainActivity.this, CardFormActivity.class);
-                    startActivity(addCardIntent);
+    }
 
-                } else if (position == 1) {
-                    // We are on the receive cards tab, so FAB is receive
-                    // TODO: Start ReceiveActivity via an intent
-                    Toast.makeText(MainActivity.this, "TODO: Milestone 2: Receive", Toast.LENGTH_SHORT).show();
-                }
+    @Override
+    public FloatingActionButton onProvideFab() {
+        return fab;
+    }
 
-            }
-        });
+    @Override
+    public int getPagePosition() {
+        if (mViewPager == null) return 0;
+        return mViewPager.getCurrentItem();
     }
 
     private void initializeTabs() {
@@ -92,7 +95,15 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
         if (id == R.id.menu_action_account) {
             // TODO: Launch AccountActivity
+
             Toast.makeText(MainActivity.this, "TODO: Milestone 3: Account", Toast.LENGTH_SHORT).show();
+            return true;
+        } else if (id == R.id.menu_action_about) {
+            new LibsBuilder()
+                    //provide a style (optional) (LIGHT, DARK, LIGHT_DARK_TOOLBAR)
+                    .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
+                    //start the activity
+                    .start(MainActivity.this);
             return true;
         }
 
@@ -120,4 +131,5 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     public void onPageScrollStateChanged(int i) {
 
     }
+
 }

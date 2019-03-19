@@ -4,7 +4,16 @@
     "name": "Website (URL)",
     "format": "%s",
     "input": "url",
-    "output": "url"
+    "output": "url",
+    "suggestion": ""
+  },
+  {
+    "id": "text",
+    "name": "Other (Text Only)",
+    "format": "%s",
+    "input": "text",
+    "output": "text",
+    "suggestion": ""
   },
   {
     "id": "twitter",
@@ -58,7 +67,7 @@
   {
     "id": "telegram",
     "name": "Telegram",
-    "format": "https://tm.me/%s",
+    "format": "https://t.me/%s",
     "input": "username",
     "output": "url"
   },
@@ -74,6 +83,20 @@
     "name": "WhatsApp",
     "format": "https://wa.me/%s",
     "input": "phone",
+    "output": "url"
+  },
+  {
+    "id": "phone",
+    "name": "Phone",
+    "format": "tel:%s",
+    "input": "phone",
+    "output": "url"
+  },
+  {
+    "id": "email",
+    "name": "Email",
+    "format": "mailto:%s",
+    "input": "email",
     "output": "url"
   }
 ]

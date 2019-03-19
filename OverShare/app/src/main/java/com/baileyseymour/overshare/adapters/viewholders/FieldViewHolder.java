@@ -14,10 +14,11 @@ import com.baileyseymour.overshare.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class FieldViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class FieldViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
     public interface ClickListener {
         void onItemClick(int position, View v);
+        void onLongClick(int position, View v);
     }
 
     // Views
@@ -37,11 +38,18 @@ public class FieldViewHolder extends RecyclerView.ViewHolder implements View.OnC
         ButterKnife.bind(this, itemView);
         mClickListener = clickListener;
         itemView.setOnClickListener(this);
+        itemView.setOnLongClickListener(this);
     }
 
     // When a field is clicked notify our listener / adapter
     @Override
     public void onClick(View v) {
         mClickListener.onItemClick(getAdapterPosition(), v);
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        mClickListener.onLongClick(getAdapterPosition(), v);
+        return true;
     }
 }

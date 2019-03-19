@@ -23,6 +23,9 @@ repositories {
     maven {
         url "https://maven.chirp.io/release"
     }
+    maven {
+        url "https://jitpack.io"
+    }
 }
 
 dependencies {
@@ -46,4 +49,8 @@ dependencies {
     implementation 'commons-codec:commons-codec:1.11'
     implementation 'io.chirp:chirpsdk:3.6.1'
     implementation 'commons-io:commons-io:20030203.000550'
+    implementation 'com.mikepenz:aboutlibraries:6.1.0'
+    implementation 'com.github.tajchert:nammu:1.2.0'
+    implementation 'com.tyorikan:voice-recording-visualizer:1.0.3@aar'
+    // implementation 'com.github.kenglxn.QRGen:android:2.5.0'
 }

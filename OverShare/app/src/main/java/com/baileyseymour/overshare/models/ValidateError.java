@@ -1,3 +1,7 @@
+// Bailey Seymour
+// DVP6 - 1903
+// ValidateError.java
+
 package com.baileyseymour.overshare.models;
 
 public enum ValidateError {
@@ -5,10 +9,12 @@ public enum ValidateError {
     INVALID_URL,
     NOT_USERNAME,
     NOT_PHONE,
+    NOT_EMAIL,
     VALID;
 
     @Override
     public String toString() {
+
         switch (this) {
 
             case BLANK:
@@ -19,7 +25,10 @@ public enum ValidateError {
                 return "This isn't a valid username.";
             case NOT_PHONE:
                 return "This isn't a valid phone number.";
+            case NOT_EMAIL:
+                return "This isn't a valid email address.";
         }
+
         return "";
     }
 }

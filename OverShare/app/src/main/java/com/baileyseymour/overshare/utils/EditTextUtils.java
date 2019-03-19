@@ -8,6 +8,8 @@ import android.support.design.widget.TextInputEditText;
 import android.text.Editable;
 
 public class EditTextUtils {
+
+    // Gets the string of an edit text easily
     public static String getString(TextInputEditText editText) {
         if (editText == null) return "";
 
