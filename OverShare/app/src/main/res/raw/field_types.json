@@ -20,7 +20,8 @@
     "name": "Twitter",
     "format": "https://twitter.com/%s",
     "input": "username",
-    "output": "url"
+    "output": "url",
+    "display_format": "@%s"
   },
   {
     "id": "github",
@@ -41,14 +42,16 @@
     "name": "Instagram",
     "format": "https://instagram.com/%s",
     "input": "username",
-    "output": "url"
+    "output": "url",
+    "display_format": "@%s"
   },
   {
     "id": "reddit",
     "name": "Reddit",
     "format": "https://reddit.com/u/%s",
     "input": "username",
-    "output": "url"
+    "output": "url",
+    "display_format": "/u/%s"
   },
   {
     "id": "facebook",
@@ -69,7 +72,8 @@
     "name": "Telegram",
     "format": "https://t.me/%s",
     "input": "username",
-    "output": "url"
+    "output": "url",
+    "display_format": "@%s"
   },
   {
     "id": "snapchat",
@@ -97,6 +101,13 @@
     "name": "Email",
     "format": "mailto:%s",
     "input": "email",
+    "output": "url"
+  },
+  {
+    "id": "sms",
+    "name": "SMS",
+    "format": "sms:%s",
+    "input": "phone",
     "output": "url"
   }
 ]

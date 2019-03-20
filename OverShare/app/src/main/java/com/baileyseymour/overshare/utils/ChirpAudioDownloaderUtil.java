@@ -1,3 +1,7 @@
+// Bailey Seymour
+// DVP6 - 1903
+// ChirpAudioDownloaderUtil.java
+
 package com.baileyseymour.overshare.utils;
 
 import android.app.DownloadManager;
@@ -18,11 +22,11 @@ import static com.baileyseymour.overshare.interfaces.Constants.CHIRP_APP_SECRET;
 
 public class ChirpAudioDownloaderUtil {
 
-    //ChirpAudioDownloaderUtil.downloadCard(card, EXT_MP3, getContext());
+    // Example: ChirpAudioDownloaderUtil.downloadCard(card, EXT_MP3, getContext());
 
     private static final String TAG = "DownloaderUtil";
-    public static final String EXT_MP3 = "mp3";
-    public static final String EXT_WAV = "wav";
+    private static final String EXT_MP3 = "mp3";
+    //private static final String EXT_WAV = "wav";
     private static final String AUTHORIZATION = "Basic " + Base64.encodeToString((CHIRP_APP_KEY + ":" + CHIRP_APP_SECRET).getBytes(), Base64.NO_WRAP);
 
     public static void downloadCard(Card card, String extension, Context context) {

@@ -28,23 +28,16 @@ import com.baileyseymour.overshare.models.Card;
 import com.baileyseymour.overshare.models.Field;
 import com.baileyseymour.overshare.utils.EditTextUtils;
 import com.baileyseymour.overshare.utils.IdGenerator;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import org.apache.commons.codec.binary.Hex;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -54,13 +47,9 @@ import butterknife.OnClick;
 import static android.app.Activity.RESULT_OK;
 import static com.baileyseymour.overshare.fragments.FieldFormFragment.RESULT_DELETE_FIELD;
 import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_CARDS;
-import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_SAVED;
 import static com.baileyseymour.overshare.interfaces.Constants.EXTRA_FIELD;
 import static com.baileyseymour.overshare.interfaces.Constants.EXTRA_INDEX;
-import static com.baileyseymour.overshare.interfaces.Constants.KEY_CREATED_TIMESTAMP;
 import static com.baileyseymour.overshare.interfaces.Constants.KEY_FIELDS;
-import static com.baileyseymour.overshare.interfaces.Constants.KEY_HEX_ID;
-import static com.baileyseymour.overshare.interfaces.Constants.KEY_SAVED_BY_UID;
 import static com.baileyseymour.overshare.interfaces.Constants.KEY_TITLE;
 import static com.baileyseymour.overshare.interfaces.Constants.PAYLOAD_SIZE;
 
@@ -69,13 +58,12 @@ public class CardFormFragment extends Fragment implements AdapterView.OnItemClic
 
     // Constants
     private static final String ARG_CARD = "ARG_CARD";
-    private static final String ARG_EDITED_FIELDS = "ARG_EDITED_FIELDS";
     private static final String ARG_DOC_ID = "ARG_DOC_ID";
     private static final String TAG = "CardFormFragment";
     private static final int RC_ADD_FIELD = 300;
     private static final int RC_EDIT_FIELD = 548;
 
-    private ArrayList<Map<String, String>> mTempEditFields = new ArrayList<>();
+    private final ArrayList<Map<String, String>> mTempEditFields = new ArrayList<>();
 
     // Database
     private FirebaseFirestore mDB;
@@ -182,6 +170,7 @@ public class CardFormFragment extends Fragment implements AdapterView.OnItemClic
         if (getCard() != null) {
             // Editing a card
             mEditTextCardTitle.setText(getCard().getTitle());
+            mFieldsListView.requestFocus();
         }
     }
 
@@ -191,6 +180,7 @@ public class CardFormFragment extends Fragment implements AdapterView.OnItemClic
 
         // Handle add field
         Intent addFieldIntent = new Intent(getContext(), FieldFormActivity.class);
+        addFieldIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivityForResult(addFieldIntent, RC_ADD_FIELD);
     }
 
@@ -203,13 +193,21 @@ public class CardFormFragment extends Fragment implements AdapterView.OnItemClic
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (getContext() == null) return;
 
         if ((requestCode == RC_ADD_FIELD || requestCode == RC_EDIT_FIELD) && resultCode == RESULT_OK) {
+
+            // Get field extra
             Serializable potentialField = data.getSerializableExtra(EXTRA_FIELD);
+
             if (potentialField instanceof Field) {
+
+                // Got the field
                 Field field = ((Field) potentialField);
+
                 if (getArguments() != null && getEditedFields() != null) {
+
                     if (requestCode == RC_ADD_FIELD) {
                         // Add the new field
                         getEditedFields().add(field.toMap());
@@ -220,14 +218,21 @@ public class CardFormFragment extends Fragment implements AdapterView.OnItemClic
                             getEditedFields().set(pos, field.toMap());
                         }
                     }
+
+                    // Refresh current fields list view
                     refreshFields();
                 }
             }
         } else if (requestCode == RC_EDIT_FIELD && resultCode == RESULT_DELETE_FIELD) {
+            // Handle deleting a field
+
             int pos = data.getIntExtra(EXTRA_INDEX, -1);
+
             if (pos > -1 && pos < getEditedFields().size()) {
                 // Delete the field at the specified index
                 getEditedFields().remove(pos);
+
+                // Refresh current fields list view
                 refreshFields();
             }
         }
@@ -237,7 +242,7 @@ public class CardFormFragment extends Fragment implements AdapterView.OnItemClic
 
         mEditTextCardTitle.setError(null);
 
-        String cardTitle = EditTextUtils.getString(mEditTextCardTitle);
+        String cardTitle = EditTextUtils.getString(mEditTextCardTitle).trim();
 
         // Validate fields
         if (cardTitle.trim().isEmpty()) {
@@ -289,7 +294,7 @@ public class CardFormFragment extends Fragment implements AdapterView.OnItemClic
         Map<String, Object> updates = new HashMap<>();
 
         // Update the card's title
-        updates.put(KEY_TITLE, cardTitle);
+        updates.put(KEY_TITLE, cardTitle.trim());
 
         // and the fields property using a map and firebase
         if (getEditedFields() != null)
@@ -300,7 +305,6 @@ public class CardFormFragment extends Fragment implements AdapterView.OnItemClic
         if (getActivity() != null)
             getActivity().finish();
     }
-
 
 
     @Override

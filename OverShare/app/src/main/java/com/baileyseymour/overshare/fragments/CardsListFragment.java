@@ -27,7 +27,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.activities.CardFormActivity;
@@ -39,11 +38,9 @@ import com.baileyseymour.overshare.interfaces.RecyclerEmptyStateListener;
 import com.baileyseymour.overshare.models.Card;
 import com.baileyseymour.overshare.adapters.viewholders.CardViewHolder;
 import com.baileyseymour.overshare.models.Field;
-import com.baileyseymour.overshare.models.FieldType;
 import com.baileyseymour.overshare.models.SmartField;
 import com.baileyseymour.overshare.utils.AudioUtils;
 import com.baileyseymour.overshare.utils.ChirpManager;
-import com.baileyseymour.overshare.utils.FieldUtils;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -55,7 +52,7 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedHashMap;
+import java.util.Arrays;
 
 import pl.tajchert.nammu.Nammu;
 import pl.tajchert.nammu.PermissionCallback;
@@ -78,6 +75,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
     private FirebaseFirestore mDB;
     private FirestoreRecyclerAdapter<Card, CardViewHolder> mCardAdapter;
     private FabContainer mFabContainer;
+    private boolean mIsPlayingSound;
 
     // Fab container interface allows us to access the fab remotely
     public interface FabContainer {
@@ -167,32 +165,42 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
 
             mCardAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
                 @Override
-                public void onChanged() {
-                    super.onChanged();
-
-                }
-
-                @Override
                 public void onItemRangeInserted(int positionStart, int itemCount) {
                     super.onItemRangeInserted(positionStart, itemCount);
                     // Scroll to the top when an item is added
-                    recyclerView.smoothScrollToPosition(0);
+                    scrollToTop(recyclerView);
                 }
             });
 
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             mCardAdapter.notifyDataSetChanged();
             recyclerView.setAdapter(mCardAdapter);
-
+            scrollToTop(recyclerView);
         }
 
+    }
+
+    private void scrollToTop(RecyclerView recyclerView) {
+        if (recyclerView == null) return;
+
+        LinearLayoutManager manager = ((LinearLayoutManager) recyclerView.getLayoutManager());
+        int first = 0;
+
+        if (manager != null) {
+            first = manager.findFirstVisibleItemPosition();
+        }
+
+        if (first == RecyclerView.NO_POSITION) {
+            first = 0;
+        }
+        recyclerView.smoothScrollToPosition(first);
     }
 
     private void setupFab() {
         if (mFabContainer != null) {
 
             // Get the fab button from the fab container
-            FloatingActionButton fab = mFabContainer.onProvideFab();
+            final FloatingActionButton fab = mFabContainer.onProvideFab();
 
             if (fab != null) {
                 fab.setOnClickListener(new View.OnClickListener() {
@@ -200,6 +208,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
                     public void onClick(View view) {
                         int position = mFabContainer.getPagePosition();
                         if (position == 0) {
+                            fab.setEnabled(false);
                             // We are on the my cards tab, so FAB is add card
                             Intent addCardIntent = new Intent(getContext(), CardFormActivity.class);
                             startActivity(addCardIntent);
@@ -211,6 +220,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
                             Nammu.askForPermission(CardsListFragment.this, Manifest.permission.RECORD_AUDIO, new PermissionCallback() {
                                 @Override
                                 public void permissionGranted() {
+                                    fab.setEnabled(false);
                                     // Start the receive activity only after getting permission
                                     Intent receiveIntent = new Intent(getContext(), ReceiveActivity.class);
                                     startActivityForResult(receiveIntent, RC_RECEIVE);
@@ -346,6 +356,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
                 Intent editIntent = new Intent(getContext(), CardFormActivity.class);
                 editIntent.putExtra(EXTRA_CARD, card);
                 editIntent.putExtra(EXTRA_CARD_DOC_ID, snapshot.getId());
+                editIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(editIntent);
 
                 break;
@@ -358,9 +369,14 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
 
         if (getContext() == null) return;
 
+        Log.d(TAG, "shareCardChirp: card: " + card.getHexId() + "snapshot: " + snapshot);
+
         Nammu.askForPermission(this, Manifest.permission.RECORD_AUDIO, new PermissionCallback() {
             @Override
             public void permissionGranted() {
+
+                // Prevent playing multiple times at once
+                if (mIsPlayingSound) return;
 
                 // Set max volume
                 AudioUtils.getInstance(getContext()).setMaxVolume(getContext());
@@ -393,10 +409,17 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
 
     }
 
-
     @Override
     public void onResume() {
         super.onResume();
+
+        // Re-enable fab
+        if (mFabContainer != null) {
+            FloatingActionButton fab = mFabContainer.onProvideFab();
+
+            if (fab != null)
+                fab.setEnabled(true);
+        }
 
         ChirpManager manager = ChirpManager.getInstance(getContext());
         manager.setSender(this);
@@ -413,19 +436,23 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
 
     @Override
     public void onSending(@NotNull byte[] bytes, int channel) {
+        Log.d(TAG, "onSending: bytes: " + Arrays.toString(bytes) + "channel: " + channel);
+        mIsPlayingSound = true;
+
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
                 if (getView() == null) return;
 
                 // Show a snack bar when the data is sending
-                Snackbar snackbar = Snackbar.make(getView(), "Sharing... Transmitting sound", Snackbar.LENGTH_LONG);
+                Snackbar snackbar = Snackbar.make(getView(), R.string.sharing_transmitting, Snackbar.LENGTH_LONG);
                 snackbar.setDuration(4200);
                 snackbar.addCallback(new BaseTransientBottomBar.BaseCallback<Snackbar>() {
                     @Override
                     public void onDismissed(Snackbar transientBottomBar, int event) {
                         super.onDismissed(transientBottomBar, event);
                         AudioUtils.getInstance(getContext()).revertVolume();
+                        mIsPlayingSound = false;
                     }
                 });
                 snackbar.show();
@@ -435,8 +462,13 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
     }
 
     @Override
-    public void onSystemVolumeChanged(int old, int current) {
+    public void onSent(@NotNull byte[] bytes, int channel) {
+        mIsPlayingSound = false;
+    }
 
+    @Override
+    public void onSystemVolumeChanged(int old, int current) {
+        Log.d(TAG, "onSystemVolumeChanged: old: " + old + " current: " + current);
     }
 
     @Override
@@ -445,9 +477,4 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
         Nammu.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-    }
 }

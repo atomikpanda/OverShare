@@ -7,8 +7,8 @@ package com.baileyseymour.overshare.models;
 import android.telephony.PhoneNumberUtils;
 import android.util.Patterns;
 
+import com.baileyseymour.overshare.enums.InputType;
 import com.baileyseymour.overshare.utils.FieldUtils;
-import com.google.gson.internal.bind.util.ISO8601Utils;
 
 import java.util.Locale;
 
@@ -18,11 +18,6 @@ import java.util.Locale;
 public class SmartField {
     private final Field mField;
     private final FieldType mFieldType;
-
-    public SmartField(Field field, FieldType fieldType) {
-        mField = field;
-        mFieldType = fieldType;
-    }
 
     public SmartField(Field field) {
         mField = field;
@@ -41,7 +36,7 @@ public class SmartField {
         String value = getField().getValue();
 
         // Handle formatting phone
-        if (mFieldType.getInputType() == FieldType.InputType.PHONE) {
+        if (mFieldType.getInputType() == InputType.PHONE) {
             String normalized = PhoneNumberUtils.normalizeNumber(value);
             String formatted = PhoneNumberUtils.formatNumberToE164(normalized, Locale.getDefault().getCountry());
 
@@ -58,17 +53,55 @@ public class SmartField {
         return value;
     }
 
+    private String prepareValueForURL(String value) {
+        // WhatsApp requires a stripped phone number for urls
+        if (mField.getType().equals("whatsapp")) {
+            StringBuilder stripped = new StringBuilder();
+            for (char c : value.toCharArray()) {
+                if (Character.isDigit(c))
+                    stripped.append(c);
+            }
+            return stripped.toString();
+        }
+
+        return value;
+    }
+
     public String generateURL() {
-        String value = getValue();
+        String value = prepareValueForURL(getValue());
         return String.format(Locale.US, mFieldType.getValueFormat(), value);
+    }
+
+    public String clipboardValue() {
+        String textToCopy = getValue();
+
+        if (isValueURL()) {
+            textToCopy = generateURL();
+        }
+
+        // Don't use mailto: on copy
+        if (textToCopy.startsWith("mailto:")) {
+            textToCopy = getValue();
+        }
+
+        // Make the phone number look pretty
+        if (textToCopy.startsWith("tel:") || textToCopy.startsWith("sms:")) {
+            return PhoneNumberUtils.formatNumberToE164(textToCopy, Locale.getDefault().getCountry());
+        }
+
+        return textToCopy;
     }
 
     public boolean isValueURL() {
         String value = getValue();
+
         if (mFieldType != null) {
             value = generateURL();
         }
-        return Patterns.WEB_URL.matcher(value).matches() || value.startsWith("tel:")
-        || value.startsWith("mailto:");
+
+        return Patterns.WEB_URL.matcher(value).matches()
+                || value.startsWith("tel:")
+                || value.startsWith("sms:")
+                || value.startsWith("mailto:");
     }
 }

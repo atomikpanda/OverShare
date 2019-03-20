@@ -6,6 +6,10 @@ package com.baileyseymour.overshare.utils;
 
 import android.support.design.widget.TextInputEditText;
 import android.text.Editable;
+import android.text.InputType;
+import android.widget.EditText;
+
+import com.baileyseymour.overshare.models.FieldType;
 
 public class EditTextUtils {
 
@@ -18,5 +22,27 @@ public class EditTextUtils {
         if (text == null) return "";
 
         return text.toString();
+    }
+
+    public static void setEditInputType(EditText editText, com.baileyseymour.overshare.enums.InputType inputType) {
+        switch (inputType) {
+
+            case TEXT:
+                editText.setInputType(InputType.TYPE_CLASS_TEXT);
+                break;
+            case URL:
+            case URL_USER:
+                editText.setInputType(InputType.TYPE_TEXT_VARIATION_URI);
+                break;
+            case USERNAME:
+                editText.setInputType(InputType.TYPE_CLASS_TEXT);
+                break;
+            case PHONE:
+                editText.setInputType(InputType.TYPE_CLASS_PHONE);
+                break;
+            case EMAIL:
+                editText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+                break;
+        }
     }
 }

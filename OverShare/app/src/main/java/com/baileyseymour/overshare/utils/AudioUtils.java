@@ -5,9 +5,7 @@
 package com.baileyseymour.overshare.utils;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.media.AudioManager;
-import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -17,15 +15,12 @@ import static android.content.Context.AUDIO_SERVICE;
 
 // Manages device audio output
 public class AudioUtils {
+
     private static final String TAG = "AudioUtils";
     private static final int VOLUME_NULL = -1;
     private static int PREV_SYS_VOLUME = VOLUME_NULL;
 
-    public interface MaxVolDoneListener {
-        void onDone(boolean shouldPlaySound);
-    }
-
-    private AudioManager mAudioManager;
+    private final AudioManager mAudioManager;
 
     private AudioUtils(Context context) {
         mAudioManager = (AudioManager) context.getSystemService(AUDIO_SERVICE);
@@ -58,6 +53,7 @@ public class AudioUtils {
 
             int adjusted = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
             Log.d(TAG, "setMaxVolume: current: " + current);
+
             if (adjusted < (int) (max * 0.7f)) {
                 Toast.makeText(context, R.string.volume_low, Toast.LENGTH_SHORT).show();
             } else {
@@ -66,37 +62,6 @@ public class AudioUtils {
         }
 
     }
-//    public void setMaxVolume(final Context context, final MaxVolDoneListener maxVolDoneListener) {
-//        boolean isPlayingMusic = false;
-//        if (mAudioManager != null) {
-//            if (isPlayingMusic && context != null) {
-//                new AlertDialog.Builder(context)
-//                        .setTitle(R.string.maximize_vol)
-//                        .setMessage(R.string.maximize_vol_desc)
-//                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                if (maxVolDoneListener != null) {
-//                                    maxVolDoneListener.onDone(false);
-//                                }
-//                            }
-//                        })
-//                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                if (maxVolDoneListener != null) {
-//                                    setMaxVolume(context);
-//                                    maxVolDoneListener.onDone(true);
-//                                }
-//                            }
-//                        })
-//                        .show();
-//            } else if (!isPlayingMusic) {
-//                setMaxVolume(context);
-//                maxVolDoneListener.onDone(true);
-//            }
-//        }
-//    }
 
     // Reverts volume level after calling setMaxVolume
     public void revertVolume() {

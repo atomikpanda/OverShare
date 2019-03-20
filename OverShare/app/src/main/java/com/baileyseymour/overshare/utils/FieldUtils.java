@@ -5,6 +5,7 @@
 package com.baileyseymour.overshare.utils;
 
 import android.content.res.Resources;
+import android.util.Log;
 
 import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.models.FieldType;
@@ -19,22 +20,24 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-import static com.baileyseymour.overshare.models.FieldType.*;
+import static com.baileyseymour.overshare.models.FieldType.KEY_ID;
 
 // Util class that is responsible for managing the list of available fields to choose from
 public class FieldUtils {
 
     private static final LinkedHashMap<String, FieldType> AVAILABLE_FIELDS = new LinkedHashMap<>();
     private static final String UTF_8_ENCODING = "UTF-8";
+    private static final String TAG = "FieldUtils";
 
     // Initialize at app startup
     public static void init(Resources res) {
         readFromJSON(res);
+        Log.d(TAG, "init: Field Utils Initialized");
     }
 
     // Provides a standard way to access a field by its written type as in db
     public static FieldType fieldTypeFromId(String fieldId) {
-        return AVAILABLE_FIELDS.get(fieldId);
+        return getAvailableFields().get(fieldId);
     }
 
     public static LinkedHashMap<String, FieldType> getAvailableFields() {
@@ -54,7 +57,7 @@ public class FieldUtils {
                     // Add field type objects to the map
                     if (innerObj != null) {
                         FieldType type = new FieldType(innerObj);
-                        AVAILABLE_FIELDS.put(innerObj.getString(KEY_ID), type);
+                        getAvailableFields().put(innerObj.getString(KEY_ID), type);
                     }
 
                 }
@@ -80,7 +83,7 @@ public class FieldUtils {
             if (jsonString != null) {
                 JSONObject root = new JSONObject(jsonString);
 
-                return root.getString(FieldType.stringFromInputType(fieldType.getInputType()));
+                return root.getString(fieldType.getInputType().getStringValue());
             }
         } catch (IOException e) {
             e.printStackTrace();

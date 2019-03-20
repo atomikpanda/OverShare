@@ -15,14 +15,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingTop="@dimen/outer_padding"
-        android:paddingBottom="@dimen/outer_padding">
+        android:paddingTop="@dimen/outer_padding">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="@dimen/outer_padding"
-            android:paddingEnd="@dimen/outer_padding"
             android:orientation="horizontal">
 
             <TextView
@@ -30,6 +27,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:paddingStart="@dimen/outer_padding"
+                android:paddingEnd="@dimen/outer_padding"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
                 tools:text="Test Card" />
 
@@ -38,8 +37,13 @@
                 style="@style/iconsCardGray"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:paddingStart="22dp"
-                android:paddingEnd="6dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingStart="38dp"
+                android:paddingEnd="18dp"
+
+                android:paddingBottom="@dimen/inner_padding"
                 android:src="@drawable/ic_share_black_24dp" />
         </LinearLayout>
 
@@ -51,8 +55,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingStart="@dimen/outer_padding"
-            android:paddingEnd="@dimen/outer_padding"
             android:orientation="horizontal">
 
             <ImageButton
@@ -60,6 +62,13 @@
                 style="@style/iconsCardGray.Bottom"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingStart="@dimen/outer_padding"
+                android:paddingTop="12dp"
+                android:paddingEnd="12dp"
+                android:paddingBottom="12dp"
                 android:src="@drawable/ic_edit_black_24dp" />
 
             <ImageButton
@@ -67,6 +76,13 @@
                 style="@style/iconsCardGray.Bottom"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingStart="12dp"
+                android:paddingTop="@dimen/inner_padding"
+                android:paddingEnd="12dp"
+                android:paddingBottom="12dp"
                 android:src="@drawable/ic_delete_forever_black_24dp" />
         </LinearLayout>
 
