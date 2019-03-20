@@ -15,8 +15,12 @@ import static com.baileyseymour.overshare.interfaces.Constants.KEY_TYPE;
 import static com.baileyseymour.overshare.interfaces.Constants.KEY_VALUE;
 
 public class Field implements Serializable {
+
+    // Instance vars
     private final String title;
     private final String value;
+
+    // The type 'identifier' like 'url' or 'instagram'
     private final String type;
 
     public Field(String title, String value, String type) {

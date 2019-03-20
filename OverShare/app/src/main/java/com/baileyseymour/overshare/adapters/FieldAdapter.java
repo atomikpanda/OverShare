@@ -4,8 +4,6 @@
 
 package com.baileyseymour.overshare.adapters;
 
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -20,8 +18,10 @@ import com.baileyseymour.overshare.interfaces.FieldClickListener;
 import com.baileyseymour.overshare.models.Card;
 import com.baileyseymour.overshare.models.Field;
 import com.baileyseymour.overshare.models.SmartField;
+import com.baileyseymour.overshare.utils.ClipboardUtils;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import butterknife.BindColor;
 import butterknife.ButterKnife;
@@ -72,7 +72,10 @@ public class FieldAdapter extends RecyclerView.Adapter<FieldViewHolder> implemen
 
         viewHolder.valueTextView.setTextColor(smartField.isValueURL() ? colorAccent : iconsGray);
         viewHolder.titleTextView.setText(field.getTitle());
-        viewHolder.valueTextView.setText(field.getValue());
+
+        // Simply allow some additional customization for displaying
+        String displayString = String.format(Locale.US, smartField.getFieldType().getDisplayFormat(), field.getValue());
+        viewHolder.valueTextView.setText(displayString);
     }
 
     @Override
@@ -115,20 +118,13 @@ public class FieldAdapter extends RecyclerView.Adapter<FieldViewHolder> implemen
 
     private void copyToClipboard(Field field, View v) {
         Context context = v.getContext();
+
         if (context != null) {
             // Copy to clipboard if we have plain text
-            ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-            if (clipboardManager != null) {
-                SmartField smartField = new SmartField(field);
+            SmartField smartField = new SmartField(field);
 
-                String textToCopy = field.getValue();
-                if (smartField.isValueURL()) {
-                    textToCopy = smartField.generateURL();
-                }
-
-                clipboardManager.setPrimaryClip(ClipData.newPlainText(field.getTitle(), textToCopy));
-                Toast.makeText(context, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show();
-            }
+            ClipboardUtils.getInstance(context).setClipboard(field.getTitle(), smartField.clipboardValue());
+            Toast.makeText(context, R.string.copied_to_clipboard, Toast.LENGTH_SHORT).show();
         }
     }
 }

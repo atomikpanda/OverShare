@@ -16,6 +16,7 @@ import butterknife.ButterKnife;
 
 public class FieldViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
 
+    // Use to handle clicked field events
     public interface ClickListener {
         void onItemClick(int position, View v);
         void onLongClick(int position, View v);

@@ -3,5 +3,6 @@
   "text": "",
   "url": "The website's URL.",
   "username": "Your account's username.",
-  "phone": "Your phone number."
+  "phone": "Your phone number.",
+  "email": "The email address."
 }

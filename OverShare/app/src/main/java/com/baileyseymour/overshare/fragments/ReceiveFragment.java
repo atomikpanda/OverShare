@@ -12,6 +12,7 @@ import android.os.Looper;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -76,19 +77,22 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
 
     class State {
         // The description to be displayed on the label
-        String description;
+        @StringRes
+        final
+        int description;
 
         // Primary icon
         @DrawableRes
+        final
         int icon;
 
         // Show action button
-        boolean showButton;
+        final boolean showButton;
 
         // The id
-        int id;
+        final int id;
 
-        State(String description, int icon, boolean showButton, int id) {
+        State(@StringRes int description, @DrawableRes int icon, boolean showButton, int id) {
             this.description = description;
             this.icon = icon;
             this.showButton = showButton;
@@ -150,7 +154,8 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
             ChirpManager.getInstance(getContext()).setReceiver(this);
 
             // Initial State
-            State initialState = new State("Setting up...",
+
+            State initialState = new State(R.string.setting_up,
                     R.drawable.ic_mic_outline_black_24dp, false, STATE_INIT);
             setState(initialState);
 
@@ -168,7 +173,7 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
         }
     }
 
-    public void setState(final State state) {
+    private void setState(final State state) {
         if (mState != null && state.id == mState.id) return;
 
         mState = state;
@@ -215,6 +220,7 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
                         if (task.isSuccessful() && task.getResult() != null) {
                             // Get documents
                             List<DocumentSnapshot> documents = task.getResult().getDocuments();
@@ -243,25 +249,29 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
     @Override
     public void onReceiving(int channel) {
         // When we start receiving display it
-        State state = new State("Receiving", R.drawable.avd_anim,
+        Log.d(TAG, "onReceiving: channel: " + channel);
+
+        State state = new State(R.string.receiving, R.drawable.avd_anim,
                 false, STATE_RECEIVING);
         setState(state);
     }
 
     @Override
-    public void onReceived(@org.jetbrains.annotations.Nullable byte[] bytes, int i) {
-        Log.v(TAG, "onReceived: " + Arrays.toString(bytes));
+    public void onReceived(@org.jetbrains.annotations.Nullable byte[] bytes, int channel) {
+        Log.v(TAG, "onReceived: " + Arrays.toString(bytes) + " channel: " + channel);
+
         if (bytes != null) {
             // Encode the bytes received
             String identifier = new String(Hex.encodeHex(bytes));
 
-            Log.v("ChirpSDK: ", "Received " + identifier);
+            Log.d("ChirpSDK: ", "Received " + identifier);
 
             mReceivedId = identifier;
 
             // If we have a valid identifier change state
             if (!identifier.trim().isEmpty()) {
-                State state = new State("Received", R.drawable.ic_icons8_id_card,
+
+                State state = new State(R.string.received, R.drawable.ic_icons8_id_card,
                         true, STATE_RECEIVED);
                 setState(state);
             }
@@ -270,12 +280,13 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
             Log.e("ChirpError: ", "Decode failed");
 
             // Revert back to ready if we failed
-            State readyState = new State("Ready to Receive Cards",
+
+            State readyState = new State(R.string.ready_to_receive,
                     R.drawable.ic_mic_on_black_24dp, false, STATE_READY);
             setState(readyState);
 
             // Show a toast indicating failure
-            Toast.makeText(getContext(), "Failed to receive card.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.failed_to_receive, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -296,12 +307,13 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
             }
 
             // Notify of error
-            State errorState = new State("Error Connecting to Microphone",
+
+            State errorState = new State(R.string.error_conn_mic,
                     R.drawable.ic_mic_off_black_24dp, false, STATE_MIC_ERROR);
             setState(errorState);
         } else {
             // We are ready
-            State readyState = new State("Ready to Receive Cards",
+            State readyState = new State(R.string.ready_to_receive,
                     R.drawable.ic_mic_on_black_24dp, false, STATE_READY);
             setState(readyState);
         }

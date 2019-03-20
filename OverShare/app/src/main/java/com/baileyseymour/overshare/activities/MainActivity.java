@@ -4,17 +4,13 @@
 
 package com.baileyseymour.overshare.activities;
 
-import android.Manifest;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -26,10 +22,9 @@ import com.baileyseymour.overshare.utils.FieldUtils;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 
+import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import pl.tajchert.nammu.Nammu;
-import pl.tajchert.nammu.PermissionCallback;
 
 public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener, CardsListFragment.FabContainer {
 
@@ -44,6 +39,9 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     @BindView(R.id.fab)
     protected FloatingActionButton fab;
 
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,8 +49,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         ButterKnife.bind(this);
         FieldUtils.init(getResources());
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(mToolbar);
 
         initializeTabs();
 
@@ -99,10 +96,9 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
             Toast.makeText(MainActivity.this, "TODO: Milestone 3: Account", Toast.LENGTH_SHORT).show();
             return true;
         } else if (id == R.id.menu_action_about) {
+            // Create the libs builder activity
             new LibsBuilder()
-                    //provide a style (optional) (LIGHT, DARK, LIGHT_DARK_TOOLBAR)
                     .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
-                    //start the activity
                     .start(MainActivity.this);
             return true;
         }

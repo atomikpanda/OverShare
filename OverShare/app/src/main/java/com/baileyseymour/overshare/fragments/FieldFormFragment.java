@@ -5,10 +5,7 @@
 package com.baileyseymour.overshare.fragments;
 
 import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipDescription;
-import android.content.ClipboardManager;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,9 +15,9 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.text.Editable;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,16 +30,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
 import com.baileyseymour.overshare.R;
+import com.baileyseymour.overshare.enums.InputType;
 import com.baileyseymour.overshare.models.Field;
 import com.baileyseymour.overshare.models.FieldType;
 import com.baileyseymour.overshare.models.SmartField;
-import com.baileyseymour.overshare.models.ValidateError;
+import com.baileyseymour.overshare.enums.ValidateError;
+import com.baileyseymour.overshare.utils.ClipboardUtils;
 import com.baileyseymour.overshare.utils.EditTextUtils;
 import com.baileyseymour.overshare.utils.FieldUtils;
 
-import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -146,49 +143,61 @@ public class FieldFormFragment extends Fragment {
         loadFieldSpinner();
 
 
+    }
+
+    private TextWatcher mTextWatcher;
+
+    private void startListeningForValidation() {
         final Handler handler = new Handler(Looper.getMainLooper());
         final Runnable[] r = new Runnable[1];
 
 
         if (mValueInputLayout.getEditText() != null) {
-            mValueInputLayout.getEditText().addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            if (mTextWatcher == null) {
+                mTextWatcher = new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                }
+                    }
 
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
 
 
-                }
+                    }
 
-                @Override
-                public void afterTextChanged(final Editable s) {
-                    handler.removeCallbacks(r[0]);
-                    r[0] = new Runnable() {
-                        @Override
-                        public void run() {
-                            validateValue(s.toString());
-                        }
-                    };
-                    handler.postDelayed(r[0], 500);
-                }
-            });
+                    @Override
+                    public void afterTextChanged(final Editable s) {
+                        handler.removeCallbacks(r[0]);
+                        r[0] = new Runnable() {
+                            @Override
+                            public void run() {
+                                validateValue(s.toString());
+                            }
+                        };
+                        handler.postDelayed(r[0], 500);
+                    }
+                };
+
+                // Listen for text changes
+                mValueInputLayout.getEditText().addTextChangedListener(mTextWatcher);
+            }
         }
     }
 
-    private void validateValue(String s) {
-        if (getContext() == null) return;
+    private boolean validateValue(String s) {
+        if (getContext() == null) return false;
 
         FieldType typeSelected = (FieldType) mSpinner.getSelectedItem();
         ValidateError valid = typeSelected.getInputType().validate(s);
         if (valid != ValidateError.VALID) {
-            mValueEditText.setError(valid.toString());
+            mValueEditText.setError(valid.getDescription(getResources()));
+            return false;
         } else {
             mValueEditText.setError(null);
             mValueInputLayout.setHelperTextEnabled(true);
             mValueInputLayout.setHelperText(FieldUtils.helperText(typeSelected, getResources()));
+            return true;
         }
     }
 
@@ -203,35 +212,18 @@ public class FieldFormFragment extends Fragment {
         mSpinner.setOnItemSelectedListener(mOnSpinnerSelected);
     }
 
-    private PhoneNumberFormattingTextWatcher mWatcher = new PhoneNumberFormattingTextWatcher();
+    private final PhoneNumberFormattingTextWatcher mWatcher = new PhoneNumberFormattingTextWatcher();
 
-    private AdapterView.OnItemSelectedListener mOnSpinnerSelected = new AdapterView.OnItemSelectedListener() {
+    private final AdapterView.OnItemSelectedListener mOnSpinnerSelected = new AdapterView.OnItemSelectedListener() {
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             FieldType typeSelected = (FieldType) FieldUtils.getAvailableFields().values().toArray()[position];
-            FieldType.InputType inputType = typeSelected.getInputType();
+            InputType inputType = typeSelected.getInputType();
 
-            switch (inputType) {
+            // Set the text field's keyboard
+            EditTextUtils.setEditInputType(mValueEditText, inputType);
 
-                case TEXT:
-                    mValueEditText.setInputType(InputType.TYPE_CLASS_TEXT);
-                    break;
-                case URL:
-                case URL_USER:
-                    mValueEditText.setInputType(InputType.TYPE_TEXT_VARIATION_URI);
-                    break;
-                case USERNAME:
-                    mValueEditText.setInputType(InputType.TYPE_CLASS_TEXT);
-                    break;
-                case PHONE:
-                    mValueEditText.setInputType(InputType.TYPE_CLASS_PHONE);
-                    break;
-                case EMAIL:
-                    mValueEditText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-                    break;
-            }
-
-            if (inputType == FieldType.InputType.PHONE) {
+            if (inputType == InputType.PHONE) {
                 mValueEditText.addTextChangedListener(mWatcher);
             } else {
                 mValueEditText.removeTextChangedListener(mWatcher);
@@ -250,9 +242,13 @@ public class FieldFormFragment extends Fragment {
 
             if (!suggestion.isEmpty()) {
                 mValueEditText.requestFocus();
+                mValueEditText.setSelection(EditTextUtils.getString(mValueEditText).length());
             } else {
                 mTitleEditText.requestFocus();
+                mTitleEditText.setSelection(EditTextUtils.getString(mTitleEditText).length());
             }
+
+            startListeningForValidation();
         }
 
         @Override
@@ -298,11 +294,14 @@ public class FieldFormFragment extends Fragment {
 
     private void onSaveTapped() {
         if (getActivity() == null) return;
+
+        mTitleEditText.setError(null);
+
         // handle field add/edit saving
         FieldType typeSelected = (FieldType) mSpinner.getSelectedItem();
         LinkedHashMap<String, FieldType> availableFields = FieldUtils.getAvailableFields();
 
-        // Lookup the
+        // Lookup the id/key
         String keyIdSelected = null;
         for (Map.Entry<String, FieldType> entry : availableFields.entrySet()) {
             if (entry.getValue().equals(typeSelected)) {
@@ -318,12 +317,37 @@ public class FieldFormFragment extends Fragment {
         String title = EditTextUtils.getString(mTitleEditText);
         String value = EditTextUtils.getString(mValueEditText);
 
+        if (title.trim().isEmpty()) {
+            mTitleEditText.setError(getString(R.string.do_not_blank));
+            return;
+        }
+
         if (type.trim().isEmpty() || title.trim().isEmpty() || value.trim().isEmpty()) {
             return;
         }
 
         // Finish with RESULT_OK and an extra of the Field obj
-        Field fieldObj = new Field(title, value, type);
+        final Field fieldObj = new Field(title.trim(), value.trim(), type);
+
+        if (!validateValue(value) && getContext() != null) {
+            new AlertDialog.Builder(getContext())
+                    .setTitle(R.string.proceed_with_saving)
+                    .setMessage(R.string.field_value_improper_format)
+                    .setNegativeButton(R.string.fui_cancel, null)
+                    .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            saveAndFinishWithField(fieldObj);
+                        }
+                    }).show();
+        } else {
+            saveAndFinishWithField(fieldObj);
+        }
+
+    }
+
+    private void saveAndFinishWithField(Field fieldObj) {
+        if (getActivity() == null) return;
         Intent data = new Intent();
 
         Intent startIntent = getActivity().getIntent();
@@ -338,51 +362,12 @@ public class FieldFormFragment extends Fragment {
 
     @OnClick(R.id.buttonPaste)
     public void onPasteTapped() {
+        if (getContext() == null) return;
 
-        String clipData = getClipboardData();
+        String clipData = ClipboardUtils.getInstance(getContext()).getClipboard();
 
         if (clipData != null)
             mValueEditText.setText(clipData);
     }
 
-    private String getClipboardData() {
-        if (getContext() == null) return null;
-
-        // Retrieve the clipboard manager from the context
-        ClipboardManager clipboardManager = (ClipboardManager) getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-
-        if (clipboardManager != null) {
-
-            // Check if the clipboard even has a primary clip
-            if (clipboardManager.hasPrimaryClip()) {
-                ClipData clip = clipboardManager.getPrimaryClip();
-
-                // Make sure clip isn't null
-                if (clip == null) return null;
-
-                // Get a description
-                ClipDescription clipDescription = clip.getDescription();
-
-                if (clipDescription == null) return null;
-
-                // Make sure we have text data
-                if (!clipDescription.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) return null;
-
-                // Ensure we have more than one item
-                if (clip.getItemCount() <= 0) return null;
-
-                // Get the first item
-                ClipData.Item item = clip.getItemAt(0);
-                if (item == null) return null;
-
-                CharSequence charSequence = item.getText();
-
-                // Convert to string
-                if (charSequence == null || mValueEditText == null) return null;
-                return charSequence.toString();
-            }
-        }
-
-        return null;
-    }
 }
