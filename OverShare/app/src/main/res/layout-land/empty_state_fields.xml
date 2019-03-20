@@ -11,6 +11,7 @@
         android:layout_marginStart="@dimen/inner_padding"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="@dimen/inner_padding"
+        android:contentDescription="@string/empty_state_icon"
         android:layout_marginBottom="@dimen/outer_padding"
         app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintEnd_toEndOf="parent"

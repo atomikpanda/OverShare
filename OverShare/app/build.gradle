@@ -34,6 +34,7 @@ dependencies {
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'com.android.support:design:28.0.0'
+    //noinspection GradleDependency Disabled due to version mismatches
     implementation 'com.google.firebase:firebase-auth:16.1.0'
     implementation 'com.firebaseui:firebase-ui-auth:4.3.1'
     implementation 'com.google.firebase:firebase-firestore:18.1.0'
@@ -41,10 +42,13 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    //noinspection GradleDependency Disabled due to version mismatches
     implementation 'com.google.firebase:firebase-core:16.0.7'
     implementation 'com.android.support:design:28.0.0'
-    // Use version 8.8.0 of ButterKnife since we aren't using Android X
+    // Use version 8.8.0 of ButterKnife since we aren't using Android X Beta
+    //noinspection GradleDependency
     implementation 'com.jakewharton:butterknife:8.8.0'
+    //noinspection GradleDependency
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.0'
     implementation 'commons-codec:commons-codec:1.11'
     implementation 'io.chirp:chirpsdk:3.6.1'

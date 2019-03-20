@@ -1,6 +1,6 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">OverShare</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings" tools:keep="@string/action_settings">Settings</string>
     <string name="no_cards_to_display">No Cards</string>
     <string name="card_title">Card Title</string>
     <string name="add_field_title">Add Field</string>
@@ -11,11 +11,11 @@
     <string name="save">Save</string>
     <string name="do_not_blank">You can\'t leave this field blank</string>
     <string name="account">Account</string>
-    <string name="name">Name</string>
-    <string name="first_last">First Last</string>
-    <string name="email">Email</string>
-    <string name="reset_password">Reset Password</string>
-    <string name="sign_out">Sign Out</string>
+    <string name="name" tools:keep="@string/name">Name</string>
+    <string name="first_last" tools:keep="@string/first_last">First Last</string>
+    <string name="email" tools:keep="@string/email">Email</string>
+    <string name="reset_password" tools:keep="@string/reset_password">Reset Password</string>
+    <string name="sign_out" tools:keep="@string/sign_out">Sign Out</string>
     <string name="field_title">Field Title</string>
     <string name="field_value">Field Value</string>
     <string name="delete">Delete</string>
@@ -28,37 +28,37 @@
         <item>My Cards</item>
         <item>Received Cards</item>
     </string-array>
-    <string name="aboutLibraries_description_showIcon">true</string>
-    <string name="aboutLibraries_description_showVersion">true</string>
-    <string name="aboutLibraries_description_text">OverShare Developed by Bailey Seymour at Full Sail University</string>
-    <string name="define_Chirp" />
-    <string name="library_Chirp_author">Asio Ltd.</string>
-    <string name="library_Chirp_authorWebsite">https://chirp.io</string>
-    <string name="library_Chirp_libraryName">Chirp Android SDK</string>
-    <string name="library_Chirp_libraryDescription">Chirp enables your apps to send and receive information using sound. A "chirp" encodes an array of bytes as an audio signal, which can be transmitted by any device with a speaker and received by any device with a microphone and Chirp SDK.</string>
-    <string name="define_Nammu" />
-    <string name="library_Nammu_author">Michal Tajchert</string>
-    <string name="library_Nammu_authorWebsite">https://github.com/tajchert/Nammu</string>
-    <string name="library_Nammu_libraryName">Nammu</string>
-    <string name="library_Nammu_libraryDescription">Permission helper for Android M - background check, monitoring and more.</string>
-    <string name="define_vrv" />
-    <string name="library_vrv_author">Takayuki Yorikane</string>
-    <string name="library_vrv_authorWebsite">https://github.com/tyorikan/voice-recording-visualizer</string>
-    <string name="library_vrv_libraryName">voice-recording-visualizer</string>
-    <string name="library_vrv_libraryDescription">Simple Visualizer from mic input for Android.</string>
-    <string name="define_firebase" />
-    <string name="library_firebase_author">Google</string>
-    <string name="library_firebase_authorWebsite">https://github.com/firebase/firebase-android-sdk</string>
-    <string name="library_firebase_libraryName">Firebase Android SDK</string>
-    <string name="library_firebase_libraryDescription">Firebase is an app development platform with tools to help you build, grow and monetize your app.</string>
-    <string name="about">About</string>
+    <string name="aboutLibraries_description_showIcon" tools:keep="@string/aboutLibraries_description_showIcon">true</string>
+    <string name="aboutLibraries_description_showVersion" tools:keep="@string/aboutLibraries_description_showVersion">true</string>
+    <string name="aboutLibraries_description_text" tools:keep="@string/aboutLibraries_description_text">OverShare Developed by Bailey Seymour at Full Sail University</string>
+    <string name="define_Chirp" tools:keep="@string/define_Chirp" />
+    <string name="library_Chirp_author" tools:keep="@string/library_Chirp_author">Asio Ltd.</string>
+    <string name="library_Chirp_authorWebsite" tools:keep="@string/library_Chirp_authorWebsite">https://chirp.io</string>
+    <string name="library_Chirp_libraryName" tools:keep="@string/library_Chirp_libraryName">Chirp Android SDK</string>
+    <string name="library_Chirp_libraryDescription" tools:keep="@string/library_Chirp_libraryDescription">Chirp enables your apps to send and receive information using sound. A "chirp" encodes an array of bytes as an audio signal, which can be transmitted by any device with a speaker and received by any device with a microphone and Chirp SDK.</string>
+    <string name="define_Nammu" tools:keep="@string/define_Nammu" />
+    <string name="library_Nammu_author" tools:keep="@string/library_Nammu_author">Michal Tajchert</string>
+    <string name="library_Nammu_authorWebsite" tools:keep="@string/library_Nammu_authorWebsite">https://github.com/tajchert/Nammu</string>
+    <string name="library_Nammu_libraryName" tools:keep="@string/library_Nammu_libraryName">Nammu</string>
+    <string name="library_Nammu_libraryDescription" tools:keep="@string/library_Nammu_libraryDescription">Permission helper for Android M - background check, monitoring and more.</string>
+    <string name="define_vrv" tools:keep="@string/define_vrv" />
+    <string name="library_vrv_author" tools:keep="@string/library_vrv_author">Takayuki Yorikane</string>
+    <string name="library_vrv_authorWebsite" tools:keep="@string/library_vrv_authorWebsite">https://github.com/tyorikan/voice-recording-visualizer</string>
+    <string name="library_vrv_libraryName" tools:keep="@string/library_vrv_libraryName">voice-recording-visualizer</string>
+    <string name="library_vrv_libraryDescription" tools:keep="@string/library_vrv_libraryDescription">Simple Visualizer from mic input for Android.</string>
+    <string name="define_firebase" tools:keep="@string/define_firebase" />
+    <string name="library_firebase_author" tools:keep="@string/library_firebase_author">Google</string>
+    <string name="library_firebase_authorWebsite" tools:keep="@string/library_firebase_authorWebsite">https://github.com/firebase/firebase-android-sdk</string>
+    <string name="library_firebase_libraryName" tools:keep="@string/library_firebase_libraryName">Firebase Android SDK</string>
+    <string name="library_firebase_libraryDescription" tools:keep="@string/library_firebase_libraryDescription">Firebase is an app development platform with tools to help you build, grow and monetize your app.</string>
+    <string name="about" tools:keep="@string/about">About</string>
     <string name="credits">Credits</string>
     <string name="volume_low">Volume is low!</string>
     <string name="copied_to_clipboard">Copied to clipboard.</string>
-    <string name="maximize_vol">Maximize Volume?</string>
-    <string name="maximize_vol_desc">Music is playing are you sure you want to set the volume to the max?</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
+    <string name="maximize_vol" tools:keep="@string/maximize_vol">Maximize Volume?</string>
+    <string name="maximize_vol_desc" tools:keep="@string/maximize_vol_desc">Music is playing are you sure you want to set the volume to the max?</string>
+    <string name="yes" tools:keep="@string/yes">Yes</string>
+    <string name="no" tools:keep="@string/no">No</string>
     <string name="setting_up">Setting up…</string>
     <string name="receiving">Receiving</string>
     <string name="received">Received</string>
@@ -73,5 +73,10 @@
     <string name="not_username">This isn\'t a valid username.</string>
     <string name="not_phone">This isn\'t a valid phone number.</string>
     <string name="not_email">This isn\'t a valid email address.</string>
+    <string name="share">Share</string>
+    <string name="edit">Edit</string>
+    <string name="empty_state_icon">Empty State Icon</string>
+    <string name="paste">Paste</string>
+    <string name="state_icon">State Icon</string>
 
 </resources>

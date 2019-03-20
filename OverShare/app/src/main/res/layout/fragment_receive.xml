@@ -13,6 +13,7 @@
         android:layout_marginTop="@dimen/inner_padding"
         android:layout_marginEnd="@dimen/inner_padding"
         app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/state_icon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline4"
         app:srcCompat="@drawable/ic_mic_outline_black_24dp" />

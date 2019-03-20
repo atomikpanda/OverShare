@@ -36,6 +36,7 @@
         style="@style/iconsCardGray"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:contentDescription="@string/edit"
         android:padding="@dimen/inner_padding"
         app:srcCompat="@drawable/ic_edit_black_24dp" />
 
