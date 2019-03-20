@@ -9,8 +9,6 @@ import android.text.Editable;
 import android.text.InputType;
 import android.widget.EditText;
 
-import com.baileyseymour.overshare.models.FieldType;
-
 public class EditTextUtils {
 
     // Gets the string of an edit text easily

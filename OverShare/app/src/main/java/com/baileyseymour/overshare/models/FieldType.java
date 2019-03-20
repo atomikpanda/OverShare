@@ -5,13 +5,9 @@
 package com.baileyseymour.overshare.models;
 
 import android.support.annotation.NonNull;
-import android.util.DisplayMetrics;
-import android.util.Patterns;
-import android.webkit.URLUtil;
 
 import com.baileyseymour.overshare.enums.InputType;
 import com.baileyseymour.overshare.enums.OutputType;
-import com.baileyseymour.overshare.enums.ValidateError;
 
 import org.json.JSONObject;
 
