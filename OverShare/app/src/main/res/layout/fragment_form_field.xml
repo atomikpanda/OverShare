@@ -58,6 +58,7 @@
             android:paddingStart="@dimen/inner_padding"
             android:paddingEnd="@dimen/inner_padding"
             android:layout_height="match_parent"
+            android:contentDescription="@string/paste"
             android:background="@color/fui_transparent"
             app:srcCompat="@drawable/ic_content_paste_black_24dp" />
     </LinearLayout>
