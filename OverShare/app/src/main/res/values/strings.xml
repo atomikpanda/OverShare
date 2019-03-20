@@ -59,13 +59,13 @@
     <string name="maximize_vol_desc">Music is playing are you sure you want to set the volume to the max?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="setting_up">Setting up...</string>
+    <string name="setting_up">Setting up…</string>
     <string name="receiving">Receiving</string>
     <string name="received">Received</string>
     <string name="ready_to_receive">Ready to Receive Cards</string>
     <string name="failed_to_receive">Failed to receive card.</string>
     <string name="error_conn_mic">Error Connecting to Microphone</string>
-    <string name="sharing_transmitting">Sharing... Transmitting sound</string>
+    <string name="sharing_transmitting">Sharing… Transmitting sound</string>
     <string name="proceed_with_saving">Proceed with saving?</string>
     <string name="field_value_improper_format">The field value appears to be in the improper format. Are you sure you still want to save?</string>
     <string name="you_cant_leave_this_blank">You can\'t leave this blank.</string>

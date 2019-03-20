@@ -1,7 +1,7 @@
 // Bailey Seymour
 // DVP6 - 1903
 // ChirpAudioDownloaderUtil.java
-
+/*
 package com.baileyseymour.overshare.utils;
 
 import android.app.DownloadManager;
@@ -23,6 +23,7 @@ import static com.baileyseymour.overshare.interfaces.Constants.CHIRP_APP_SECRET;
 public class ChirpAudioDownloaderUtil {
 
     // Example: ChirpAudioDownloaderUtil.downloadCard(card, EXT_MP3, getContext());
+    // Experimental Feature only
 
     private static final String TAG = "DownloaderUtil";
     private static final String EXT_MP3 = "mp3";
@@ -56,3 +57,4 @@ public class ChirpAudioDownloaderUtil {
                 hexId, extension);
     }
 }
+*/
