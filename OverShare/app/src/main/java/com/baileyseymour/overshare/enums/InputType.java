@@ -17,7 +17,7 @@ public enum InputType {
     PHONE("phone"),
     EMAIL("email");
 
-    String stringValue;
+    final String stringValue;
 
     InputType(String stringValue) {
         this.stringValue = stringValue;

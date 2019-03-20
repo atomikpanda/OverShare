@@ -8,14 +8,10 @@ public enum OutputType {
     TEXT("text"),
     URL("url");
 
-    String stringValue;
+    final String stringValue;
 
     OutputType(String stringValue) {
         this.stringValue = stringValue;
-    }
-
-    String getStringValue() {
-        return stringValue;
     }
 
     public static OutputType fromString(String string) {

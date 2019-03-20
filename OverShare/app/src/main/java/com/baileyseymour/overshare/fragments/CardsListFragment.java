@@ -463,6 +463,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
 
     @Override
     public void onSent(@NotNull byte[] bytes, int channel) {
+        Log.d(TAG, "onSent: bytes: " + Arrays.toString(bytes) + " channel: " + channel);
         mIsPlayingSound = false;
     }
 
