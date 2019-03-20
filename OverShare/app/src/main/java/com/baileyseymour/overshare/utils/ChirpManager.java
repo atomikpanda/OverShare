@@ -17,7 +17,6 @@ import java.util.Arrays;
 import io.chirp.connect.ChirpConnect;
 import io.chirp.connect.interfaces.ConnectEventListener;
 import io.chirp.connect.models.ChirpError;
-import io.chirp.connect.models.ChirpErrorCode;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
