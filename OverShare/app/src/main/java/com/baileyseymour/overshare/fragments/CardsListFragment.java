@@ -54,6 +54,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 
+import io.chirp.connect.models.ChirpError;
 import pl.tajchert.nammu.Nammu;
 import pl.tajchert.nammu.PermissionCallback;
 
@@ -383,7 +384,10 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
 
                 // Start up Chirp SDK
                 ChirpManager manager = ChirpManager.getInstance(getContext());
-                manager.getChirpConnect().startSender();
+                ChirpError error = manager.getChirpConnect().startSender();
+                if (error.getCode() > 0) {
+                    Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
+                }
                 manager.setSender(CardsListFragment.this);
 
                 String hexId = card.getHexId();
@@ -430,7 +434,10 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
         super.onPause();
 
         ChirpManager manager = ChirpManager.getInstance(getContext());
-        manager.getChirpConnect().stop();
+        ChirpError error = manager.getChirpConnect().stop();
+        if (error.getCode() > 0) {
+            Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
+        }
         manager.setSender(null);
     }
 

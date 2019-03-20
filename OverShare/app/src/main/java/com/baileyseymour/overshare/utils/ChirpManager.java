@@ -16,6 +16,8 @@ import java.util.Arrays;
 
 import io.chirp.connect.ChirpConnect;
 import io.chirp.connect.interfaces.ConnectEventListener;
+import io.chirp.connect.models.ChirpError;
+import io.chirp.connect.models.ChirpErrorCode;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
@@ -25,19 +27,23 @@ public class ChirpManager implements ConnectEventListener {
 
     private final ChirpConnect mChirpConnect;
 
-    private static final String TAG = "ChirpManager";
+    public static final String TAG = "ChirpManager";
 
     // The object that is responsible for handling receiving operations
     public interface Receiver {
         void onReceiving(int channel);
+
         void onReceived(@Nullable byte[] bytes, int channel);
+
         void onAudioInputIsZeroed(boolean isZeroed, byte[] bytes);
     }
 
     // The object that listens for sending callbacks
     public interface Sender {
         void onSending(@NotNull byte[] bytes, int channel);
+
         void onSent(@NotNull byte[] bytes, int channel);
+
         void onSystemVolumeChanged(int old, int current);
     }
 
@@ -47,7 +53,12 @@ public class ChirpManager implements ConnectEventListener {
     private ChirpManager(Context context) {
         mChirpConnect = new ChirpConnect(context, CHIRP_APP_KEY, Constants.CHIRP_APP_SECRET);
 
-        mChirpConnect.setConfig(Constants.CHIRP_APP_CONFIG);
+        ChirpError error = mChirpConnect.setConfig(Constants.CHIRP_APP_CONFIG);
+
+        if (error.getCode() > 0) {
+            Log.e(TAG, "ChirpError: " + error.getMessage());
+        }
+
         mChirpConnect.setListener(this);
         mChirpConnect.setInputAudioCallback(new Function1<byte[], Unit>() {
             @Override
@@ -95,7 +106,11 @@ public class ChirpManager implements ConnectEventListener {
     }
 
     public void sendBytes(byte[] bytesToSend) {
-        mChirpConnect.send(bytesToSend);
+        ChirpError error = mChirpConnect.send(bytesToSend);
+        if (error.getCode() > 0) {
+            Log.e(TAG, "ChirpError: " + error.getMessage());
+        }
+
     }
 
 
@@ -111,6 +126,9 @@ public class ChirpManager implements ConnectEventListener {
 
     @Override
     public void onSent(@NotNull byte[] bytes, int i) {
+        if (mSender != null) {
+            mSender.onSent(bytes, i);
+        }
         Log.d(TAG, "This is called when a payload has been sent " + Arrays.toString(bytes) + " on channel: " + i);
     }
 

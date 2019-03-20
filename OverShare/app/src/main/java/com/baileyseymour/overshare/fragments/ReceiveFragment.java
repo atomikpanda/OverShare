@@ -13,6 +13,7 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.design.chip.Chip;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -45,6 +46,7 @@ import java.util.TimerTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.chirp.connect.models.ChirpError;
 import pl.tajchert.nammu.Nammu;
 import pl.tajchert.nammu.PermissionCallback;
 
@@ -324,7 +326,10 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
         super.onPause();
         // Stop receiving on pause
         ChirpManager manager = ChirpManager.getInstance(getContext());
-        manager.getChirpConnect().stop();
+        ChirpError error = manager.getChirpConnect().stop();
+        if (error.getCode() > 0) {
+            Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
+        }
 
     }
 
@@ -356,7 +361,10 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
         // Start listening via Chirp
         ChirpManager manager = ChirpManager.getInstance(getContext());
         mChirpStartMillis = System.currentTimeMillis();
-        manager.getChirpConnect().startReceiver();
+        ChirpError error = manager.getChirpConnect().startReceiver();
+        if (error.getCode() > 0) {
+            Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
+        }
     }
 
     @Override
