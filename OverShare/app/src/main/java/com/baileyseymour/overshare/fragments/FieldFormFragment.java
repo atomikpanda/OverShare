@@ -142,7 +142,6 @@ public class FieldFormFragment extends Fragment {
         setupSpinner();
         loadFieldSpinner();
 
-
     }
 
     private TextWatcher mTextWatcher;
