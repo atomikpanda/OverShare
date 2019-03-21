@@ -130,6 +130,12 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
             ChirpManager.getInstance(getContext());
         }
 
+        setupRecycler();
+
+    }
+
+    private void setupRecycler() {
+
         String uid = FirebaseAuth.getInstance().getUid();
 
         Query query = null;
@@ -178,7 +184,6 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
             recyclerView.setAdapter(mCardAdapter);
             scrollToTop(recyclerView);
         }
-
     }
 
     private void scrollToTop(RecyclerView recyclerView) {
