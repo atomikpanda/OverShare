@@ -4,7 +4,9 @@
 
 package com.baileyseymour.overshare.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -25,6 +27,8 @@ import com.mikepenz.aboutlibraries.LibsBuilder;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.baileyseymour.overshare.fragments.AccountFragment.RESULT_SIGN_OUT;
+
 public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener, CardsListFragment.FabContainer {
 
     // Views
@@ -36,10 +40,12 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     TabLayout mTabLayout;
 
     @BindView(R.id.fab)
-    protected FloatingActionButton fab;
+    FloatingActionButton fab;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+
+    private static final int RC_ACCOUNT = 420;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,9 +96,10 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         int id = item.getItemId();
 
         if (id == R.id.menu_action_account) {
-            // TODO: Launch AccountActivity
+            // Launch AccountActivity
+            Intent accountIntent = new Intent(MainActivity.this, AccountActivity.class);
+            startActivityForResult(accountIntent, RC_ACCOUNT);
 
-            Toast.makeText(MainActivity.this, "TODO: Milestone 3: Account", Toast.LENGTH_SHORT).show();
             return true;
         } else if (id == R.id.menu_action_about) {
             // Create the libs builder activity
@@ -127,4 +134,11 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_SIGN_OUT && requestCode == RC_ACCOUNT) {
+            finish();
+        }
+    }
 }
