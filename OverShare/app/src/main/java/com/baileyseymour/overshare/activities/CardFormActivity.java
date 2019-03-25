@@ -11,6 +11,7 @@ import android.os.Bundle;
 import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.fragments.CardFormFragment;
 import com.baileyseymour.overshare.models.Card;
+import com.baileyseymour.overshare.utils.ThemeUtils;
 
 import static com.baileyseymour.overshare.interfaces.Constants.EXTRA_CARD;
 import static com.baileyseymour.overshare.interfaces.Constants.EXTRA_CARD_DOC_ID;
@@ -19,6 +20,7 @@ public class CardFormActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ThemeUtils.applyTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_card_form);
 

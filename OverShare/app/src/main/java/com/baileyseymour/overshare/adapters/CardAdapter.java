@@ -85,8 +85,10 @@ public class CardAdapter extends FirestoreRecyclerAdapter<Card, CardViewHolder> 
 
         // Pass the card action up to the actual CardActionListener
         if (mActionListener != null) {
-            DocumentSnapshot docSnapshot = getSnapshots().getSnapshot(position);
-            mActionListener.onCardAction(action, getItem(position), position, docSnapshot);
+            if (getSnapshots().size() > position && position > -1) {
+                DocumentSnapshot docSnapshot = getSnapshots().getSnapshot(position);
+                mActionListener.onCardAction(action, getItem(position), position, docSnapshot);
+            }
         }
     }
 }

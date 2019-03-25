@@ -16,7 +16,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +36,8 @@ import butterknife.OnClick;
 public class AccountFragment extends Fragment {
 
     public static final int RESULT_SIGN_OUT = 529;
+
+    // Views
 
     @BindView(R.id.editTextName)
     TextInputEditText editTextName;
@@ -73,7 +74,7 @@ public class AccountFragment extends Fragment {
 
         setHasOptionsMenu(true);
 
-        // Make sure layout view has been loaded
+        // Load user data
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             String email = user.getEmail();
@@ -109,48 +110,62 @@ public class AccountFragment extends Fragment {
 
         editTextName.setError(null);
 
+        // Validate
         if (EditTextUtils.getString(editTextName).trim().isEmpty()) {
             editTextName.setError(getString(R.string.do_not_blank));
             return;
         }
 
+        // Update the user name
         if (user != null) {
             user.updateProfile(new UserProfileChangeRequest.Builder()
                     .setDisplayName(EditTextUtils.getString(editTextName)).build());
         }
+
+        Toast.makeText(getContext(), R.string.account_info_saved, Toast.LENGTH_SHORT).show();
+
+        // Close
         if (getActivity() != null)
             getActivity().finish();
     }
 
     @OnClick(R.id.buttonSignOut)
     public void onSignOut() {
+        // Sign out from firebase
         FirebaseAuth.getInstance().signOut();
 
         if (getActivity() != null) {
+            // Tell MainActivity to finish
             getActivity().setResult(RESULT_SIGN_OUT);
+
+            // Tell AccountActivity to finish
             getActivity().finish();
         }
 
+        // Start the splash screen activity
         Intent intent = new Intent(getContext(), SplashActivity.class);
         startActivity(intent);
     }
 
     @OnClick(R.id.buttonResetPassword)
     public void onResetPassword() {
+
+        // Get the user
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null || user.getEmail() == null) {
             return;
         }
 
+        // Try to send the email
         FirebaseAuth.getInstance().sendPasswordResetEmail(user.getEmail()).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Toast.makeText(getContext(), "Reset password email sent!", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), R.string.reset_pw_sent, Toast.LENGTH_LONG).show();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getContext(), "Failed to send reset email.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.reset_pw_fail, Toast.LENGTH_SHORT).show();
             }
 
         });

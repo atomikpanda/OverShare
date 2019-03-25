@@ -6,7 +6,10 @@ package com.baileyseymour.overshare.adapters.viewholders;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.baileyseymour.overshare.R;
@@ -17,7 +20,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class CardViewHolder extends RecyclerView.ViewHolder {
+public class CardViewHolder extends RecyclerView.ViewHolder implements PopupMenu.OnMenuItemClickListener {
 
     // Views
     @BindView(R.id.cardTitleTextView)
@@ -40,15 +43,18 @@ public class CardViewHolder extends RecyclerView.ViewHolder {
         } else {
             itemView.findViewById(R.id.editCardButton).setVisibility(View.VISIBLE);
         }
+
     }
 
     // Action Button Click listeners
 
     @OnClick(R.id.shareCardButton)
-    public void shareTapped() {
+    public void shareTapped(View button) {
 
-        if (mListener != null)
-            mListener.onCardAction(CardActionListener.ACTION_SHARE_CARD, null, getAdapterPosition(), null);
+        PopupMenu popup = new PopupMenu(itemView.getContext(), button, Gravity.TOP);
+        popup.setOnMenuItemClickListener(this);
+        popup.inflate(R.menu.menu_share);
+        popup.show();
     }
 
     @OnClick(R.id.deleteCardButton)
@@ -62,6 +68,25 @@ public class CardViewHolder extends RecyclerView.ViewHolder {
     public void editTapped() {
 
         if (mListener != null)
-            mListener.onCardAction(CardActionListener.ACTION_EDIT_CARD,null, getAdapterPosition(), null);
+            mListener.onCardAction(CardActionListener.ACTION_EDIT_CARD, null, getAdapterPosition(), null);
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        if (mListener != null) {
+            String action = CardActionListener.ACTION_SHARE_CARD_CHIRP;
+
+            if (item.getItemId() == R.id.menu_action_share_download) {
+                action = CardActionListener.ACTION_SHARE_CARD_DOWNLOAD;
+            } else if (item.getItemId() == R.id.menu_action_share_copy) {
+                action = CardActionListener.ACTION_SHARE_CARD_COPY;
+            } else if (item.getItemId() == R.id.menu_action_share_url) {
+                action = CardActionListener.ACTION_SHARE_CARD_URL;
+            }
+
+            mListener.onCardAction(action, null, getAdapterPosition(), null);
+        }
+
+        return false;
     }
 }

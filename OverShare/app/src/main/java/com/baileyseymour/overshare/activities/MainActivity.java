@@ -5,6 +5,8 @@
 package com.baileyseymour.overshare.activities;
 
 import android.content.Intent;
+import android.content.UriMatcher;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -13,16 +15,23 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.adapters.MainFragmentPagerAdapter;
 import com.baileyseymour.overshare.fragments.CardsListFragment;
+import com.baileyseymour.overshare.fragments.ReceiveFragment;
+import com.baileyseymour.overshare.utils.CardUtils;
 import com.baileyseymour.overshare.utils.FieldUtils;
+import com.baileyseymour.overshare.utils.ThemeUtils;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,18 +55,52 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     Toolbar mToolbar;
 
     private static final int RC_ACCOUNT = 420;
+    private static final int MATCH_CARD_URI = 73;
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ThemeUtils.applyTheme(this);
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
         FieldUtils.init(getResources());
 
         setSupportActionBar(mToolbar);
 
         initializeTabs();
 
+        handleIntent();
+
+
+    }
+
+    private void handleIntent() {
+        Intent intent = getIntent();
+
+        Uri data = intent.getData();
+        if (data != null) {
+            UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
+            matcher.addURI("baileyseymour.com", "overshare/card/*", MATCH_CARD_URI);
+            int match = matcher.match(data);
+            if (match == MATCH_CARD_URI) {
+                String identifier = data.getLastPathSegment();
+                if (identifier == null) identifier = "";
+
+                Log.i(TAG, "handleIntent: " + identifier);
+
+                if (!identifier.trim().isEmpty()) {
+
+                    CardUtils.onReceivedChirpHexId(identifier,
+                            FirebaseFirestore.getInstance());
+                    TabLayout.Tab tab = mTabLayout.getTabAt(1);
+                    if (tab != null)
+                        tab.select();
+                }
+            }
+        }
     }
 
     @Override
@@ -79,7 +122,9 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         }
 
         // Load the view pager into the tab layout
-        mViewPager.setAdapter(new MainFragmentPagerAdapter(getSupportFragmentManager(), this));
+        if (mViewPager.getAdapter() == null)
+            mViewPager.setAdapter(new MainFragmentPagerAdapter(getSupportFragmentManager(), this));
+
         mTabLayout.setupWithViewPager(mViewPager);
         mViewPager.addOnPageChangeListener(this);
     }
@@ -88,6 +133,10 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        menu.findItem(R.id.menu_action_theme).setTitle(
+                getString(ThemeUtils.isNightModeEnabled(this)
+                        ? R.string.disable_night_mode : R.string.enable_night_mode));
         return true;
     }
 
@@ -106,6 +155,10 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
             new LibsBuilder()
                     .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
                     .start(MainActivity.this);
+            return true;
+        } else if (id == R.id.menu_action_theme) {
+            ThemeUtils.setNightModeEnabled(!ThemeUtils.isNightModeEnabled(this), this);
+            this.recreate();
             return true;
         }
 

@@ -57,4 +57,6 @@ dependencies {
     implementation 'com.github.tajchert:nammu:1.2.0'
     implementation 'com.tyorikan:voice-recording-visualizer:1.0.3@aar'
     // implementation 'com.github.kenglxn.QRGen:android:2.5.0'
+    implementation 'com.airbnb:deeplinkdispatch:3.1.1'
+    annotationProcessor 'com.airbnb:deeplinkdispatch-processor:3.1.1'
 }
