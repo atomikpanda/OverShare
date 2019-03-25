@@ -23,11 +23,11 @@
             android:id="@+id/mainTabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabBackground="@color/colorPrimary"
-            app:tabIndicatorColor="@android:color/white"
+            app:tabBackground="?attr/colorPrimary"
+            app:tabIndicatorColor="?attr/colorTabIndicator"
             app:tabMode="fixed"
-            app:tabSelectedTextColor="@android:color/white"
-            app:tabTextColor="#BEFFFFFF" />
+            app:tabSelectedTextColor="?attr/colorTabTextSelected"
+            app:tabTextColor="#8DFFFFFF" />
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_main" />

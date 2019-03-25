@@ -78,5 +78,16 @@
     <string name="empty_state_icon">Empty State Icon</string>
     <string name="paste">Paste</string>
     <string name="state_icon">State Icon</string>
+    <string name="account_info_saved">Account info saved.</string>
+    <string name="reset_pw_sent">Reset password email sent!</string>
+    <string name="reset_pw_fail">Failed to send reset email.</string>
+    <string name="receive">Receive</string>
+    <string name="toggle_night_mode">Toggle Night Mode</string>
+    <string name="disable_night_mode">Disable Night Mode</string>
+    <string name="enable_night_mode">Enable Night Mode</string>
+    <string name="download_as_mp3">Download as MP3</string>
+    <string name="play_audio">Play Audio</string>
+    <string name="copy_as_text">Share as Plain Text</string>
+    <string name="copy_card_url">Share Card URL</string>
 
 </resources>

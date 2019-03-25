@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.fragments.AccountFragment;
+import com.baileyseymour.overshare.utils.ThemeUtils;
 
 import butterknife.ButterKnife;
 
@@ -17,10 +18,14 @@ import butterknife.ButterKnife;
 public class AccountActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        ThemeUtils.applyTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_container_layout);
         ButterKnife.bind(this);
 
+        setTitle(R.string.account);
+
+        // Load fragment
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragmentContainer,

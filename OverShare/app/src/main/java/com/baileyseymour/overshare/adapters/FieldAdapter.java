@@ -5,6 +5,7 @@
 package com.baileyseymour.overshare.adapters;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -34,11 +35,8 @@ public class FieldAdapter extends RecyclerView.Adapter<FieldViewHolder> implemen
     private final ArrayList<Field> mFields;
     private final FieldClickListener mFieldClickListener;
 
-    @BindColor(R.color.iconsGray)
-    int iconsGray;
-
-    @BindColor(R.color.colorAccent)
-    int colorAccent;
+    @BindColor(R.color.field_colors)
+    ColorStateList fieldColors;
 
     // Standard constructors
     FieldAdapter(Card card, FieldClickListener fieldClickListener) {
@@ -70,8 +68,9 @@ public class FieldAdapter extends RecyclerView.Adapter<FieldViewHolder> implemen
 
         SmartField smartField = new SmartField(field);
 
-        viewHolder.valueTextView.setTextColor(smartField.isValueURL() ? colorAccent : iconsGray);
         viewHolder.titleTextView.setText(field.getTitle());
+        viewHolder.valueTextView.setTextColor(fieldColors);
+        viewHolder.valueTextView.setEnabled(smartField.isValueURL());
 
         // Simply allow some additional customization for displaying
         String displayString = String.format(Locale.US, smartField.getFieldType().getDisplayFormat(), field.getValue());

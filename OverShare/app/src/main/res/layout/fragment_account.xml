@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/inner_padding"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="@android:color/black"
+        android:textColor="?android:attr/textColorPrimary"
         tools:text="johndoe@example.com" />
 
     <Button

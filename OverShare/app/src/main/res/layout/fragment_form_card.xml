@@ -38,7 +38,7 @@
         android:paddingEnd="@dimen/outer_padding"
         android:text="@string/fields"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
-        android:textColor="@color/secondaryText" />
+        android:textColor="?attr/colorEmptyStateText" />
 
     <ListView
         android:id="@+id/fieldsListView"

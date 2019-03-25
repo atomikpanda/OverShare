@@ -6,6 +6,8 @@ package com.baileyseymour.overshare.fragments;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -18,11 +20,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.baileyseymour.overshare.R;
+import com.baileyseymour.overshare.utils.CardUtils;
 import com.baileyseymour.overshare.utils.ChirpManager;
 import com.baileyseymour.overshare.views.CustomVisualizer;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,9 +41,14 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import org.apache.commons.codec.binary.Hex;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -69,6 +79,7 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
     // Instance vars
     private long mChirpStartMillis = 0;
     private String mReceivedId;
+    private ArrayList<String> mReceivedIds;
     private FirebaseFirestore mDB;
     private State mState;
 
@@ -110,7 +121,7 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
     TextView stateDescription;
 
     @BindView(R.id.buttonPrimaryAction)
-    TextView buttonPrimaryAction;
+    Button buttonPrimaryAction;
 
     @BindView(R.id.visualizer)
     CustomVisualizer visualizerView;
@@ -138,6 +149,48 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
         return view;
     }
 
+    private void addReceivedId(String id) {
+        if (mReceivedIds != null && id != null && !id.trim().isEmpty()) {
+            int sizeBefore = mReceivedIds.size();
+            mReceivedIds.add(id);
+
+            // Remove duplicates
+            LinkedHashSet<String> set = new LinkedHashSet<>(mReceivedIds);
+            mReceivedIds.clear();
+            mReceivedIds.addAll(set);
+            int sizeAfter = mReceivedIds.size();
+
+            if (sizeBefore == sizeAfter) {
+                Toast.makeText(getContext(), "Already in received queue", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "Added to received queue", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        refreshButton();
+    }
+
+    private boolean shouldShowSave() {
+        return (mReceivedIds != null && mReceivedIds.size() > 0);
+    }
+
+    private void refreshButton() {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                if (shouldShowSave()) {
+                    buttonPrimaryAction.setVisibility(View.VISIBLE);
+                } else {
+                    buttonPrimaryAction.setVisibility(View.GONE);
+                }
+                if (mReceivedIds != null) {
+                    int size = mReceivedIds.size();
+                    buttonPrimaryAction.setText(String.format(Locale.US, "Save %d Card%s", size, size > 1 ? "s" : ""));
+                }
+            }
+        });
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -150,6 +203,7 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        mReceivedIds = new ArrayList<>();
         if (getContext() != null) {
             Nammu.init(getContext().getApplicationContext());
             ChirpManager.getInstance(getContext()).setReceiver(this);
@@ -168,10 +222,11 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
                         // Refresh the visualizer view
                         if (mInputBytes != null && visualizerView != null && mState != null)
                             visualizerView.triggerReceive(
-                                    mState.id == STATE_RECEIVED ? 0 : CustomVisualizer.calcVolume(mInputBytes));
+                                    (mState.id != STATE_RECEIVING) ? 0 : CustomVisualizer.calcVolume(mInputBytes));
                     }
                 }, 0, 100);
         }
+
     }
 
     private void setState(final State state) {
@@ -185,7 +240,13 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
                 // Update the UI on the main thread
                 stateDescription.setText(state.description);
                 primaryIconImageView.setImageResource(state.icon);
-                buttonPrimaryAction.setVisibility(state.showButton ? View.VISIBLE : View.GONE);
+//                if (state.id == STATE_RECEIVING) {
+//                    buttonPrimaryAction.setEnabled(false);
+//                } else {
+//                    buttonPrimaryAction.setEnabled(true);
+//                }
+                refreshButton();
+                // buttonPrimaryAction.setVisibility(state.showButton ? View.VISIBLE : View.GONE);
 
             }
         });
@@ -196,8 +257,12 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
         if (getActivity() == null) return;
 
         // If we have something saved save it to the db
-        if (mReceivedId != null) {
-            onReceivedChirpHexId(mReceivedId);
+        if (mReceivedIds != null) {
+
+            for (String id : mReceivedIds) {
+                onReceivedChirpHexId(id);
+            }
+
         }
 
         getActivity().finish();
@@ -210,41 +275,8 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
 
     private void onReceivedChirpHexId(String chirpHexTestId) {
 
-        final String savedByUID = FirebaseAuth.getInstance().getUid();
-        if (savedByUID == null) return;
-
-        // Query for a card matching the hex id given
-        Query query = mDB.collection(COLLECTION_CARDS)
-                .whereEqualTo(KEY_HEX_ID, chirpHexTestId)
-                .orderBy(KEY_CREATED_TIMESTAMP, Query.Direction.DESCENDING);
-        query.get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            // Get documents
-                            List<DocumentSnapshot> documents = task.getResult().getDocuments();
-
-                            if (documents.size() > 0) {
-                                // Get the first matching card
-                                DocumentSnapshot snapshot = documents.get(0);
-                                Map<String, Object> map = snapshot.getData();
-                                if (map != null) {
-                                    // Add the current UID as the saving account
-                                    map.put(KEY_SAVED_BY_UID, savedByUID);
-
-                                    // Make the createdTimestamp reflect the new saved date
-                                    map.put(KEY_CREATED_TIMESTAMP, FieldValue.serverTimestamp());
-                                    mDB.collection(COLLECTION_SAVED)
-                                            .document()
-                                            .set(map);
-                                }
-
-                            }
-                        }
-                    }
-                });
+        if (mDB != null)
+            CardUtils.onReceivedChirpHexId(chirpHexTestId, mDB);
     }
 
     @Override
@@ -267,10 +299,11 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
 
             Log.d("ChirpSDK: ", "Received " + identifier);
 
-            mReceivedId = identifier;
 
             // If we have a valid identifier change state
             if (!identifier.trim().isEmpty()) {
+
+                addReceivedId(identifier);
 
                 State state = new State(R.string.received, R.drawable.ic_icons8_id_card,
                         true, STATE_RECEIVED);

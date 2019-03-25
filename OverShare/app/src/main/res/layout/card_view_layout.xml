@@ -8,6 +8,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/inner_padding"
     android:minHeight="@dimen/card_min_height"
+    app:cardBackgroundColor="?attr/colorCardBg"
     app:cardCornerRadius="@dimen/outer_padding"
     app:cardElevation="@dimen/card_elevation">
 

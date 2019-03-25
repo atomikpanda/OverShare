@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.fragments.FieldFormFragment;
 import com.baileyseymour.overshare.models.Field;
+import com.baileyseymour.overshare.utils.ThemeUtils;
 
 import static com.baileyseymour.overshare.interfaces.Constants.EXTRA_FIELD;
 
@@ -18,6 +19,7 @@ import static com.baileyseymour.overshare.interfaces.Constants.EXTRA_FIELD;
 public class FieldFormActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ThemeUtils.applyTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_container_layout);
 

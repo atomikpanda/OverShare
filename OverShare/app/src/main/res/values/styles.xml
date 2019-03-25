@@ -1,4 +1,13 @@
 <resources>
+    <attr name="colorIcons" format="reference" />
+    <attr name="colorFragmentBackground" format="color" />
+    <attr name="colorEmptyStateText" format="reference" />
+    <attr name="colorEmptyStateIconBg" format="reference" />
+    <attr name="colorEmptyStateIconFg" format="reference" />
+    <attr name="colorTabIndicator" format="reference" />
+    <attr name="colorFieldLink" format="reference" />
+    <attr name="colorCardBg" format="reference" />
+    <attr name="colorTabTextSelected" format="reference" />
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -6,6 +15,30 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorIcons">@color/iconsGray</item>
+        <item name="colorFragmentBackground">@color/fragmentBg</item>
+        <item name="colorEmptyStateText">@color/emptyStateTextColor</item>
+        <item name="colorTabIndicator">@android:color/white</item>
+        <item name="colorEmptyStateIconBg">@color/colorEmptyStateIconBg</item>
+        <item name="colorEmptyStateIconFg">@color/colorEmptyStateIconFg</item>
+        <item name="colorFieldLink">@color/colorFieldLink</item>
+        <item name="colorCardBg">@color/colorCardBg</item>
+        <item name="colorTabTextSelected">@android:color/white</item>
+        <item name="android:windowBackground">@color/windowBg</item>
+    </style>
+
+    <style name="AppThemeDark" parent="Theme.AppCompat">
+        <item name="colorPrimary">#282828</item>
+        <item name="colorPrimaryDark">#1f1f1f</item>
+        <item name="colorAccent">#f57d46</item>
+        <item name="colorIcons">@color/iconsGrayDark</item>
+        <item name="colorFragmentBackground">#1d1d1d</item>
+        <item name="colorEmptyStateText">@color/emptyStateTextColorDark</item>
+        <item name="colorTabIndicator">?attr/colorAccent</item>
+        <item name="colorFieldLink">@color/colorFieldLinkDark</item>
+        <item name="colorCardBg">@color/colorCardBgDark</item>
+        <item name="colorTabTextSelected">?attr/colorAccent</item>
+        <item name="android:windowBackground">@color/windowBgDark</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -13,12 +46,18 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="AppThemeDark.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="EmptyStateText" parent="TextAppearance.AppCompat.Title">
-        <item name="android:textColor">@color/emptyStateTextColor</item>
+        <item name="android:textColor">?attr/colorEmptyStateText</item>
     </style>
 
     <style name="iconsCardGray">
@@ -27,8 +66,9 @@
         <item name="android:paddingEnd">4dp</item>
         <item name="android:paddingTop">4dp</item>
         <item name="android:paddingBottom">0dp</item>
-        <item name="android:tint">@color/iconsGray</item>
+        <item name="android:tint">?attr/colorIcons</item>
     </style>
+
     <style name="iconsCardGray.Bottom">
         <item name="android:paddingTop">8dp</item>
     </style>
@@ -38,5 +78,4 @@
         <item name="android:layout_marginTop">12dp</item>
         <item name="android:layout_marginBottom">12dp</item>
     </style>
-
 </resources>

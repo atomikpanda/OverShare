@@ -27,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.activities.CardFormActivity;
@@ -40,7 +41,10 @@ import com.baileyseymour.overshare.adapters.viewholders.CardViewHolder;
 import com.baileyseymour.overshare.models.Field;
 import com.baileyseymour.overshare.models.SmartField;
 import com.baileyseymour.overshare.utils.AudioUtils;
+import com.baileyseymour.overshare.utils.CardUtils;
+import com.baileyseymour.overshare.utils.ChirpAudioDownloaderUtil;
 import com.baileyseymour.overshare.utils.ChirpManager;
+import com.baileyseymour.overshare.utils.ClipboardUtils;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -58,6 +62,7 @@ import io.chirp.connect.models.ChirpError;
 import pl.tajchert.nammu.Nammu;
 import pl.tajchert.nammu.PermissionCallback;
 
+import static android.content.Intent.EXTRA_TEXT;
 import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_CARDS;
 import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_SAVED;
 import static com.baileyseymour.overshare.interfaces.Constants.EXTRA_CARD;
@@ -65,6 +70,7 @@ import static com.baileyseymour.overshare.interfaces.Constants.EXTRA_CARD_DOC_ID
 import static com.baileyseymour.overshare.interfaces.Constants.KEY_CREATED_BY_UID;
 import static com.baileyseymour.overshare.interfaces.Constants.KEY_CREATED_TIMESTAMP;
 import static com.baileyseymour.overshare.interfaces.Constants.KEY_SAVED_BY_UID;
+import static com.baileyseymour.overshare.utils.ChirpAudioDownloaderUtil.EXT_MP3;
 
 
 public class CardsListFragment extends Fragment implements FieldClickListener, CardActionListener, RecyclerEmptyStateListener, ChirpManager.Sender {
@@ -138,6 +144,10 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
 
         String uid = FirebaseAuth.getInstance().getUid();
 
+        if (uid == null) {
+            return;
+        }
+
         Query query = null;
 
         if (!getIsReceivedCards() && uid != null) {
@@ -156,8 +166,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
         FirestoreRecyclerOptions.Builder<Card> builder = new FirestoreRecyclerOptions.Builder<>();
 
         // Set the query
-        if (query != null)
-            builder.setQuery(query, Card.class);
+        builder.setQuery(query, Card.class);
 
         // Build options
         FirestoreRecyclerOptions<Card> options = builder.build();
@@ -328,14 +337,46 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
     // CardActionListener
 
     @Override
-    public void onCardAction(String action, Card card, int position, final DocumentSnapshot snapshot) {
+    public void onCardAction(String action, final Card card, int position, final DocumentSnapshot snapshot) {
         Log.d(TAG, "onCardAction: action: " + action + ", card: " + card + ", pos: " + position +
                 ", documentId: " + snapshot.getId());
 
         // Handle card actions
         switch (action) {
-            case ACTION_SHARE_CARD:
+            case ACTION_SHARE_CARD_CHIRP:
                 shareCardChirp(card, snapshot);
+                break;
+            case ACTION_SHARE_CARD_DOWNLOAD:
+                Nammu.askForPermission(this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        , new PermissionCallback() {
+                            @Override
+                            public void permissionGranted() {
+                                ChirpAudioDownloaderUtil.downloadCard(card, EXT_MP3, getContext());
+                            }
+
+                            @Override
+                            public void permissionRefused() {
+
+                            }
+                        });
+
+                break;
+            case ACTION_SHARE_CARD_COPY:
+                if (getContext() != null) {
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.putExtra(EXTRA_TEXT, CardUtils.sharableString(card));
+                    intent.setType("text/plain");
+                    startActivity(Intent.createChooser(intent, "Share Card Text"));
+                }
+                break;
+            case ACTION_SHARE_CARD_URL:
+                if (getContext() != null) {
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.putExtra(EXTRA_TEXT, "https://baileyseymour.com/overshare/card/" + card.getHexId());
+                    intent.setType("text/plain");
+                    startActivity(Intent.createChooser(intent, "Share Card URL"));
+                }
                 break;
             case ACTION_DELETE_CARD:
 

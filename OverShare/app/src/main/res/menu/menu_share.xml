@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_action_share_chirp"
+        android:title="@string/play_audio" />
+    <item
+        android:id="@+id/menu_action_share_download"
+        android:title="@string/download_as_mp3" />
+    <item
+        android:id="@+id/menu_action_share_copy"
+        android:title="@string/copy_as_text" />
+    <item
+        android:id="@+id/menu_action_share_url"
+        android:title="@string/copy_card_url" />
+</menu>
