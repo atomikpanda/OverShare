@@ -55,6 +55,7 @@ import org.apache.commons.codec.binary.Hex;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.Locale;
 
 import io.chirp.connect.models.ChirpError;
 import pl.tajchert.nammu.Nammu;
@@ -65,9 +66,11 @@ import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_CARDS;
 import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_SAVED;
 import static com.baileyseymour.overshare.interfaces.Constants.EXTRA_CARD;
 import static com.baileyseymour.overshare.interfaces.Constants.EXTRA_CARD_DOC_ID;
+import static com.baileyseymour.overshare.interfaces.Constants.EXTRA_IS_RECEIVED;
 import static com.baileyseymour.overshare.interfaces.Constants.KEY_CREATED_BY_UID;
 import static com.baileyseymour.overshare.interfaces.Constants.KEY_CREATED_TIMESTAMP;
 import static com.baileyseymour.overshare.interfaces.Constants.KEY_SAVED_BY_UID;
+import static com.baileyseymour.overshare.interfaces.Constants.URI_HOST;
 import static com.baileyseymour.overshare.utils.ChirpAudioDownloaderUtil.EXT_MP3;
 
 
@@ -371,7 +374,8 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
             case ACTION_SHARE_CARD_URL:
                 if (getContext() != null) {
                     Intent intent = new Intent(Intent.ACTION_SEND);
-                    intent.putExtra(EXTRA_TEXT, "https://baileyseymour.com/overshare/card/" + card.getHexId());
+                    String url = String.format(Locale.US, "https://%s/overshare/card/%s", URI_HOST, card.getHexId());
+                    intent.putExtra(EXTRA_TEXT, url);
                     intent.setType("text/plain");
                     startActivity(Intent.createChooser(intent, "Share Card URL"));
                 }
@@ -401,6 +405,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
                 Intent editIntent = new Intent(getContext(), CardFormActivity.class);
                 editIntent.putExtra(EXTRA_CARD, card);
                 editIntent.putExtra(EXTRA_CARD_DOC_ID, snapshot.getId());
+                editIntent.putExtra(EXTRA_IS_RECEIVED, getIsReceivedCards());
                 editIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(editIntent);
 

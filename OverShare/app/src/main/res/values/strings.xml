@@ -89,5 +89,12 @@
     <string name="play_audio">Play Audio</string>
     <string name="copy_as_text">Share as Plain Text</string>
     <string name="copy_card_url">Share Card URL</string>
+    <string name="in_received">Already in received queue</string>
+    <string name="added_received">Added to received queue</string>
+    <plurals name="save_btn_fmt">
+        <item quantity="one">Save %d card</item>
+        <item quantity="other">Save %d cards</item>
+    </plurals>
+
 
 </resources>

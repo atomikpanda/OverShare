@@ -33,6 +33,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.baileyseymour.overshare.fragments.AccountFragment.RESULT_SIGN_OUT;
+import static com.baileyseymour.overshare.interfaces.Constants.URI_HOST;
+import static com.baileyseymour.overshare.interfaces.Constants.URI_PATH;
 
 public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener, CardsListFragment.FabContainer {
 
@@ -70,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
         handleIntent();
 
-
     }
 
     private void handleIntent() {
@@ -78,19 +79,27 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
         Uri data = intent.getData();
         if (data != null) {
+            // Match only our URI
             UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
-            matcher.addURI("baileyseymour.com", "overshare/card/*", MATCH_CARD_URI);
+            matcher.addURI(URI_HOST, URI_PATH, MATCH_CARD_URI);
+
             int match = matcher.match(data);
             if (match == MATCH_CARD_URI) {
+
+                // Extract the identifier
                 String identifier = data.getLastPathSegment();
                 if (identifier == null) identifier = "";
 
-                Log.i(TAG, "handleIntent: " + identifier);
+                Log.d(TAG, "handleIntent: " + identifier);
 
+                // Validate id
                 if (!identifier.trim().isEmpty()) {
 
+                    // Save to Firebase DB
                     CardUtils.onReceivedChirpHexId(identifier,
                             FirebaseFirestore.getInstance());
+
+                    // Select the received cards tab
                     TabLayout.Tab tab = mTabLayout.getTabAt(1);
                     if (tab != null)
                         tab.select();
@@ -127,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
