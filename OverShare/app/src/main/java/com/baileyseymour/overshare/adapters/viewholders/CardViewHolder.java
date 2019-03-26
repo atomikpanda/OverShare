@@ -38,11 +38,11 @@ public class CardViewHolder extends RecyclerView.ViewHolder implements PopupMenu
         mListener = listener;
 
         // Only show edit button on cards owned by the current user
-        if (isReceivedCards) {
-            itemView.findViewById(R.id.editCardButton).setVisibility(View.GONE);
-        } else {
-            itemView.findViewById(R.id.editCardButton).setVisibility(View.VISIBLE);
-        }
+//        if (isReceivedCards) {
+//            itemView.findViewById(R.id.editCardButton).setVisibility(View.GONE);
+//        } else {
+//            itemView.findViewById(R.id.editCardButton).setVisibility(View.VISIBLE);
+//        }
 
     }
 

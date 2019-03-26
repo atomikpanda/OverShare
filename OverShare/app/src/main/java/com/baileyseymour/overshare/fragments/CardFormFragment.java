@@ -47,6 +47,7 @@ import butterknife.OnClick;
 import static android.app.Activity.RESULT_OK;
 import static com.baileyseymour.overshare.fragments.FieldFormFragment.RESULT_DELETE_FIELD;
 import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_CARDS;
+import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_SAVED;
 import static com.baileyseymour.overshare.interfaces.Constants.EXTRA_FIELD;
 import static com.baileyseymour.overshare.interfaces.Constants.EXTRA_INDEX;
 import static com.baileyseymour.overshare.interfaces.Constants.KEY_FIELDS;
@@ -59,6 +60,7 @@ public class CardFormFragment extends Fragment implements AdapterView.OnItemClic
     // Constants
     private static final String ARG_CARD = "ARG_CARD";
     private static final String ARG_DOC_ID = "ARG_DOC_ID";
+    private static final String ARG_IS_RECEIVED = "ARG_IS_RECEIVED";
     private static final String TAG = "CardFormFragment";
     private static final int RC_ADD_FIELD = 300;
     private static final int RC_EDIT_FIELD = 548;
@@ -81,7 +83,7 @@ public class CardFormFragment extends Fragment implements AdapterView.OnItemClic
     }
 
     // Factory method
-    public static CardFormFragment newInstance(Card card, String docId) {
+    public static CardFormFragment newInstance(Card card, String docId, boolean isReceived) {
 
         Bundle args = new Bundle();
 
@@ -91,6 +93,8 @@ public class CardFormFragment extends Fragment implements AdapterView.OnItemClic
 
         if (docId != null)
             args.putString(ARG_DOC_ID, docId);
+
+        args.putBoolean(ARG_IS_RECEIVED, isReceived);
 
         CardFormFragment fragment = new CardFormFragment();
         fragment.setArguments(args);
@@ -103,6 +107,13 @@ public class CardFormFragment extends Fragment implements AdapterView.OnItemClic
 
         // Get an instance of the database
         mDB = FirebaseFirestore.getInstance();
+    }
+
+    private boolean getIsReceivedCards() {
+        if (getArguments() != null) {
+            return getArguments().getBoolean(ARG_IS_RECEIVED, false);
+        }
+        return false;
     }
 
     @Nullable
@@ -300,7 +311,8 @@ public class CardFormFragment extends Fragment implements AdapterView.OnItemClic
         if (getEditedFields() != null)
             updates.put(KEY_FIELDS, getEditedFields());
 
-        mDB.collection(COLLECTION_CARDS).document(getDocumentId()).update(updates);
+        mDB.collection(getIsReceivedCards() ? COLLECTION_SAVED : COLLECTION_CARDS)
+                .document(getDocumentId()).update(updates);
 
         if (getActivity() != null)
             getActivity().finish();

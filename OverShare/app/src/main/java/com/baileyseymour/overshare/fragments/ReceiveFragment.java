@@ -130,20 +130,25 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
     }
 
     private void addReceivedId(String id) {
+        // Check that we have valid data
         if (mReceivedIds != null && id != null && !id.trim().isEmpty()) {
             int sizeBefore = mReceivedIds.size();
+
+            // Add the received card id
             mReceivedIds.add(id);
 
             // Remove duplicates
             LinkedHashSet<String> set = new LinkedHashSet<>(mReceivedIds);
             mReceivedIds.clear();
             mReceivedIds.addAll(set);
+
             int sizeAfter = mReceivedIds.size();
 
+            // Check if the item was removed as being a duplicate
             if (sizeBefore == sizeAfter) {
-                Toast.makeText(getContext(), "Already in received queue", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.in_received, Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(getContext(), "Added to received queue", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), R.string.added_received, Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -165,7 +170,11 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
                 }
                 if (mReceivedIds != null) {
                     int size = mReceivedIds.size();
-                    buttonPrimaryAction.setText(String.format(Locale.US, "Save %d Card%s", size, size > 1 ? "s" : ""));
+
+                    // Set the button title using plurals
+                    String saveTitle = getResources()
+                            .getQuantityString(R.plurals.save_btn_fmt, size, size);
+                    buttonPrimaryAction.setText(saveTitle);
                 }
             }
         });

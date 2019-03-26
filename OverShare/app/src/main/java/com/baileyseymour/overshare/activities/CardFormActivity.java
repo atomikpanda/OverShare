@@ -15,6 +15,7 @@ import com.baileyseymour.overshare.utils.ThemeUtils;
 
 import static com.baileyseymour.overshare.interfaces.Constants.EXTRA_CARD;
 import static com.baileyseymour.overshare.interfaces.Constants.EXTRA_CARD_DOC_ID;
+import static com.baileyseymour.overshare.interfaces.Constants.EXTRA_IS_RECEIVED;
 
 public class CardFormActivity extends AppCompatActivity {
 
@@ -28,6 +29,7 @@ public class CardFormActivity extends AppCompatActivity {
         Intent intent = getIntent();
         int titleId = R.string.create_card;
         String docId = null;
+        boolean isReceived = false;
 
         // Get the card extra
         if (intent != null) {
@@ -35,6 +37,7 @@ public class CardFormActivity extends AppCompatActivity {
                 titleId = R.string.edit_card;
                 card = (Card) intent.getSerializableExtra(EXTRA_CARD);
                 docId = intent.getStringExtra(EXTRA_CARD_DOC_ID);
+                isReceived = intent.getBooleanExtra(EXTRA_IS_RECEIVED, false);
             }
         }
 
@@ -44,7 +47,7 @@ public class CardFormActivity extends AppCompatActivity {
         // Load the fragment
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentContainer,
-                        CardFormFragment.newInstance(card, docId))
+                        CardFormFragment.newInstance(card, docId, isReceived))
                 .commit();
     }
 }
