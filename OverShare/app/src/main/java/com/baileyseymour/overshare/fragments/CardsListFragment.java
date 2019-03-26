@@ -27,7 +27,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.activities.CardFormActivity;
@@ -44,7 +43,6 @@ import com.baileyseymour.overshare.utils.AudioUtils;
 import com.baileyseymour.overshare.utils.CardUtils;
 import com.baileyseymour.overshare.utils.ChirpAudioDownloaderUtil;
 import com.baileyseymour.overshare.utils.ChirpManager;
-import com.baileyseymour.overshare.utils.ClipboardUtils;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -148,14 +146,14 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
             return;
         }
 
-        Query query = null;
+        Query query;// = null;
 
-        if (!getIsReceivedCards() && uid != null) {
+        if (!getIsReceivedCards() /*&& uid != null*/) {
             // Query for only cards created by this user
             query = mDB.collection(COLLECTION_CARDS)
                     .orderBy(KEY_CREATED_TIMESTAMP, Query.Direction.DESCENDING)
                     .whereEqualTo(KEY_CREATED_BY_UID, uid);
-        } else if (uid != null) {
+        } else /*if (uid != null)*/ {
             // Query for only cards SAVED by this user
             query = mDB.collection(COLLECTION_SAVED)
                     .orderBy(KEY_CREATED_TIMESTAMP, Query.Direction.DESCENDING)

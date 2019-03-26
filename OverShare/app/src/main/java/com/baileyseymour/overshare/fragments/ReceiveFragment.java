@@ -6,8 +6,6 @@ package com.baileyseymour.overshare.fragments;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -25,30 +23,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.utils.CardUtils;
 import com.baileyseymour.overshare.utils.ChirpManager;
 import com.baileyseymour.overshare.views.CustomVisualizer;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import org.apache.commons.codec.binary.Hex;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -58,12 +44,6 @@ import butterknife.OnClick;
 import io.chirp.connect.models.ChirpError;
 import pl.tajchert.nammu.Nammu;
 import pl.tajchert.nammu.PermissionCallback;
-
-import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_CARDS;
-import static com.baileyseymour.overshare.interfaces.Constants.COLLECTION_SAVED;
-import static com.baileyseymour.overshare.interfaces.Constants.KEY_CREATED_TIMESTAMP;
-import static com.baileyseymour.overshare.interfaces.Constants.KEY_HEX_ID;
-import static com.baileyseymour.overshare.interfaces.Constants.KEY_SAVED_BY_UID;
 
 
 public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
@@ -78,7 +58,6 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
 
     // Instance vars
     private long mChirpStartMillis = 0;
-    private String mReceivedId;
     private ArrayList<String> mReceivedIds;
     private FirebaseFirestore mDB;
     private State mState;
@@ -109,6 +88,7 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
             this.icon = icon;
             this.showButton = showButton;
             this.id = id;
+            Log.d(TAG, "State: showBtn: " + this.showButton);
         }
     }
 
