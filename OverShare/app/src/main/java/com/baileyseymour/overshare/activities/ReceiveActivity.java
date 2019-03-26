@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.fragments.ReceiveFragment;
 import com.baileyseymour.overshare.utils.ThemeUtils;

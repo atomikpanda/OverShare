@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <color name="colorPrimary">#E64A19</color>
     <color name="windowBg">#fafafa</color>
     <color name="windowBgDark">#1d1d1d</color>
     <color name="colorPrimaryDark">#A13311</color>
     <!--<color name="primary_light">#FFCCBC</color>-->
     <color name="colorAccent">#0097A7</color>
-    <color name="colorAccentDark">#38BBCA</color>
+    <color name="colorAccentDark" tools:keep="@color/colorAccentDark">#38BBCA</color>
     <color name="colorFieldLink">#0097A7</color>
     <color name="colorFieldLinkDark">#38BBCA</color>
     <!--<color name="primaryText">#212121</color>-->
-    <color name="secondaryText">#757575</color>
+    <color name="secondaryText" tools:keep="@color/secondaryText">#757575</color>
     <!--<color name="icons">#FFFFFF</color>-->
     <color name="divider">#BDBDBD</color>
     <color name="fui_bgEmail">@color/colorAccent</color>
     <color name="colorEmptyStateIconBg">#80C9DA</color>
     <color name="colorEmptyStateIconFg">#E4795D</color>
     <color name="fragmentBg">#EAEAEA</color>
-    <color name="fragmentBgDark">#141414</color>
+    <color name="fragmentBgDark" tools:keep="@color/fragmentBgDark">#141414</color>
     <color name="emptyStateTextColor">#757575</color>
     <color name="emptyStateTextColorDark">#AFAFAF</color>
     <color name="iconsGray">#D2808080</color>
     <color name="iconsGrayDark">#94FFFFFF</color>
-    <color name="colorTabIndicatorDark">#BEFFFFFF</color>
+    <color name="colorTabIndicatorDark" tools:keep="@color/colorTabIndicatorDark">#BEFFFFFF</color>
     <color name="colorCardBgDark">#363636</color>
     <color name="colorCardBg">#FFFFFF</color>
 </resources>

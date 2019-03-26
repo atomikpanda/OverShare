@@ -19,19 +19,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.adapters.MainFragmentPagerAdapter;
 import com.baileyseymour.overshare.fragments.CardsListFragment;
-import com.baileyseymour.overshare.fragments.ReceiveFragment;
 import com.baileyseymour.overshare.utils.CardUtils;
 import com.baileyseymour.overshare.utils.FieldUtils;
 import com.baileyseymour.overshare.utils.ThemeUtils;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
