@@ -95,7 +95,7 @@ public class ChirpManager implements ConnectEventListener {
         if (getChirpConnect() != null) {
 
             try {
-                ChirpError error = getChirpConnect().start(true, false);
+                ChirpError error = getChirpConnect().startSender();
                 // Note: it's ok if an error occurs here as it is common that
                 // Chirp to tries to stop itself when running
                 if (error.getCode() > 0) {
@@ -119,7 +119,7 @@ public class ChirpManager implements ConnectEventListener {
     public ChirpError startReceiver() {
         Log.d(TAG, "startReceiver: ");
         if (getChirpConnect() != null) {
-            return getChirpConnect().start(false, true);
+            return getChirpConnect().startReceiver();
         }
 
         return new ChirpError(ChirpErrorCode.CHIRP_CONNECT_UNKNOWN_ERROR);
