@@ -52,11 +52,13 @@ import com.google.firebase.firestore.Query;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.IOUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Locale;
 
+import io.chirp.connect.models.ChirpConnectState;
 import io.chirp.connect.models.ChirpError;
 import pl.tajchert.nammu.Nammu;
 import pl.tajchert.nammu.PermissionCallback;
@@ -452,6 +454,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
                     try {
                         // Play sound
                         byte[] hexBytes = Hex.decodeHex(hexId.toCharArray());
+
                         manager.sendBytes(hexBytes);
                     } catch (DecoderException e) {
                         e.printStackTrace();
@@ -490,14 +493,31 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
         super.onPause();
 
         ChirpManager manager = ChirpManager.getInstance(getContext());
-        ChirpError error = manager.getChirpConnect().stop();
+        if (!manager.getChirpConnect().getState().equals(ChirpConnectState.CHIRP_CONNECT_STATE_NOT_CREATED)) {
+            try {
+                ChirpError error = manager.getChirpConnect().stop();
 
-        // Note: it's ok if an error occurs here as it is common that
-        // Chirp to tries to stop itself when running
-        if (error.getCode() > 0) {
-            Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
+                // Note: it's ok if an error occurs here as it is common that
+                // Chirp to tries to stop itself when running
+                if (error.getCode() > 0) {
+                    Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
+                }
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
         }
         manager.setSender(null);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ChirpManager manager = ChirpManager.getInstance(getContext());
+        try {
+            manager.getChirpConnect().close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

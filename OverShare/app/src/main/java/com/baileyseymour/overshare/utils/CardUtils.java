@@ -6,10 +6,12 @@ package com.baileyseymour.overshare.utils;
 
 import android.support.annotation.NonNull;
 
+import com.baileyseymour.overshare.interfaces.Constants;
 import com.baileyseymour.overshare.models.Card;
 import com.baileyseymour.overshare.models.Field;
 import com.baileyseymour.overshare.models.SmartField;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -47,12 +49,17 @@ public class CardUtils {
     }
 
     public static void addCardToSavedCollection(String chirpHexTestId, final FirebaseFirestore db) {
+        addCardToSavedCollection(chirpHexTestId, db, COLLECTION_CARDS);
+    }
+
+    private static void addCardToSavedCollection(final String chirpHexTestId, final FirebaseFirestore db,
+                                                 final String collectionName) {
 
         final String savedByUID = FirebaseAuth.getInstance().getUid();
         if (savedByUID == null) return;
 
         // Query for a card matching the hex id given
-        Query query = db.collection(COLLECTION_CARDS)
+        Query query = db.collection(collectionName)
                 .whereEqualTo(KEY_HEX_ID, chirpHexTestId)
                 .orderBy(KEY_CREATED_TIMESTAMP, Query.Direction.DESCENDING);
         query.get()
@@ -79,6 +86,8 @@ public class CardUtils {
                                             .set(map);
                                 }
 
+                            } else if (collectionName.equals(COLLECTION_CARDS)) {
+                                addCardToSavedCollection(chirpHexTestId, db, COLLECTION_SAVED);
                             }
                         }
                     }
