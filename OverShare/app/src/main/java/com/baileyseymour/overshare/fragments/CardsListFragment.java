@@ -70,6 +70,7 @@ import static com.baileyseymour.overshare.interfaces.Constants.EXTRA_IS_RECEIVED
 import static com.baileyseymour.overshare.interfaces.Constants.KEY_CREATED_BY_UID;
 import static com.baileyseymour.overshare.interfaces.Constants.KEY_CREATED_TIMESTAMP;
 import static com.baileyseymour.overshare.interfaces.Constants.KEY_SAVED_BY_UID;
+import static com.baileyseymour.overshare.interfaces.Constants.URI_CARD_PATH;
 import static com.baileyseymour.overshare.interfaces.Constants.URI_HOST;
 import static com.baileyseymour.overshare.utils.ChirpAudioDownloaderUtil.EXT_MP3;
 
@@ -135,6 +136,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
 
             setupFab();
             ChirpManager.getInstance(getContext());
+
         }
 
         setupRecycler();
@@ -233,20 +235,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
                             // We are on the receive cards tab, so FAB is receive
                             // Start ReceiveActivity via an intent
 
-                            Nammu.askForPermission(CardsListFragment.this, Manifest.permission.RECORD_AUDIO, new PermissionCallback() {
-                                @Override
-                                public void permissionGranted() {
-                                    fab.setEnabled(false);
-                                    // Start the receive activity only after getting permission
-                                    Intent receiveIntent = new Intent(getContext(), ReceiveActivity.class);
-                                    startActivityForResult(receiveIntent, RC_RECEIVE);
-                                }
-
-                                @Override
-                                public void permissionRefused() {
-
-                                }
-                            });
+                            goToReceive(fab);
 
                         }
 
@@ -254,6 +243,24 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
                 });
             }
         }
+    }
+
+    private void goToReceive(final FloatingActionButton fab) {
+        Nammu.askForPermission(CardsListFragment.this, Manifest.permission.RECORD_AUDIO, new PermissionCallback() {
+            @Override
+            public void permissionGranted() {
+                if (fab != null)
+                    fab.setEnabled(false);
+                // Start the receive activity only after getting permission
+                Intent receiveIntent = new Intent(getContext(), ReceiveActivity.class);
+                startActivityForResult(receiveIntent, RC_RECEIVE);
+            }
+
+            @Override
+            public void permissionRefused() {
+
+            }
+        });
     }
 
     // Is this fragment supposed to display the cards that were received vs created
@@ -374,7 +381,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
             case ACTION_SHARE_CARD_URL:
                 if (getContext() != null) {
                     Intent intent = new Intent(Intent.ACTION_SEND);
-                    String url = String.format(Locale.US, "https://%s/overshare/card/%s", URI_HOST, card.getHexId());
+                    String url = String.format(Locale.US, "https://%s/%s/%s", URI_HOST, URI_CARD_PATH, card.getHexId());
                     intent.putExtra(EXTRA_TEXT, url);
                     intent.setType("text/plain");
                     startActivity(Intent.createChooser(intent, "Share Card URL"));
@@ -484,6 +491,9 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
 
         ChirpManager manager = ChirpManager.getInstance(getContext());
         ChirpError error = manager.getChirpConnect().stop();
+
+        // Note: it's ok if an error occurs here as it is common that
+        // Chirp to tries to stop itself when running
         if (error.getCode() > 0) {
             Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
         }

@@ -4,12 +4,14 @@
 
 package com.baileyseymour.overshare.activities;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.UriMatcher;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -18,23 +20,27 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.adapters.MainFragmentPagerAdapter;
 import com.baileyseymour.overshare.fragments.CardsListFragment;
 import com.baileyseymour.overshare.utils.CardUtils;
-import com.baileyseymour.overshare.utils.FieldUtils;
 import com.baileyseymour.overshare.utils.ThemeUtils;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import pl.tajchert.nammu.Nammu;
 
 import static com.baileyseymour.overshare.fragments.AccountFragment.RESULT_SIGN_OUT;
+import static com.baileyseymour.overshare.interfaces.Constants.ACTION_SHORTCUT_RECEIVE;
+import static com.baileyseymour.overshare.interfaces.Constants.URI_CARD_PATH;
 import static com.baileyseymour.overshare.interfaces.Constants.URI_HOST;
-import static com.baileyseymour.overshare.interfaces.Constants.URI_PATH;
 
 public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener, CardsListFragment.FabContainer {
 
@@ -55,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     private static final int RC_ACCOUNT = 420;
     private static final int MATCH_CARD_URI = 73;
     private static final String TAG = "MainActivity";
+    private static final String EXTRA_THEME_CHANGED = "EXTRA_THEME_CHANGED";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +71,23 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        FieldUtils.init(getResources());
+        //FieldUtils.init(getResources());
 
         setSupportActionBar(mToolbar);
 
         initializeTabs();
+
+        // Show a snack bar on theme changed
+        if (getIntent() != null && getIntent().getBooleanExtra(EXTRA_THEME_CHANGED, false)) {
+            Snackbar.make(findViewById(android.R.id.content), R.string.theme_applied, Snackbar.LENGTH_SHORT)
+                    .setAction(R.string.undo, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            toggleNightMode();
+                        }
+                    })
+                    .show();
+        }
 
         handleIntent();
 
@@ -77,11 +96,44 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     private void handleIntent() {
         Intent intent = getIntent();
 
+        if (intent == null) return;
+
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            // Signed out
+            Intent splashIntent = new Intent(this, SplashActivity.class);
+            startActivity(splashIntent);
+            finish();
+
+            Toast.makeText(this, R.string.must_sign_in, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (intent.getAction() != null &&
+                intent.getAction().equals(ACTION_SHORTCUT_RECEIVE)) {
+
+            // Select the received cards tab
+            TabLayout.Tab tab = mTabLayout.getTabAt(1);
+            if (tab != null)
+                tab.select();
+
+            // If we have permission open receive
+            if (Nammu.hasPermission(MainActivity.this, Manifest.permission.RECORD_AUDIO)) {
+                Intent receiveIntent = new Intent(this, ReceiveActivity.class);
+                startActivity(receiveIntent);
+            } else {
+                Toast.makeText(this, R.string.micro_req_shortcut, Toast.LENGTH_SHORT).show();
+            }
+
+            return;
+        }
+
         Uri data = intent.getData();
         if (data != null) {
-            // Match only our URI
+
             UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
-            matcher.addURI(URI_HOST, URI_PATH, MATCH_CARD_URI);
+
+            // Match only our URI which is host/overshare/card/<card_id_here>
+            matcher.addURI(URI_HOST, URI_CARD_PATH + "/*", MATCH_CARD_URI);
 
             int match = matcher.match(data);
             if (match == MATCH_CARD_URI) {
@@ -96,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
                 if (!identifier.trim().isEmpty()) {
 
                     // Save to Firebase DB
-                    CardUtils.onReceivedChirpHexId(identifier,
+                    CardUtils.addCardToSavedCollection(identifier,
                             FirebaseFirestore.getInstance());
 
                     // Select the received cards tab
@@ -158,17 +210,27 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
             return true;
         } else if (id == R.id.menu_action_about) {
             // Create the libs builder activity
+            boolean nightModeEnabled = ThemeUtils.isNightModeEnabled(this);
             new LibsBuilder()
-                    .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
+                    .withActivityStyle(nightModeEnabled
+                            ? Libs.ActivityStyle.DARK : Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
                     .start(MainActivity.this);
             return true;
         } else if (id == R.id.menu_action_theme) {
-            ThemeUtils.setNightModeEnabled(!ThemeUtils.isNightModeEnabled(this), this);
-            this.recreate();
+            // Set the night mode state and recreate the activity
+            toggleNightMode();
+
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void toggleNightMode() {
+        ThemeUtils.setNightModeEnabled(!ThemeUtils.isNightModeEnabled(this), this);
+        this.setIntent(getIntent().setAction(""));
+        this.getIntent().putExtra(EXTRA_THEME_CHANGED, true);
+        this.recreate();
     }
 
     // View Pager
@@ -196,6 +258,8 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        // Sign out to splash screen if needed
         if (resultCode == RESULT_SIGN_OUT && requestCode == RC_ACCOUNT) {
             finish();
         }

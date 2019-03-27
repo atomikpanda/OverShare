@@ -10,11 +10,13 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/inner_padding"
         android:text="@string/name"
         android:textAppearance="@style/AccountHeaderText" />
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
+        android:layout_marginStart="4dp"
         android:layout_height="wrap_content"
         app:hintEnabled="false">
 
@@ -29,6 +31,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/inner_padding"
         android:paddingTop="@dimen/inner_padding"
         android:text="@string/email"
         android:textAppearance="@style/AccountHeaderText" />
@@ -37,6 +40,7 @@
         android:id="@+id/textViewEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/inner_padding"
         android:paddingTop="@dimen/inner_padding"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="?android:attr/textColorPrimary"

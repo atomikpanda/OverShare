@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.activities.MainActivity;
+import com.baileyseymour.overshare.utils.ThemeUtils;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +31,7 @@ public class SplashActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ThemeUtils.applyTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
@@ -61,7 +63,10 @@ public class SplashActivity extends AppCompatActivity {
                         .createSignInIntentBuilder()
                         .setAlwaysShowSignInMethodScreen(false)
                         .setAvailableProviders(providers)
+                        .setIsSmartLockEnabled(false)
                         .setLogo(R.drawable.ic_oversharelogo_02)
+                        .setTheme(ThemeUtils.isNightModeEnabled(this)
+                                ? R.style.AppThemeDark : R.style.AppTheme)
                         .build(),
                 RC_SIGN_IN);
     }

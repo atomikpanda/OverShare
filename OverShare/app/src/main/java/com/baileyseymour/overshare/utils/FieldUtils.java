@@ -29,9 +29,8 @@ public class FieldUtils {
     private static final String UTF_8_ENCODING = "UTF-8";
     private static final String TAG = "FieldUtils";
 
-    // Initialize at app startup
-    public static void init(Resources res) {
-        readFromJSON(res);
+    public static void init(InputStream is) {
+        readFromJSON(is);
         Log.d(TAG, "init: Field Utils Initialized");
     }
 
@@ -44,28 +43,37 @@ public class FieldUtils {
         return AVAILABLE_FIELDS;
     }
 
-    private static void readFromJSON(Resources res) {
-        try (InputStream is = res.openRawResource(R.raw.field_types)) {
+    private static void readFromJSON(InputStream is) {
+        if (is == null) return;
+
+        try {
             String jsonString = IOUtil.toString(is, UTF_8_ENCODING);
-            if (jsonString != null) {
 
-                // Loop through field types array
-                JSONArray array = new JSONArray(jsonString);
-                for (int i = 0; i < array.length(); i++) {
-                    JSONObject innerObj = array.getJSONObject(i);
-
-                    // Add field type objects to the map
-                    if (innerObj != null) {
-                        FieldType type = new FieldType(innerObj);
-                        getAvailableFields().put(innerObj.getString(KEY_ID), type);
-                    }
-
-                }
+            if (jsonString != null && !jsonString.isEmpty()) {
+                parseJSONString(jsonString);
             }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+
+    }
+
+    private static void parseJSONString(String jsonString) throws JSONException {
+        getAvailableFields().clear();
+
+        // Loop through field types array
+        JSONArray array = new JSONArray(jsonString);
+        for (int i = 0; i < array.length(); i++) {
+            JSONObject innerObj = array.getJSONObject(i);
+
+            // Add field type objects to the map
+            if (innerObj != null) {
+                FieldType type = new FieldType(innerObj);
+                getAvailableFields().put(innerObj.getString(KEY_ID), type);
+            }
+
         }
     }
 

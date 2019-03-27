@@ -109,5 +109,14 @@
     "format": "sms:%s",
     "input": "phone",
     "output": "url"
+  },
+  {
+    "id": "weibo",
+    "name": "Weibo 新浪微博",
+    "format": "https://www.weibo.com/%s",
+    "input": "username",
+    "output": "url",
+    "display_format": "@%s"
   }
+
 ]

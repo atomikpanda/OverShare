@@ -8,6 +8,8 @@
     <attr name="colorFieldLink" format="reference" />
     <attr name="colorCardBg" format="reference" />
     <attr name="colorTabTextSelected" format="reference" />
+    <attr name="coloredIconLarge" format="reference" />
+    <attr name="mainOrange" format="reference" />
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -25,6 +27,8 @@
         <item name="colorCardBg">@color/colorCardBg</item>
         <item name="colorTabTextSelected">@android:color/white</item>
         <item name="android:windowBackground">@color/windowBg</item>
+        <item name="coloredIconLarge">?attr/colorAccent</item>
+        <item name="mainOrange">@color/colorPrimary</item>
     </style>
 
     <style name="AppThemeDark" parent="Theme.AppCompat">
@@ -39,6 +43,8 @@
         <item name="colorCardBg">@color/colorCardBgDark</item>
         <item name="colorTabTextSelected">?attr/colorAccent</item>
         <item name="android:windowBackground">@color/windowBgDark</item>
+        <item name="coloredIconLarge">?attr/colorAccent</item>
+        <item name="mainOrange">?attr/colorAccent</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -73,8 +79,7 @@
         <item name="android:paddingTop">8dp</item>
     </style>
 
-    <style name="AccountHeaderText" parent="TextAppearance.AppCompat.Title">
-        <item name="android:textColor">@color/divider</item>
+    <style name="AccountHeaderText" parent="TextAppearance.AppCompat.Medium">
         <item name="android:layout_marginTop">12dp</item>
         <item name="android:layout_marginBottom">12dp</item>
     </style>

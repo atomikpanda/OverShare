@@ -6,6 +6,7 @@ package com.baileyseymour.overshare.adapters.viewholders;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +30,8 @@ public class CardViewHolder extends RecyclerView.ViewHolder implements PopupMenu
     @BindView(R.id.fieldsRecyclerView)
     public RecyclerView fieldsRecyclerView;
 
+    private static final String TAG = "CardViewHolder";
+
     // Action Listener
     private final CardActionListener mListener;
 
@@ -36,6 +39,8 @@ public class CardViewHolder extends RecyclerView.ViewHolder implements PopupMenu
         super(itemView);
         ButterKnife.bind(this, itemView);
         mListener = listener;
+
+        Log.d(TAG, "CardViewHolder: isReceivedCards: " + isReceivedCards);
 
         // Only show edit button on cards owned by the current user
 //        if (isReceivedCards) {
@@ -76,6 +81,7 @@ public class CardViewHolder extends RecyclerView.ViewHolder implements PopupMenu
         if (mListener != null) {
             String action = CardActionListener.ACTION_SHARE_CARD_CHIRP;
 
+            // Handle different share actions
             if (item.getItemId() == R.id.menu_action_share_download) {
                 action = CardActionListener.ACTION_SHARE_CARD_DOWNLOAD;
             } else if (item.getItemId() == R.id.menu_action_share_copy) {

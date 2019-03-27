@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="receive_shortcut"
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_icons8_open_resume"
+        android:shortcutShortLabel="@string/receive"
+        tools:targetApi="n_mr1">
+        <intent
+            android:action="com.baileyseymour.overshare.SHORTCUT_RECEIVE"
+            android:targetPackage="com.baileyseymour.overshare"
+            android:targetClass="com.baileyseymour.overshare.activities.MainActivity" />
+    </shortcut>
+</shortcuts>
