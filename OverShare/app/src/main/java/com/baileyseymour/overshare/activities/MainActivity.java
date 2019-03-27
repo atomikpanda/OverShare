@@ -27,6 +27,7 @@ import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.adapters.MainFragmentPagerAdapter;
 import com.baileyseymour.overshare.fragments.CardsListFragment;
 import com.baileyseymour.overshare.utils.CardUtils;
+import com.baileyseymour.overshare.utils.ChirpManager;
 import com.baileyseymour.overshare.utils.ThemeUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -35,6 +36,8 @@ import com.mikepenz.aboutlibraries.LibsBuilder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.chirp.connect.models.ChirpConnectState;
+import io.chirp.connect.models.ChirpError;
 import pl.tajchert.nammu.Nammu;
 
 import static com.baileyseymour.overshare.fragments.AccountFragment.RESULT_SIGN_OUT;
@@ -263,5 +266,26 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         if (resultCode == RESULT_SIGN_OUT && requestCode == RC_ACCOUNT) {
             finish();
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        ChirpManager manager = ChirpManager.getInstance(this);
+        manager.stop();
+//        if (!manager.getChirpConnect().getState().equals(ChirpConnectState.CHIRP_CONNECT_STATE_NOT_CREATED)) {
+//            try {
+//                ChirpError error = manager.getChirpConnect().stop();
+//
+//                // Note: it's ok if an error occurs here as it is common that
+//                // Chirp to tries to stop itself when running
+//                if (error.getCode() > 0) {
+//                    Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
+//                }
+//            } catch (IllegalStateException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 }

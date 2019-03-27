@@ -251,6 +251,14 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
         Nammu.askForPermission(CardsListFragment.this, Manifest.permission.RECORD_AUDIO, new PermissionCallback() {
             @Override
             public void permissionGranted() {
+
+                if (getContext() == null) return;
+                if (ChirpManager.getInstance(getContext()).isSoundPlaying()) return;
+//                if (ChirpManager.getInstance(getContext()).getChirpConnect().getState() != ChirpConnectState.CHIRP_CONNECT_STATE_RUNNING) {
+//
+//                }
+
+
                 if (fab != null)
                     fab.setEnabled(false);
                 // Start the receive activity only after getting permission
@@ -442,7 +450,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
 
                 // Start up Chirp SDK
                 ChirpManager manager = ChirpManager.getInstance(getContext());
-                ChirpError error = manager.getChirpConnect().startSender();
+                ChirpError error = manager.startSender();
                 if (error.getCode() > 0) {
                     Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
                 }
@@ -493,37 +501,38 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
         super.onPause();
 
         ChirpManager manager = ChirpManager.getInstance(getContext());
-        if (!manager.getChirpConnect().getState().equals(ChirpConnectState.CHIRP_CONNECT_STATE_NOT_CREATED)) {
-            try {
-                ChirpError error = manager.getChirpConnect().stop();
-
-                // Note: it's ok if an error occurs here as it is common that
-                // Chirp to tries to stop itself when running
-                if (error.getCode() > 0) {
-                    Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
-                }
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
-            }
-        }
+//        if (!manager.getChirpConnect().getState().equals(ChirpConnectState.CHIRP_CONNECT_STATE_NOT_CREATED)) {
+//            try {
+//                ChirpError error = manager.getChirpConnect().stop();
+//
+//                // Note: it's ok if an error occurs here as it is common that
+//                // Chirp to tries to stop itself when running
+//                if (error.getCode() > 0) {
+//                    Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
+//                }
+//            } catch (IllegalStateException e) {
+//                e.printStackTrace();
+//            }
+//        }
         manager.setSender(null);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ChirpManager manager = ChirpManager.getInstance(getContext());
-        try {
-            manager.getChirpConnect().close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        ChirpManager manager = ChirpManager.getInstance(getContext());
+//        try {
+//            manager.getChirpConnect().close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
     public void onSending(@NotNull byte[] bytes, int channel) {
         Log.d(TAG, "onSending: bytes: " + Arrays.toString(bytes) + "channel: " + channel);
-        mIsPlayingSound = true;
+        if (getContext() == null) return;
+        ChirpManager.getInstance(getContext()).setSoundIsPlaying(true);
 
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
@@ -538,7 +547,8 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
                     public void onDismissed(Snackbar transientBottomBar, int event) {
                         super.onDismissed(transientBottomBar, event);
                         AudioUtils.getInstance(getContext()).revertVolume();
-                        mIsPlayingSound = false;
+                        if (getContext() == null) return;
+                        ChirpManager.getInstance(getContext()).setSoundIsPlaying(false);
                     }
                 });
                 snackbar.show();
@@ -550,7 +560,8 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
     @Override
     public void onSent(@NotNull byte[] bytes, int channel) {
         Log.d(TAG, "onSent: bytes: " + Arrays.toString(bytes) + " channel: " + channel);
-        mIsPlayingSound = false;
+        if (getContext() == null) return;
+        ChirpManager.getInstance(getContext()).setSoundIsPlaying(false);
     }
 
     @Override
