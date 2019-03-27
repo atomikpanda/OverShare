@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baileyseymour.overshare.R;
+import com.baileyseymour.overshare.interfaces.ChirpContainer;
 import com.baileyseymour.overshare.utils.CardUtils;
 import com.baileyseymour.overshare.utils.ChirpManager;
 import com.baileyseymour.overshare.views.CustomVisualizer;
@@ -61,6 +62,7 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
     private ArrayList<String> mReceivedIds;
     private FirebaseFirestore mDB;
     private State mState;
+    private ChirpManager mChirpManager;
 
     // For visualizer view
     private Timer mTimer = new Timer();
@@ -129,6 +131,7 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
         return view;
     }
 
+
     private void addReceivedId(String id) {
 
         // Check that we have valid data
@@ -168,6 +171,7 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
+                if (getContext() == null) return;
                 if (shouldShowSave()) {
                     buttonPrimaryAction.setVisibility(View.VISIBLE);
                 } else {
@@ -189,6 +193,11 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
     public void onAttach(Context context) {
         super.onAttach(context);
 
+        if (context instanceof ChirpContainer) {
+            mChirpManager = ((ChirpContainer) context).getManager();
+            mChirpManager.setReceiver(this);
+        }
+
         // Get an instance of the database
         mDB = FirebaseFirestore.getInstance();
     }
@@ -200,7 +209,7 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
         mReceivedIds = new ArrayList<>();
         if (getContext() != null) {
             Nammu.init(getContext().getApplicationContext());
-            ChirpManager.getInstance(getContext()).setReceiver(this);
+
 
             // Initial State
 
@@ -355,23 +364,24 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
     public void onPause() {
         super.onPause();
 
+        if (mChirpManager != null)
+            mChirpManager.setReceiver(null);
+
         // Stop receiving on pause
-        ChirpManager manager = ChirpManager.getInstance(getContext());
-
-        if (!manager.getChirpConnect().getState().equals(ChirpConnectState.CHIRP_CONNECT_STATE_NOT_CREATED)) {
-            try {
-                ChirpError error = manager.getChirpConnect().stop();
-                // Note: it's ok if an error occurs here as it is common that
-                // Chirp to tries to stop itself when running
-                if (error.getCode() > 0) {
-                    Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
-                }
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
-            }
-        }
-
-
+//        ChirpManager manager = mChirpManager;
+//
+//        if (!manager.getChirpConnect().getState().equals(ChirpConnectState.CHIRP_CONNECT_STATE_NOT_CREATED)) {
+//            try {
+//                ChirpError error = manager.getChirpConnect().stop();
+//                // Note: it's ok if an error occurs here as it is common that
+//                // Chirp to tries to stop itself when running
+//                if (error.getCode() > 0) {
+//                    Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
+//                }
+//            } catch (IllegalStateException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
 
     }
@@ -380,6 +390,9 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
     @Override
     public void onResume() {
         super.onResume();
+
+        if (mChirpManager != null)
+            mChirpManager.setReceiver(this);
 
         Nammu.askForPermission(this, Manifest.permission.RECORD_AUDIO, new PermissionCallback() {
             @Override
@@ -403,12 +416,12 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
 
     private void startChirp() {
         // Start listening via Chirp
-        ChirpManager manager = ChirpManager.getInstance(getContext());
+        ChirpManager manager = mChirpManager;
         mChirpStartMillis = System.currentTimeMillis();
-        ChirpError error = manager.getChirpConnect().startReceiver();
-        if (error.getCode() > 0) {
-            Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
-        }
+//        ChirpError error = manager.getChirpConnect().startReceiver();
+//        if (error.getCode() > 0) {
+//            Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
+//        }
     }
 
     @Override
@@ -418,12 +431,5 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
         // Clear the visualizer timer
         mTimer.cancel();
         mTimer = null;
-
-        ChirpManager manager = ChirpManager.getInstance(getContext());
-        try {
-            manager.getChirpConnect().close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

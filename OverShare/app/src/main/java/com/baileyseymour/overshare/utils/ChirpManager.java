@@ -49,7 +49,7 @@ public class ChirpManager implements ConnectEventListener {
     private Receiver mReceiver;
     private Sender mSender;
 
-    private ChirpManager(Context context) {
+    public ChirpManager(Context context) {
         mChirpConnect = new ChirpConnect(context, CHIRP_APP_KEY, Constants.CHIRP_APP_SECRET);
 
         ChirpError error = mChirpConnect.setConfig(Constants.CHIRP_APP_CONFIG);
@@ -80,17 +80,17 @@ public class ChirpManager implements ConnectEventListener {
 
     }
 
-    private static ChirpManager INSTANCE;
-
-    // Singleton
-    public static ChirpManager getInstance(Context context) {
-
-        if (INSTANCE == null) {
-            INSTANCE = new ChirpManager(context);
-        }
-
-        return INSTANCE;
-    }
+//    private static ChirpManager INSTANCE;
+//
+//    // Singleton
+//    public static ChirpManager getInstance(Context context) {
+//
+//        if (INSTANCE == null) {
+//            INSTANCE = new ChirpManager(context);
+//        }
+//
+//        return INSTANCE;
+//    }
 
     public void setReceiver(Receiver receiver) {
         mReceiver = receiver;

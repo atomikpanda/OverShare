@@ -26,15 +26,22 @@ import android.widget.Toast;
 import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.adapters.MainFragmentPagerAdapter;
 import com.baileyseymour.overshare.fragments.CardsListFragment;
+import com.baileyseymour.overshare.interfaces.ChirpContainer;
+import com.baileyseymour.overshare.interfaces.Constants;
 import com.baileyseymour.overshare.utils.CardUtils;
+import com.baileyseymour.overshare.utils.ChirpManager;
 import com.baileyseymour.overshare.utils.ThemeUtils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 
+import java.lang.ref.WeakReference;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.chirp.connect.models.ChirpConnectState;
+import io.chirp.connect.models.ChirpError;
 import pl.tajchert.nammu.Nammu;
 
 import static com.baileyseymour.overshare.fragments.AccountFragment.RESULT_SIGN_OUT;
@@ -42,7 +49,8 @@ import static com.baileyseymour.overshare.interfaces.Constants.ACTION_SHORTCUT_R
 import static com.baileyseymour.overshare.interfaces.Constants.URI_CARD_PATH;
 import static com.baileyseymour.overshare.interfaces.Constants.URI_HOST;
 
-public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener, CardsListFragment.FabContainer {
+public class MainActivity extends AppCompatActivity implements ViewPager.OnPageChangeListener, CardsListFragment.FabContainer,
+        ChirpContainer {
 
     // Views
 
@@ -58,13 +66,23 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
+    private ChirpManager mChirpManager;
+
     private static final int RC_ACCOUNT = 420;
     private static final int MATCH_CARD_URI = 73;
     private static final String TAG = "MainActivity";
     private static final String EXTRA_THEME_CHANGED = "EXTRA_THEME_CHANGED";
 
+    private static WeakReference<MainActivity> INSTANCE;
+
+    public static MainActivity getInstance() {
+        return INSTANCE.get();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        INSTANCE = new WeakReference<>(this);
+        getManager();
         ThemeUtils.applyTheme(this);
         super.onCreate(savedInstanceState);
 
@@ -72,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         ButterKnife.bind(this);
 
         //FieldUtils.init(getResources());
+
 
         setSupportActionBar(mToolbar);
 
@@ -262,6 +281,59 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         // Sign out to splash screen if needed
         if (resultCode == RESULT_SIGN_OUT && requestCode == RC_ACCOUNT) {
             finish();
+        }
+    }
+
+    @Override
+    public ChirpManager getManager() {
+        if (mChirpManager == null) {
+            mChirpManager = new ChirpManager(this);
+        }
+        return mChirpManager;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        ChirpConnectState state = getManager().getChirpConnect().getState();
+        if (state == ChirpConnectState.CHIRP_CONNECT_STATE_STOPPED || state == ChirpConnectState.CHIRP_CONNECT_STATE_NOT_CREATED) {
+            ChirpError error = getManager().getChirpConnect().start();
+            if (error.getCode() > 0) {
+                Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
+            }
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        try {
+            ChirpError error = getManager().getChirpConnect().stop();
+
+            // Note: it's ok if an error occurs here as it is common that
+            // Chirp to tries to stop itself when running
+            if (error.getCode() > 0) {
+                Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
+            }
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        INSTANCE = null;
+
+        Log.i("CDBUG", "onDestroy: MainActivity");
+        if (mChirpManager != null) {
+            try {
+                mChirpManager.getChirpConnect().close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }
