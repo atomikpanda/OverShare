@@ -33,6 +33,7 @@ import com.baileyseymour.overshare.activities.CardFormActivity;
 import com.baileyseymour.overshare.activities.ReceiveActivity;
 import com.baileyseymour.overshare.adapters.CardAdapter;
 import com.baileyseymour.overshare.interfaces.CardActionListener;
+import com.baileyseymour.overshare.interfaces.ChirpContainer;
 import com.baileyseymour.overshare.interfaces.FieldClickListener;
 import com.baileyseymour.overshare.interfaces.RecyclerEmptyStateListener;
 import com.baileyseymour.overshare.models.Card;
@@ -87,6 +88,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
     private FirestoreRecyclerAdapter<Card, CardViewHolder> mCardAdapter;
     private FabContainer mFabContainer;
     private boolean mIsPlayingSound;
+    private ChirpManager mChirpManager;
 
     // Fab container interface allows us to access the fab remotely
     public interface FabContainer {
@@ -97,6 +99,10 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
 
     public CardsListFragment() {
         // Default constructor
+    }
+
+    public ChirpManager getChirpManager() {
+        return mChirpManager;
     }
 
     // Factory method
@@ -115,6 +121,11 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
 
         if (context instanceof FabContainer) {
             mFabContainer = ((FabContainer) context);
+        }
+
+        if (context instanceof ChirpContainer) {
+            mChirpManager = ((ChirpContainer) context).getManager();
+            mChirpManager.setSender(this);
         }
 
         // Load database
@@ -137,7 +148,8 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
             Nammu.init(getContext().getApplicationContext());
 
             setupFab();
-            ChirpManager.getInstance(getContext());
+            // ChirpManager.getInstance(getContext());
+
 
         }
 
@@ -236,7 +248,6 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
                         } else if (position == 1) {
                             // We are on the receive cards tab, so FAB is receive
                             // Start ReceiveActivity via an intent
-
                             goToReceive(fab);
 
                         }
@@ -251,6 +262,11 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
         Nammu.askForPermission(CardsListFragment.this, Manifest.permission.RECORD_AUDIO, new PermissionCallback() {
             @Override
             public void permissionGranted() {
+
+                if (mIsPlayingSound || getChirpManager().getChirpConnect().getState() != ChirpConnectState.CHIRP_CONNECT_STATE_RUNNING) {
+                    return;
+                }
+
                 if (fab != null)
                     fab.setEnabled(false);
                 // Start the receive activity only after getting permission
@@ -290,6 +306,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
         if (mCardAdapter != null)
             mCardAdapter.stopListening();
     }
+
 
     // Field click listener
 
@@ -441,12 +458,8 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
                 AudioUtils.getInstance(getContext()).setMaxVolume(getContext());
 
                 // Start up Chirp SDK
-                ChirpManager manager = ChirpManager.getInstance(getContext());
-                ChirpError error = manager.getChirpConnect().startSender();
-                if (error.getCode() > 0) {
-                    Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
-                }
-                manager.setSender(CardsListFragment.this);
+
+                getChirpManager().setSender(CardsListFragment.this);
 
                 String hexId = card.getHexId();
                 if (hexId != null && !hexId.trim().isEmpty()) {
@@ -455,7 +468,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
                         // Play sound
                         byte[] hexBytes = Hex.decodeHex(hexId.toCharArray());
 
-                        manager.sendBytes(hexBytes);
+                        getChirpManager().sendBytes(hexBytes);
                     } catch (DecoderException e) {
                         e.printStackTrace();
                     }
@@ -484,40 +497,29 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
                 fab.setEnabled(true);
         }
 
-        ChirpManager manager = ChirpManager.getInstance(getContext());
-        manager.setSender(this);
+//        ChirpManager manager = mChirpManager;
+//        manager.setSender(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        ChirpManager manager = ChirpManager.getInstance(getContext());
-        if (!manager.getChirpConnect().getState().equals(ChirpConnectState.CHIRP_CONNECT_STATE_NOT_CREATED)) {
-            try {
-                ChirpError error = manager.getChirpConnect().stop();
+//        ChirpManager manager = mChirpManager;
+//        if (!manager.getChirpConnect().getState().equals(ChirpConnectState.CHIRP_CONNECT_STATE_NOT_CREATED)) {
+//            try {
+//                ChirpError error = manager.getChirpConnect().stop();
+//
+//                // Note: it's ok if an error occurs here as it is common that
+//                // Chirp to tries to stop itself when running
+//                if (error.getCode() > 0) {
+//                    Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
+//                }
+//            } catch (IllegalStateException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
-                // Note: it's ok if an error occurs here as it is common that
-                // Chirp to tries to stop itself when running
-                if (error.getCode() > 0) {
-                    Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
-                }
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
-            }
-        }
-        manager.setSender(null);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        ChirpManager manager = ChirpManager.getInstance(getContext());
-        try {
-            manager.getChirpConnect().close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
