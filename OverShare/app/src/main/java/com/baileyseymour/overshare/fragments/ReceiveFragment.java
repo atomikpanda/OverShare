@@ -34,7 +34,6 @@ import org.apache.commons.codec.binary.Hex;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
-import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -130,8 +129,11 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
     }
 
     private void addReceivedId(String id) {
+
         // Check that we have valid data
         if (mReceivedIds != null && id != null && !id.trim().isEmpty()) {
+
+            // Get the count of item ids we have
             int sizeBefore = mReceivedIds.size();
 
             // Add the received card id
@@ -142,9 +144,10 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
             mReceivedIds.clear();
             mReceivedIds.addAll(set);
 
+            // Get the count of item ids after removing duplicates
             int sizeAfter = mReceivedIds.size();
 
-            // Check if the item was removed as being a duplicate
+            // Check if there were any modifications
             if (sizeBefore == sizeAfter) {
                 Toast.makeText(getContext(), R.string.in_received, Toast.LENGTH_SHORT).show();
             } else {
@@ -155,6 +158,7 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
         refreshButton();
     }
 
+    // Do any card ids exist in received queue?
     private boolean shouldShowSave() {
         return (mReceivedIds != null && mReceivedIds.size() > 0);
     }
@@ -204,6 +208,7 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
             setState(initialState);
 
             // Schedule a timer to update the visualizer view
+            // Only display visualizer view when receiving
             if (mTimer != null)
                 mTimer.schedule(new TimerTask() {
                     @Override
@@ -229,11 +234,13 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
                 // Update the UI on the main thread
                 stateDescription.setText(state.description);
                 primaryIconImageView.setImageResource(state.icon);
+
 //                if (state.id == STATE_RECEIVING) {
 //                    buttonPrimaryAction.setEnabled(false);
 //                } else {
 //                    buttonPrimaryAction.setEnabled(true);
 //                }
+
                 refreshButton();
                 // buttonPrimaryAction.setVisibility(state.showButton ? View.VISIBLE : View.GONE);
 
@@ -248,6 +255,7 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
         // If we have something saved save it to the db
         if (mReceivedIds != null) {
 
+            // Save all items
             for (String id : mReceivedIds) {
                 onReceivedChirpHexId(id);
             }
@@ -265,7 +273,7 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
     private void onReceivedChirpHexId(String chirpHexTestId) {
 
         if (mDB != null)
-            CardUtils.onReceivedChirpHexId(chirpHexTestId, mDB);
+            CardUtils.addCardToSavedCollection(chirpHexTestId, mDB);
     }
 
     @Override
@@ -345,9 +353,13 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
     @Override
     public void onPause() {
         super.onPause();
+
         // Stop receiving on pause
         ChirpManager manager = ChirpManager.getInstance(getContext());
         ChirpError error = manager.getChirpConnect().stop();
+
+        // Note: it's ok if an error occurs here as it is common that
+        // Chirp to tries to stop itself when running
         if (error.getCode() > 0) {
             Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
         }

@@ -4,12 +4,14 @@
 
 package com.baileyseymour.overshare.fragments;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -131,43 +133,71 @@ public class AccountFragment extends Fragment {
 
     @OnClick(R.id.buttonSignOut)
     public void onSignOut() {
-        // Sign out from firebase
-        FirebaseAuth.getInstance().signOut();
+        if (getContext() == null) return;
 
-        if (getActivity() != null) {
-            // Tell MainActivity to finish
-            getActivity().setResult(RESULT_SIGN_OUT);
+        // Confirm before signing out
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.sign_out_q)
+                .setMessage(R.string.sign_out_dialog_msg)
+                .setNegativeButton(R.string.fui_cancel, null)
+                .setPositiveButton(R.string.sign_out, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Sign out from firebase
+                        FirebaseAuth.getInstance().signOut();
 
-            // Tell AccountActivity to finish
-            getActivity().finish();
-        }
+                        if (getActivity() != null) {
+                            // Tell MainActivity to finish
+                            getActivity().setResult(RESULT_SIGN_OUT);
 
-        // Start the splash screen activity
-        Intent intent = new Intent(getContext(), SplashActivity.class);
-        startActivity(intent);
+                            // Tell AccountActivity to finish
+                            getActivity().finish();
+                        }
+
+                        // Start the splash screen activity
+                        Intent intent = new Intent(getContext(), SplashActivity.class);
+                        startActivity(intent);
+                    }
+                })
+                .show();
+
     }
 
     @OnClick(R.id.buttonResetPassword)
     public void onResetPassword() {
 
+        if (getContext() == null) return;
+
         // Get the user
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null || user.getEmail() == null) {
             return;
         }
 
-        // Try to send the email
-        FirebaseAuth.getInstance().sendPasswordResetEmail(user.getEmail()).addOnSuccessListener(new OnSuccessListener<Void>() {
-            @Override
-            public void onSuccess(Void aVoid) {
-                Toast.makeText(getContext(), R.string.reset_pw_sent, Toast.LENGTH_LONG).show();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getContext(), R.string.reset_pw_fail, Toast.LENGTH_SHORT).show();
-            }
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.reset_password_q)
+                .setMessage(R.string.reset_password_dialog_msg)
+                .setNegativeButton(R.string.fui_cancel, null)
+                .setPositiveButton(R.string.reset_password, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Try to send the email
+                        FirebaseAuth.getInstance().sendPasswordResetEmail(user.getEmail()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(getContext(), R.string.reset_pw_sent, Toast.LENGTH_LONG).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getContext(), R.string.reset_pw_fail, Toast.LENGTH_SHORT).show();
+                            }
 
-        });
+                        });
+                    }
+                })
+                .show();
+
+
     }
 }

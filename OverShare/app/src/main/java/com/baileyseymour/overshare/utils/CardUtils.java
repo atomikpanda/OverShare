@@ -36,16 +36,17 @@ public class CardUtils {
 
         ArrayList<Field> fields = Field.fromListOfMaps(card.getFields());
         for (Field field : fields) {
+            // Add each field's title and URL
             SmartField smartField = new SmartField(field);
             sharableStr.append(field.getTitle());
-            sharableStr.append(": ").append(smartField.generateURL());
+            sharableStr.append(": ").append(smartField.clipboardValue());
             sharableStr.append("\n");
         }
 
         return sharableStr.toString();
     }
 
-    public static void onReceivedChirpHexId(String chirpHexTestId, final FirebaseFirestore db) {
+    public static void addCardToSavedCollection(String chirpHexTestId, final FirebaseFirestore db) {
 
         final String savedByUID = FirebaseAuth.getInstance().getUid();
         if (savedByUID == null) return;

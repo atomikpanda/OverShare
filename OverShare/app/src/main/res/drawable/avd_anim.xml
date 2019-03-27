@@ -11,7 +11,7 @@
             <path
                 android:name="path"
                 android:pathData="M 11 2.051 C 8.992 2.251 7.158 3.049 5.676 4.262 L 7.102 5.688 C 8.208 4.827 9.542 4.251 11 4.068 L 11 2.051 Z M 13 2.051 L 13 4.07 C 16.94 4.565 20 7.93 20 12.002 C 20 16.074 16.94 19.437 13 19.932 L 13 21.951 C 18.046 21.447 22 17.178 22 12.002 C 22 6.826 18.046 2.554 13 2.051 Z M 4.262 5.676 C 3.048 7.158 2.251 8.992 2.051 11 L 4.068 11 C 4.251 9.542 4.828 8.208 5.688 7.102 L 4.262 5.676 Z M 11 7 L 11 13 L 8 13 L 12 17 L 16 13 L 13 13 L 13 7 L 11 7 Z M 2.051 12.998 C 2.251 15.007 3.048 16.842 4.262 18.324 L 5.689 16.896 C 4.829 15.79 4.253 14.456 4.07 12.998 L 2.051 12.998 Z M 7.102 18.313 L 5.676 19.738 C 7.158 20.951 8.99 21.749 10.998 21.949 L 10.998 19.932 C 9.541 19.748 8.207 19.172 7.102 18.313 Z"
-                android:fillColor="#e64a19"
+                android:fillColor="?attr/coloredIconLarge"
                 android:strokeWidth="1"/>
         </vector>
     </aapt:attr>
@@ -21,16 +21,16 @@
                 <objectAnimator
                     android:propertyName="fillColor"
                     android:duration="300"
-                    android:valueFrom="#e64a19"
-                    android:valueTo="#a13311"
+                    android:valueFrom="?attr/coloredIconLarge"
+                    android:valueTo="?attr/coloredIconLarge"
                     android:valueType="colorType"
                     android:interpolator="@android:anim/linear_interpolator"/>
                 <objectAnimator
                     android:propertyName="fillColor"
                     android:startOffset="300"
                     android:duration="300"
-                    android:valueFrom="#a13311"
-                    android:valueTo="#e64a19"
+                    android:valueFrom="?attr/coloredIconLarge"
+                    android:valueTo="?attr/coloredIconLarge"
                     android:valueType="colorType"
                     android:interpolator="@android:anim/linear_interpolator"/>
             </set>

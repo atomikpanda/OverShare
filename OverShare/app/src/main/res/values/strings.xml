@@ -91,6 +91,14 @@
     <string name="copy_card_url">Share Card URL</string>
     <string name="in_received">Already in received queue</string>
     <string name="added_received">Added to received queue</string>
+    <string name="sign_out_q">Sign out?</string>
+    <string name="sign_out_dialog_msg">Are you sure you would like to sign out of your account?</string>
+    <string name="reset_password_q">Reset password?</string>
+    <string name="reset_password_dialog_msg">This will send a reset password link to the email associated with your account. Would you like to proceed?</string>
+    <string name="must_sign_in">You must sign-in first</string>
+    <string name="micro_req_shortcut">Microphone permission is required before the shortcut can be activated.</string>
+    <string name="undo">Undo</string>
+    <string name="theme_applied">Theme applied.</string>
     <plurals name="save_btn_fmt">
         <item quantity="one">Save %d card</item>
         <item quantity="other">Save %d cards</item>

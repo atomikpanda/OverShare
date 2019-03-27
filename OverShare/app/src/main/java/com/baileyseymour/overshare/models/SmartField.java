@@ -56,15 +56,19 @@ public class SmartField {
     private String prepareValueForURL(String value) {
         // WhatsApp requires a stripped phone number for urls
         if (mField.getType().equals("whatsapp")) {
-            StringBuilder stripped = new StringBuilder();
-            for (char c : value.toCharArray()) {
-                if (Character.isDigit(c))
-                    stripped.append(c);
-            }
-            return stripped.toString();
+            return digitsOnly(value);
         }
 
         return value;
+    }
+
+    private String digitsOnly(String value) {
+        StringBuilder stripped = new StringBuilder();
+        for (char c : value.toCharArray()) {
+            if (Character.isDigit(c))
+                stripped.append(c);
+        }
+        return stripped.toString();
     }
 
     public String generateURL() {
@@ -86,7 +90,7 @@ public class SmartField {
 
         // Make the phone number look pretty
         if (textToCopy.startsWith("tel:") || textToCopy.startsWith("sms:")) {
-            return PhoneNumberUtils.formatNumberToE164(textToCopy, Locale.getDefault().getCountry());
+            return getValue();
         }
 
         return textToCopy;
