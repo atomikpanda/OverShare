@@ -263,9 +263,18 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
             @Override
             public void permissionGranted() {
 
+<<<<<<< HEAD
                 if (mIsPlayingSound || getChirpManager().getChirpConnect().getState() != ChirpConnectState.CHIRP_CONNECT_STATE_RUNNING) {
                     return;
                 }
+=======
+                if (getContext() == null) return;
+                if (ChirpManager.getInstance(getContext()).isSoundPlaying()) return;
+//                if (ChirpManager.getInstance(getContext()).getChirpConnect().getState() != ChirpConnectState.CHIRP_CONNECT_STATE_RUNNING) {
+//
+//                }
+
+>>>>>>> fixed
 
                 if (fab != null)
                     fab.setEnabled(false);
@@ -458,8 +467,17 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
                 AudioUtils.getInstance(getContext()).setMaxVolume(getContext());
 
                 // Start up Chirp SDK
+<<<<<<< HEAD
 
                 getChirpManager().setSender(CardsListFragment.this);
+=======
+                ChirpManager manager = ChirpManager.getInstance(getContext());
+                ChirpError error = manager.startSender();
+                if (error.getCode() > 0) {
+                    Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
+                }
+                manager.setSender(CardsListFragment.this);
+>>>>>>> fixed
 
                 String hexId = card.getHexId();
                 if (hexId != null && !hexId.trim().isEmpty()) {
@@ -505,7 +523,11 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
     public void onPause() {
         super.onPause();
 
+<<<<<<< HEAD
 //        ChirpManager manager = mChirpManager;
+=======
+        ChirpManager manager = ChirpManager.getInstance(getContext());
+>>>>>>> fixed
 //        if (!manager.getChirpConnect().getState().equals(ChirpConnectState.CHIRP_CONNECT_STATE_NOT_CREATED)) {
 //            try {
 //                ChirpError error = manager.getChirpConnect().stop();
@@ -519,13 +541,29 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
 //                e.printStackTrace();
 //            }
 //        }
+<<<<<<< HEAD
 
+=======
+        manager.setSender(null);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+//        ChirpManager manager = ChirpManager.getInstance(getContext());
+//        try {
+//            manager.getChirpConnect().close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+>>>>>>> fixed
     }
 
     @Override
     public void onSending(@NotNull byte[] bytes, int channel) {
         Log.d(TAG, "onSending: bytes: " + Arrays.toString(bytes) + "channel: " + channel);
-        mIsPlayingSound = true;
+        if (getContext() == null) return;
+        ChirpManager.getInstance(getContext()).setSoundIsPlaying(true);
 
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
@@ -540,7 +578,8 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
                     public void onDismissed(Snackbar transientBottomBar, int event) {
                         super.onDismissed(transientBottomBar, event);
                         AudioUtils.getInstance(getContext()).revertVolume();
-                        mIsPlayingSound = false;
+                        if (getContext() == null) return;
+                        ChirpManager.getInstance(getContext()).setSoundIsPlaying(false);
                     }
                 });
                 snackbar.show();
@@ -552,7 +591,8 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
     @Override
     public void onSent(@NotNull byte[] bytes, int channel) {
         Log.d(TAG, "onSent: bytes: " + Arrays.toString(bytes) + " channel: " + channel);
-        mIsPlayingSound = false;
+        if (getContext() == null) return;
+        ChirpManager.getInstance(getContext()).setSoundIsPlaying(false);
     }
 
     @Override
