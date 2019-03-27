@@ -52,7 +52,7 @@ dependencies {
     //noinspection GradleDependency
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.0'
     implementation 'commons-codec:commons-codec:1.11'
-    implementation 'io.chirp:chirpsdk:3.6.1'
+    implementation 'io.chirp:chirpsdk:3.7.0'
     implementation 'commons-io:commons-io:20030203.000550'
     implementation 'com.mikepenz:aboutlibraries:6.1.0'
     implementation 'com.github.tajchert:nammu:1.2.0'

@@ -285,6 +285,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
     }
 
     @Override
+<<<<<<< HEAD
     public ChirpManager getManager() {
         if (mChirpManager == null) {
             mChirpManager = new ChirpManager(this);
@@ -335,5 +336,25 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
                 e.printStackTrace();
             }
         }
+=======
+    protected void onPause() {
+        super.onPause();
+
+        ChirpManager manager = ChirpManager.getInstance(this);
+        manager.stop();
+//        if (!manager.getChirpConnect().getState().equals(ChirpConnectState.CHIRP_CONNECT_STATE_NOT_CREATED)) {
+//            try {
+//                ChirpError error = manager.getChirpConnect().stop();
+//
+//                // Note: it's ok if an error occurs here as it is common that
+//                // Chirp to tries to stop itself when running
+//                if (error.getCode() > 0) {
+//                    Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
+//                }
+//            } catch (IllegalStateException e) {
+//                e.printStackTrace();
+//            }
+//        }
+>>>>>>> fixed
     }
 }

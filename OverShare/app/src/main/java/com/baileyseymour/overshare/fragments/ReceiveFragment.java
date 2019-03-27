@@ -364,6 +364,7 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
     public void onPause() {
         super.onPause();
 
+<<<<<<< HEAD
         if (mChirpManager != null)
             mChirpManager.setReceiver(null);
 
@@ -371,6 +372,13 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
 //        ChirpManager manager = mChirpManager;
 //
 //        if (!manager.getChirpConnect().getState().equals(ChirpConnectState.CHIRP_CONNECT_STATE_NOT_CREATED)) {
+=======
+        // Stop receiving on pause
+        ChirpManager manager = ChirpManager.getInstance(getContext());
+        manager.stop();
+//        ChirpConnectState state = manager.getChirpConnect().getState();
+//        if (state != ChirpConnectState.CHIRP_CONNECT_STATE_NOT_CREATED && state != ChirpConnectState.CHIRP_CONNECT_STATE_STOPPED) {
+>>>>>>> fixed
 //            try {
 //                ChirpError error = manager.getChirpConnect().stop();
 //                // Note: it's ok if an error occurs here as it is common that
@@ -418,10 +426,17 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
         // Start listening via Chirp
         ChirpManager manager = mChirpManager;
         mChirpStartMillis = System.currentTimeMillis();
+<<<<<<< HEAD
 //        ChirpError error = manager.getChirpConnect().startReceiver();
 //        if (error.getCode() > 0) {
 //            Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
 //        }
+=======
+        ChirpError error = manager.startReceiver();
+        if (error.getCode() > 0) {
+            Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
+        }
+>>>>>>> fixed
     }
 
     @Override
