@@ -40,6 +40,7 @@ import java.util.TimerTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.chirp.connect.models.ChirpConnectState;
 import io.chirp.connect.models.ChirpError;
 import pl.tajchert.nammu.Nammu;
 import pl.tajchert.nammu.PermissionCallback;
@@ -356,15 +357,25 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
 
         // Stop receiving on pause
         ChirpManager manager = ChirpManager.getInstance(getContext());
-        ChirpError error = manager.getChirpConnect().stop();
 
-        // Note: it's ok if an error occurs here as it is common that
-        // Chirp to tries to stop itself when running
-        if (error.getCode() > 0) {
-            Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
+        if (!manager.getChirpConnect().getState().equals(ChirpConnectState.CHIRP_CONNECT_STATE_NOT_CREATED)) {
+            try {
+                ChirpError error = manager.getChirpConnect().stop();
+                // Note: it's ok if an error occurs here as it is common that
+                // Chirp to tries to stop itself when running
+                if (error.getCode() > 0) {
+                    Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
+                }
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
         }
 
+
+
+
     }
+
 
     @Override
     public void onResume() {
@@ -407,5 +418,12 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
         // Clear the visualizer timer
         mTimer.cancel();
         mTimer = null;
+
+        ChirpManager manager = ChirpManager.getInstance(getContext());
+        try {
+            manager.getChirpConnect().close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
