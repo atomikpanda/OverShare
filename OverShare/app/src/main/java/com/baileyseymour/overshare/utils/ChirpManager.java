@@ -8,6 +8,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.baileyseymour.overshare.interfaces.Constants;
+import com.google.firebase.FirebaseApp;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -16,7 +17,9 @@ import java.util.Arrays;
 
 import io.chirp.connect.ChirpConnect;
 import io.chirp.connect.interfaces.ConnectEventListener;
+import io.chirp.connect.models.ChirpConnectState;
 import io.chirp.connect.models.ChirpError;
+import io.chirp.connect.models.ChirpErrorCode;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
@@ -24,9 +27,11 @@ import static com.baileyseymour.overshare.interfaces.Constants.CHIRP_APP_KEY;
 
 public class ChirpManager implements ConnectEventListener {
 
-    private final ChirpConnect mChirpConnect;
+    private ChirpConnect mChirpConnect;
 
     public static final String TAG = "ChirpManager";
+
+
 
     // The object that is responsible for handling receiving operations
     public interface Receiver {
@@ -48,8 +53,14 @@ public class ChirpManager implements ConnectEventListener {
 
     private Receiver mReceiver;
     private Sender mSender;
+    private boolean mSoundIsPlaying;
+    private boolean mStopping;
 
     private ChirpManager(Context context) {
+        initConnect(context);
+    }
+
+    private void initConnect(Context context) {
         mChirpConnect = new ChirpConnect(context, CHIRP_APP_KEY, Constants.CHIRP_APP_SECRET);
 
         ChirpError error = mChirpConnect.setConfig(Constants.CHIRP_APP_CONFIG);
@@ -77,7 +88,49 @@ public class ChirpManager implements ConnectEventListener {
                 return null;
             }
         });
+    }
 
+    public ChirpError startSender() {
+        Log.d(TAG, "startSender: ");
+        if (getChirpConnect() != null) {
+
+            try {
+                ChirpError error = getChirpConnect().start(true, false);
+                // Note: it's ok if an error occurs here as it is common that
+                // Chirp to tries to stop itself when running
+                if (error.getCode() > 0) {
+                    Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
+                }
+
+                Log.d(TAG, "we started: ");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+//                mChirpConnect = null;
+//                initConnect(FirebaseApp.getInstance().getApplicationContext());
+            } finally {
+            }
+
+        }
+
+        return new ChirpError(ChirpErrorCode.CHIRP_CONNECT_UNKNOWN_ERROR);
+    }
+
+    public ChirpError startReceiver() {
+        Log.d(TAG, "startReceiver: ");
+        if (getChirpConnect() != null) {
+            return getChirpConnect().start(false, true);
+        }
+
+        return new ChirpError(ChirpErrorCode.CHIRP_CONNECT_UNKNOWN_ERROR);
+    }
+
+    public boolean isSoundPlaying() {
+        return mSoundIsPlaying;
+    }
+
+    public void setSoundIsPlaying(boolean soundIsPlaying) {
+        mSoundIsPlaying = soundIsPlaying;
     }
 
     private static ChirpManager INSTANCE;
@@ -100,7 +153,7 @@ public class ChirpManager implements ConnectEventListener {
         mSender = sender;
     }
 
-    public ChirpConnect getChirpConnect() {
+    private ChirpConnect getChirpConnect() {
         return mChirpConnect;
     }
 
@@ -158,6 +211,42 @@ public class ChirpManager implements ConnectEventListener {
         if (mSender != null) {
             mSender.onSystemVolumeChanged(old, current);
         }
+    }
+
+    public void stop() {
+        if (mStopping) {
+            Log.d(TAG, "prevent stop: ");
+            return;
+        }
+        mStopping = true;
+
+        ChirpConnectState state = getChirpConnect().getState();
+        if (state != ChirpConnectState.CHIRP_CONNECT_STATE_NOT_CREATED && state != ChirpConnectState.CHIRP_CONNECT_STATE_STOPPED) {
+            Log.d(TAG, "attempting stop: ");
+            try {
+                ChirpError error = getChirpConnect().stop();
+                // Note: it's ok if an error occurs here as it is common that
+                // Chirp to tries to stop itself when running
+                if (error.getCode() > 0) {
+                    Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
+                }
+
+                Log.d(TAG, "we stopped: ");
+
+                Log.d(TAG, "closing");
+                getChirpConnect().close();
+                initConnect(FirebaseApp.getInstance().getApplicationContext());
+                Log.d(TAG, "we closed");
+            } catch (Exception e) {
+                e.printStackTrace();
+                mChirpConnect = null;
+                initConnect(FirebaseApp.getInstance().getApplicationContext());
+            } finally {
+                mStopping = false;
+            }
+        }
+        mStopping = false;
+
     }
 
 }

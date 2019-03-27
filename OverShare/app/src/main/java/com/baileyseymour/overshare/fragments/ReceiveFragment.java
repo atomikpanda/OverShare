@@ -357,21 +357,20 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
 
         // Stop receiving on pause
         ChirpManager manager = ChirpManager.getInstance(getContext());
-
-        if (!manager.getChirpConnect().getState().equals(ChirpConnectState.CHIRP_CONNECT_STATE_NOT_CREATED)) {
-            try {
-                ChirpError error = manager.getChirpConnect().stop();
-                // Note: it's ok if an error occurs here as it is common that
-                // Chirp to tries to stop itself when running
-                if (error.getCode() > 0) {
-                    Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
-                }
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
-            }
-        }
-
-
+        manager.stop();
+//        ChirpConnectState state = manager.getChirpConnect().getState();
+//        if (state != ChirpConnectState.CHIRP_CONNECT_STATE_NOT_CREATED && state != ChirpConnectState.CHIRP_CONNECT_STATE_STOPPED) {
+//            try {
+//                ChirpError error = manager.getChirpConnect().stop();
+//                // Note: it's ok if an error occurs here as it is common that
+//                // Chirp to tries to stop itself when running
+//                if (error.getCode() > 0) {
+//                    Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
+//                }
+//            } catch (IllegalStateException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
 
     }
@@ -405,7 +404,7 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
         // Start listening via Chirp
         ChirpManager manager = ChirpManager.getInstance(getContext());
         mChirpStartMillis = System.currentTimeMillis();
-        ChirpError error = manager.getChirpConnect().startReceiver();
+        ChirpError error = manager.startReceiver();
         if (error.getCode() > 0) {
             Log.e(ChirpManager.TAG, "ChirpError: " + error.getMessage());
         }
@@ -418,12 +417,5 @@ public class ReceiveFragment extends Fragment implements ChirpManager.Receiver {
         // Clear the visualizer timer
         mTimer.cancel();
         mTimer = null;
-
-        ChirpManager manager = ChirpManager.getInstance(getContext());
-        try {
-            manager.getChirpConnect().close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }
