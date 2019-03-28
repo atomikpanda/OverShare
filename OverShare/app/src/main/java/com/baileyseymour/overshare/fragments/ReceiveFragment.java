@@ -40,7 +40,6 @@ import java.util.TimerTask;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.chirp.connect.models.ChirpConnectState;
 import io.chirp.connect.models.ChirpError;
 import pl.tajchert.nammu.Nammu;
 import pl.tajchert.nammu.PermissionCallback;

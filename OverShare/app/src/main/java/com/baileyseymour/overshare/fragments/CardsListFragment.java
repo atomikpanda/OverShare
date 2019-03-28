@@ -52,13 +52,11 @@ import com.google.firebase.firestore.Query;
 
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.io.IOUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Locale;
 
-import io.chirp.connect.models.ChirpConnectState;
 import io.chirp.connect.models.ChirpError;
 import pl.tajchert.nammu.Nammu;
 import pl.tajchert.nammu.PermissionCallback;
@@ -86,7 +84,6 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
     private FirebaseFirestore mDB;
     private FirestoreRecyclerAdapter<Card, CardViewHolder> mCardAdapter;
     private FabContainer mFabContainer;
-    private boolean mIsPlayingSound;
 
     // Fab container interface allows us to access the fab remotely
     public interface FabContainer {
@@ -443,7 +440,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
             public void permissionGranted() {
 
                 // Prevent playing multiple times at once
-                if (mIsPlayingSound) return;
+                if (ChirpManager.getInstance(getContext()).isSoundPlaying()) return;
 
                 // Set max volume
                 AudioUtils.getInstance(getContext()).setMaxVolume(getContext());
@@ -517,6 +514,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
         manager.setSender(null);
     }
 
+    /*
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -527,6 +525,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
 //            e.printStackTrace();
 //        }
     }
+    */
 
     @Override
     public void onSending(@NotNull byte[] bytes, int channel) {
