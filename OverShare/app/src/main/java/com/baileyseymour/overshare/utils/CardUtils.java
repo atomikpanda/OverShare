@@ -29,6 +29,7 @@ import static com.baileyseymour.overshare.interfaces.Constants.KEY_HEX_ID;
 import static com.baileyseymour.overshare.interfaces.Constants.KEY_SAVED_BY_UID;
 
 public class CardUtils {
+
     public static String sharableString(Card card) {
         StringBuilder sharableStr = new StringBuilder("------------------------------\n");
         sharableStr.append(card.getTitle());
