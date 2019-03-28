@@ -36,8 +36,6 @@ import com.mikepenz.aboutlibraries.LibsBuilder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.chirp.connect.models.ChirpConnectState;
-import io.chirp.connect.models.ChirpError;
 import pl.tajchert.nammu.Nammu;
 
 import static com.baileyseymour.overshare.fragments.AccountFragment.RESULT_SIGN_OUT;

@@ -6,12 +6,10 @@ package com.baileyseymour.overshare.utils;
 
 import android.support.annotation.NonNull;
 
-import com.baileyseymour.overshare.interfaces.Constants;
 import com.baileyseymour.overshare.models.Card;
 import com.baileyseymour.overshare.models.Field;
 import com.baileyseymour.overshare.models.SmartField;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;

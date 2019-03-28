@@ -108,7 +108,6 @@ public class ChirpManager implements ConnectEventListener {
                 e.printStackTrace();
 //                mChirpConnect = null;
 //                initConnect(FirebaseApp.getInstance().getApplicationContext());
-            } finally {
             }
 
         }
