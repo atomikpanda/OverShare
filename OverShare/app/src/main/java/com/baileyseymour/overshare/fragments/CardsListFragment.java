@@ -309,7 +309,7 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
 
         if (smartField.getFieldType() != null && smartField.getFieldType().getOutputType() == OutputType.URL) {
             String action = Intent.ACTION_VIEW;
-            boolean valid = false;
+            boolean valid;
 
             String generatedURL = smartField.generateURL();
             // Handle phone URLs
