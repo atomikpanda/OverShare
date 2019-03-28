@@ -74,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
 
         //FieldUtils.init(getResources());
 
+        ChirpManager.getInstance(this).setSoundIsPlaying(false);
+
         setSupportActionBar(mToolbar);
 
         initializeTabs();
@@ -231,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements ViewPager.OnPageC
         ThemeUtils.setNightModeEnabled(!ThemeUtils.isNightModeEnabled(this), this);
         this.setIntent(getIntent().setAction(""));
         this.getIntent().putExtra(EXTRA_THEME_CHANGED, true);
+
         this.recreate();
     }
 
