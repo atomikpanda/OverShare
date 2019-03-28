@@ -80,7 +80,7 @@ public class FieldType {
         return mInputType;
     }
 
-    private OutputType getOutputType() {
+    public OutputType getOutputType() {
         return mOutputType;
     }
 

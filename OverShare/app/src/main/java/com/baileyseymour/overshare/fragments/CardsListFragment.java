@@ -23,15 +23,18 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baileyseymour.overshare.R;
 import com.baileyseymour.overshare.activities.CardFormActivity;
 import com.baileyseymour.overshare.activities.ReceiveActivity;
 import com.baileyseymour.overshare.adapters.CardAdapter;
+import com.baileyseymour.overshare.enums.OutputType;
 import com.baileyseymour.overshare.interfaces.CardActionListener;
 import com.baileyseymour.overshare.interfaces.FieldClickListener;
 import com.baileyseymour.overshare.interfaces.RecyclerEmptyStateListener;
@@ -304,17 +307,40 @@ public class CardsListFragment extends Fragment implements FieldClickListener, C
 
         SmartField smartField = new SmartField(field);
 
-        if (smartField.getFieldType() != null) {
+        if (smartField.getFieldType() != null && smartField.getFieldType().getOutputType() == OutputType.URL) {
             String action = Intent.ACTION_VIEW;
+            boolean valid = false;
 
+            String generatedURL = smartField.generateURL();
             // Handle phone URLs
-            if (smartField.generateURL().startsWith("tel:")) {
+            if (generatedURL.startsWith("tel:")) {
                 action = Intent.ACTION_DIAL;
+                valid = true;
+            } else if (generatedURL.startsWith("mailto:")) {
+                valid = true;
+            }
+            else if (generatedURL.startsWith("sms:")) {
+                valid = true;
+            }
+            else if (generatedURL.startsWith("http://") || generatedURL.startsWith("https://")) {
+                valid = true;
+            } else {
+                generatedURL = "http://" + generatedURL;
+                valid = Patterns.WEB_URL.matcher(generatedURL).matches();
             }
 
-            // Open the browser or phone app
-            Intent intent = new Intent(action, Uri.parse(smartField.generateURL()));
-            startActivity(intent);
+            if (valid) {
+                // Open the browser or phone app
+                try {
+                    Intent intent = new Intent(action, Uri.parse(generatedURL));
+                    startActivity(intent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "No app found to open link.", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(getContext(), "No app found to open link.", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
