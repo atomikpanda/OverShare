@@ -1,4 +1,4 @@
-# 1903_SeymourBailey
+# OverShare for Android
 ### Installation instructions
 
 Installing the release APK is the preferred method of installing the app by dragging it onto the Android Emulator or copying onto a physical device. 
@@ -15,14 +15,6 @@ For Chirp related functionality there are a few things that need to be enabled/c
 4. ![EnableMicrophone_01](EnableMicrophone_01.jpeg)
 5. ![EnableMicrophone_01](EnableMicrophone_02.jpeg)
 6. Also, if you are still having issues with the microphone on the emulator be sure to  double check the microphone privacy settings and input source on your computer in System Preferences as Apple has imposed further restrictions on microphone access in Mojave.
-
-### Login requirements for testing
-
-OverShare demo login:
-
-Email/Username: `demo@example.com`
-
-Password: `fullsail`
 
 ### List of known bugs
 
